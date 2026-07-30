@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kanmon financing demo: today vs. with a pre-approval estimate</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --kanmon:#FF6B00; --kanmon-soft:#fff1e6; --kanmon-deep:#c25200;
+    --partner:#1e3a5f;
+    --ok:#15803d; --ok-soft:#dcfce7; --warn:#b45309; --warn-soft:#fef3c7; --danger:#b91c1c;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+
+  .bar{display:flex;align-items:center;gap:1rem;padding:.6rem 1rem;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap;flex-shrink:0}
+  .bar h1{font-size:.95rem;margin:0;letter-spacing:-.01em;white-space:nowrap}
+  .bar h1 span{color:var(--muted);font-weight:500}
+  .modes{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:3px}
+  .modes button{border:0;background:transparent;padding:.42rem .9rem;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--muted);font-family:inherit}
+  .modes button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42.12)}
+  .modes button.new[aria-pressed="true"]{color:var(--kanmon-deep)}
+  .spacer{flex:1}
+  .meter{display:flex;gap:.4rem;flex-wrap:wrap}
+  .m{border:1px solid var(--line);border-radius:10px;padding:.3rem .58rem;min-width:70px;background:#fff}
+  .m b{display:block;font-size:.95rem;line-height:1.15;font-variant-numeric:tabular-nums}
+  .m span{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .m.good b{color:var(--ok)} .m.bad b{color:var(--danger)}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:.42rem .8rem;font-size:.82rem;cursor:pointer;font-family:inherit;font-weight:600}
+  .btn:hover{border-color:var(--kanmon)}
+
+  .stage{flex:1;display:flex;gap:.7rem;padding:.9rem 1rem;min-height:0;align-items:stretch}
+  .arrow{flex-shrink:0;align-self:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:1.1rem;cursor:pointer;color:var(--ink);box-shadow:0 2px 8px rgba(15,23,42.08);font-family:inherit}
+  .arrow:hover:not(:disabled){border-color:var(--kanmon);color:var(--kanmon-deep)}
+  .arrow:disabled{opacity:.3;cursor:default}
+  .window{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 12px 34px rgba(15,23,42.13);display:flex;flex-direction:column}
+  .chrome{background:#f8fafc;border-bottom:1px solid var(--line);padding:.5rem .75rem;display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+  .dots{display:flex;gap:5px}.dots i{width:10px;height:10px;border-radius:50%;background:#e2e8f0;display:block}
+  .url{flex:1;background:#fff;border:1px solid var(--line);border-radius:7px;font-size:.7rem;color:var(--muted);padding:.24rem .6rem;text-align:center}
+  #screen{flex:1;overflow:auto;min-height:0}
+  .foot{border-top:1px solid var(--line);padding:.5rem .9rem;font-size:.72rem;color:var(--muted);background:#fbfcfd;flex-shrink:0;display:flex;gap:.6rem;align-items:center}
+  .track{flex:1;height:4px;background:var(--line);border-radius:99px;overflow:hidden}
+  .track i{display:block;height:100%;background:var(--kanmon);width:0;transition:width .2s}
+
+  .aside{width:315px;flex-shrink:0;display:flex;flex-direction:column;gap:.6rem;overflow:auto}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.75rem .85rem}
+  .panel.accent{border-left:3px solid var(--kanmon)}
+  .panel.tech{border-left:3px solid var(--partner)}
+  .panel.audit{border-left:3px solid var(--ok)}
+  .panel h3{margin:0 0 .35rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .panel p{margin:0;font-size:.82rem;line-height:1.45}
+  .mech{display:inline-block;background:var(--kanmon-soft);color:var(--kanmon-deep);border:1px solid #fed7aa;border-radius:6px;padding:.16rem .5rem;font-size:.7rem;font-weight:700;margin-bottom:.25rem}
+  .mech.cost{background:#fee2e2;color:var(--danger);border-color:#fecaca}
+  .mechbody{font-size:.78rem;color:var(--muted);line-height:1.45;margin:0 0 .6rem}
+  .delta{font-size:.74rem;color:var(--muted);margin-top:.45rem;padding-top:.45rem;border-top:1px dashed var(--line)}
+  .delta b{color:var(--ok)}
+  .log{margin:0;padding:0;list-style:none;max-height:190px;overflow:auto}
+  .log li{font-size:.7rem;line-height:1.4;padding:.32rem 0;border-bottom:1px dashed var(--line);color:var(--muted)}
+  .log li b{color:var(--ink);font-weight:700}
+  .log li.src b{color:var(--ok)}
+  .log li.consent b{color:var(--kanmon-deep)}
+  .log li .t{color:#94a3b8;font-variant-numeric:tabular-nums;margin-right:.3rem}
+
+  .app{display:flex;min-height:100%}
+  .side{width:170px;background:var(--partner);color:#fff;padding:.85rem .7rem;flex-shrink:0}
+  .side .logo{font-weight:800;font-size:.84rem;margin-bottom:.9rem}
+  .side a{display:block;color:#c7d5e6;text-decoration:none;font-size:.76rem;padding:.4rem .55rem;border-radius:7px;margin-bottom:.12rem;cursor:pointer}
+  .side a.on{background:rgba(255,255,255.14);color:#fff;font-weight:600}
+  .side a.fin{color:#fff}
+  .main{flex:1;padding:1.05rem 1.2rem;min-width:0}
+  .main h2{margin:0 0 .15rem;font-size:1.1rem;letter-spacing:-.02em}
+  .main .sub{color:var(--muted);font-size:.79rem;margin:0 0 .85rem}
+
+  .kbanner{border:1px solid var(--kanmon);background:linear-gradient(135deg,var(--kanmon-soft),#fff);border-radius:12px;padding:.85rem 1rem;margin-bottom:.85rem}
+  .kbanner .amt{font-size:1.42rem;font-weight:800;letter-spacing:-.02em;color:var(--kanmon-deep);line-height:1.1}
+  .kbanner p{margin:.2rem 0 .55rem;font-size:.78rem;color:var(--muted)}
+  .kpill{display:inline-block;background:var(--kanmon);color:#fff;font-size:.58rem;font-weight:800;padding:.13rem .45rem;border-radius:99px;letter-spacing:.04em;text-transform:uppercase}
+  .cta{background:var(--kanmon);color:#fff;border:0;border-radius:9px;padding:.55rem 1.05rem;font-weight:700;font-size:.83rem;cursor:pointer;font-family:inherit}
+  .cta:hover{filter:brightness(.93)}
+  .cta.ghost{background:#fff;color:var(--kanmon-deep);border:1px solid var(--kanmon)}
+  .cta.partner{background:var(--partner)}
+
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+  .f{display:flex;flex-direction:column;gap:.18rem}
+  .f.full{grid-column:1/-1}
+  .f label{font-size:.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .f .inp{border:1px solid var(--line);border-radius:8px;padding:.48rem .6rem;font-size:.8rem;background:#fff;min-height:34px;color:#94a3b8}
+  .f .inp.filled{color:var(--ink);background:var(--ok-soft);border-color:#bbf7d0;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:.4rem}
+  .f .inp.filled .tick{color:var(--ok);font-weight:800;font-size:.68rem}
+  .steps{display:flex;gap:.28rem;margin-bottom:.85rem;flex-wrap:wrap}
+  .steps i{font-style:normal;font-size:.6rem;padding:.18rem .48rem;border-radius:99px;background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+  .steps i.on{background:var(--partner);color:#fff;border-color:var(--partner)}
+  .steps i.done{background:var(--ok-soft);color:var(--ok);border-color:#bbf7d0}
+  .steps i.skip{background:var(--kanmon-soft);color:var(--kanmon-deep);border-color:#fed7aa;text-decoration:line-through}
+  .upload{border:2px dashed var(--line);border-radius:10px;padding:1rem;text-align:center;color:var(--muted);font-size:.78rem}
+  .rows .r{display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--line);font-size:.81rem}
+  .rows .r span:last-child{color:var(--muted)}
+  .note{font-size:.72rem;color:var(--muted);margin-top:.65rem}
+  .wait{text-align:center;padding:2rem 1rem}
+  .wait .big{font-size:2.3rem}
+  .inv{width:100%;border-collapse:collapse;font-size:.77rem}
+  .inv th{text-align:left;font-size:.58rem;text-transform:uppercase;color:var(--muted);padding:.32rem .3rem;border-bottom:1px solid var(--line)}
+  .inv td{padding:.42rem .3rem;border-bottom:1px solid var(--line)}
+  .tag{font-size:.6rem;padding:.12rem .45rem;border-radius:99px;font-weight:700}
+  .tag.over{background:#fee2e2;color:var(--danger)} .tag.open{background:var(--warn-soft);color:var(--warn)} .tag.paid{background:var(--ok-soft);color:var(--ok)}
+  @media(max-width:1040px){.aside{display:none}}
+  @media(max-width:760px){.app{flex-direction:column}.side{width:100%;display:flex;gap:.3rem;overflow:auto}.side .logo{display:none}.fields{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>Financing experience <span>demo · Kanmon inside a partner platform</span></h1>
+  <div class="modes" role="tablist">
+    <button id="m-old" aria-pressed="true">Today</button>
+    <button id="m-new" class="new" aria-pressed="false">With a pre-approval estimate</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="meter" id="meter"></div>
+  <button class="btn" id="restart">Restart</button>
+</div>
+
+<div class="stage">
+  <button class="arrow" id="back" aria-label="Previous screen">&#8592;</button>
+  <div class="window">
+    <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url" id="url"></div></div>
+    <div id="screen"></div>
+    <div class="foot"><span id="footlbl"></span><span class="track"><i id="trackbar"></i></span></div>
+  </div>
+  <button class="arrow" id="next" aria-label="Next screen">&#8594;</button>
+
+  <div class="aside">
+    <div class="panel" style="border-left:3px solid var(--partner)">
+      <h3>Who is who</h3>
+      <p style="font-size:.79rem;margin-bottom:.4rem"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--partner);vertical-align:middle;margin-right:.35rem"></span><b>PartnerOS</b> is a made up example of a partner platform, the software an SMB already runs their business on. Kanmon does not build this.</p>
+      <p style="font-size:.79rem"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--kanmon);vertical-align:middle;margin-right:.35rem"></span><b>Kanmon</b> is embedded inside it. Anything orange is the Kanmon part.</p>
+    </div>
+    <div class="panel accent">
+      <h3>What is happening</h3>
+      <p id="cap"></p>
+      <div class="delta" id="delta"></div>
+    </div>
+    <div class="panel">
+      <h3>Why it helps or hurts conversion</h3>
+      <div id="mech"></div>
+    </div>
+    <div class="panel audit">
+      <h3>Audit trail</h3>
+      <ul class="log" id="log"></ul>
+    </div>
+    <div class="panel tech">
+      <h3>Two different problems</h3>
+      <p style="font-size:.79rem"><b>The build:</b> getting partner data in with consent, matching the business, and returning an estimate. That is engineering and compliance work.</p>
+      <p style="font-size:.79rem;margin-top:.4rem"><b>The lift:</b> once that data is there, raising conversion is design work. Fewer screens, nothing to look up, a real number to react to.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var field = function(label,val){ return val
+    ? '<div class="f"><label>'+label+'</label><div class="inp filled">'+val+'<span class="tick">from partner</span></div></div>'
+    : '<div class="f"><label>'+label+'</label><div class="inp">Type here</div></div>'; };
+  var stepbar = function(labels, idx, skips){ return '<div class="steps">'+labels.map(function(l,i){
+      return (skips&&skips.indexOf(i)>-1) ? '<i class="skip">'+l+'</i>' : '<i class="'+(i===idx?'on':(i<idx?'done':''))+'">'+l+'</i>'; }).join('')+'</div>'; };
+  var SIDE = function(active){ return '<div class="side"><div class="logo">PartnerOS</div>'+
+      ['Dashboard','Invoices','Customers','Reports'].map(function(n){return '<a class="'+(active===n?'on':'')+'">'+n+'</a>';}).join('')+
+      '<a class="fin '+(active==='Financing'?'on':'')+'">Financing</a></div>'; };
+  var APPSTEPS = ['Business','Owner','Financials','Bank','Documents','Review'];
+
+  var OLD = [
+    {url:'app.partneros.com/dashboard', foot:'Prompted, but not persuaded',
+     cap:'They do get prompted today. The prompt just has nothing in it to act on, so it reads as an advert and gets ignored.',
+     mech:[['cost','Nothing specific to react to','"Need working capital?" is a question. A number would be an answer.'],
+           ['cost','The partner has nothing to work with','With no eligibility signal, a partner cannot target this or make it feel relevant.']],
+     audit:['Owner signs in to PartnerOS','Generic financing promo shown','No eligibility signal available to the partner'],
+     html:'<div class="app">'+SIDE('Dashboard')+'<div class="main">'+
+        '<h2>Good morning, Northside Dental</h2><p class="sub">Here is your week.</p>'+
+        '<div style="border:1px solid var(--line);background:#f8fafc;border-radius:10px;padding:.7rem .85rem;margin-bottom:.85rem;display:flex;align-items:center;gap:.75rem">'+
+        '<div style="flex:1"><div style="font-weight:700;font-size:.85rem">Need working capital?</div>'+
+        '<div style="font-size:.75rem;color:var(--muted)">Financing options are available for your business.</div></div>'+
+        '<button class="cta partner" style="padding:.4rem .8rem;font-size:.78rem">Learn more</button></div>'+
+        '<div class="rows"><div class="r"><span>Outstanding invoices</span><span>$23,450</span></div>'+
+        '<div class="r"><span>Paid this month</span><span>$41,200</span></div>'+
+        '<div class="r"><span>Next payroll</span><span>in 6 days</span></div></div>'+
+        '<p class="note">This banner is always on, for everyone, and says the same thing to all of them.</p></div></div>'},
+    {url:'app.partneros.com/financing', foot:'Big ask, unknown payoff',
+     cap:'A general marketing page. The request is large and the odds are unclear.',
+     mech:[['cost','Effort comes before any answer','They are asked to spend 15 minutes without knowing if they qualify.']],
+     audit:['Owner opens financing page','No eligibility shown'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+
+        '<h2>Working capital for your business</h2><p class="sub">Term loans, lines of credit, invoice financing.</p>'+
+        '<div style="border:1px solid var(--line);border-radius:12px;padding:1rem;background:#f8fafc">'+
+        '<p style="margin:0 0 .5rem;font-size:.84rem">Apply in minutes. Decisions in 1 to 3 business days.</p>'+
+        '<button class="cta partner">Start application</button></div>'+
+        '<p class="note">No amount. No sense of whether it is worth starting.</p></div></div>'},
+    {url:'app.partneros.com/apply/1', foot:'6 fields typed', fields:6,
+     cap:'Step 1 of 6. Every field typed by hand, including details the platform already has.',
+     mech:[['cost','Typing what we already know','The platform knows this business. The form asks anyway.']],
+     audit:['Application started','6 fields entered manually'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+stepbar(APPSTEPS,0)+
+        '<h2>Business details</h2><p class="sub">Step 1 of 6</p><div class="fields">'+
+        field('Legal business name')+field('DBA')+field('EIN or Tax ID')+field('Entity type')+field('Business address')+field('Years in business')+
+        '</div><div style="margin-top:.8rem"><button class="cta partner">Continue</button></div></div></div>'},
+    {url:'app.partneros.com/apply/2', foot:'6 fields typed, including SSN', fields:6,
+     cap:'Personal details and a Social Security number, typed manually, before they know if any of this pays off.',
+     mech:[['cost','Sensitive information asked too early','Trust is being requested before anything has been offered in return.']],
+     audit:['Owner details entered','SSN collected'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+stepbar(APPSTEPS,1)+
+        '<h2>Owner details</h2><p class="sub">Step 2 of 6</p><div class="fields">'+
+        field('Full legal name')+field('Ownership percent')+field('SSN')+field('Date of birth')+field('Home address')+field('Phone')+
+        '</div><div style="margin-top:.8rem"><button class="cta partner">Continue</button></div></div></div>'},
+    {url:'app.partneros.com/apply/3', foot:'4 fields typed', fields:4,
+     cap:'Financial figures from memory, and these are numbers a busy owner may need to go and find.',
+     mech:[['cost','They leave to go find numbers','Stepping away to dig up figures is an exit ramp, and some of those sessions never come back.'],
+           ['cost','Guesses cause avoidable declines','Wrong figures turn into declines that were never about credit risk.']],
+     audit:['Financials entered from memory','Values unverified'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+stepbar(APPSTEPS,2)+
+        '<h2>Financials</h2><p class="sub">Step 3 of 6</p><div class="fields">'+
+        field('Annual revenue')+field('Average monthly deposits')+field('Outstanding debt')+field('Requested amount')+
+        '</div><div style="margin-top:.8rem"><button class="cta partner">Continue</button></div></div></div>'},
+    {url:'app.partneros.com/apply/4', foot:'Bank sign in and code',
+     cap:'Connecting a bank means credentials, a code from a phone, and a third party screen.',
+     mech:[['cost','Sends them somewhere else','Momentum breaks when the flow hands them to another interface.']],
+     audit:['Bank connection requested','Credentials and code required'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+stepbar(APPSTEPS,3)+
+        '<h2>Connect your bank</h2><p class="sub">Step 4 of 6</p>'+
+        '<div class="upload" style="border-style:solid;background:#f8fafc">Find your bank, sign in, approve the code, choose accounts</div>'+
+        '<div style="margin-top:.8rem"><button class="cta partner">Continue</button></div></div></div>'},
+    {url:'app.partneros.com/apply/5', foot:'3 documents to find', docs:3,
+     cap:'Uploading documents turns finishing now into finishing later, if at all.',
+     mech:[['cost','Turns into "I will do this later"','Anything that needs work outside the app converts a session into a maybe.']],
+     audit:['3 documents requested','Owner must leave the app to find them'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+stepbar(APPSTEPS,4)+
+        '<h2>Upload documents</h2><p class="sub">Step 5 of 6</p>'+
+        '<div class="upload">Last 3 months of bank statements</div>'+
+        '<div class="upload" style="margin-top:.5rem">Most recent tax return</div>'+
+        '<div class="upload" style="margin-top:.5rem">Photo ID</div>'+
+        '<div style="margin-top:.8rem"><button class="cta partner">Continue</button></div></div></div>'},
+    {url:'app.partneros.com/apply/6', foot:'Review and submit',
+     cap:'A review screen at last. After all that work they still do not know if they qualify.',
+     mech:[['cost','No payoff along the way','Effort has been spent with no signal that it was worth it.']],
+     audit:['Application reviewed','Ready to submit'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+stepbar(APPSTEPS,5)+
+        '<h2>Review and submit</h2><p class="sub">Step 6 of 6</p>'+
+        '<div class="rows"><div class="r"><span>Business</span><span>Northside Dental</span></div>'+
+        '<div class="r"><span>Requested</span><span>$40,000</span></div>'+
+        '<div class="r"><span>Documents</span><span>3 uploaded</span></div></div>'+
+        '<div style="margin-top:.8rem"><button class="cta partner">Submit application</button></div></div></div>'},
+    {url:'app.partneros.com/apply/pending', foot:'Waiting',
+     cap:'Now they wait. The need was today. The answer is days away.',
+     mech:[['cost','The answer arrives too late','Interest fades while the request sits in a queue.']],
+     audit:['Application submitted','Decision pending 1 to 3 business days'],
+     html:'<div class="main wait"><div class="big">&#9203;</div><h2>Application submitted</h2>'+
+        '<p class="sub">We will email a decision in 1 to 3 business days.</p>'+
+        '<p class="note">About 15 minutes of work, 3 documents, and no answer yet.</p></div>'},
+  ];
+
+  var NEW = [
+    {url:'app.partneros.com/dashboard', foot:'They see a number first',
+     cap:'The estimate meets them where they already are, with a real number, before any application exists.',
+     mech:[['win','A real number to react to','"Up to $40,000" is something specific. "Apply now" is not.'],
+           ['win','No hunting required','The opportunity shows up instead of waiting to be found.']],
+     audit:['Owner signs in to PartnerOS','Kanmon has marked this business eligible, from its PartnerOS data','Estimate shown: up to $40,000','Basis: 12 months of platform revenue'],
+     html:'<div class="app">'+SIDE('Dashboard')+'<div class="main">'+
+        '<h2>Good morning, Northside Dental</h2><p class="sub">Here is your week.</p>'+
+        '<div class="kbanner"><span class="kpill">Powered by Kanmon</span>'+
+        '<div class="amt" style="margin-top:.35rem">You could be eligible for up to $40,000</div>'+
+        '<p>Based on your activity in PartnerOS. This is an estimate. Final terms depend on approval.</p>'+
+        '<button class="cta">See my options</button> <button class="cta ghost">How is this worked out?</button></div>'+
+        '<div class="rows"><div class="r"><span>Outstanding invoices</span><span>$23,450</span></div>'+
+        '<div class="r"><span>Next payroll</span><span>in 6 days</span></div></div></div></div>'},
+    {url:'app.partneros.com/invoices', foot:'The number meets the problem',
+     cap:'The same number appears on the overdue invoice that is actually causing the cash problem.',
+     mech:[['win','Shows up on the real problem','It answers a live question instead of a hypothetical one.']],
+     audit:['Estimate surfaced on overdue invoice INV-2041','No new data required'],
+     html:'<div class="app">'+SIDE('Invoices')+'<div class="main">'+
+        '<h2>Invoices</h2><p class="sub">3 outstanding</p>'+
+        '<table class="inv"><thead><tr><th>Customer</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>'+
+        '<tr><td>Harbor Goods<br><span style="color:var(--muted);font-size:.66rem">INV-2041, 18 days overdue</span></td><td>$12,400</td><td><span class="tag over">Overdue</span></td><td><button class="cta" style="padding:.32rem .65rem;font-size:.73rem">Get paid now</button></td></tr>'+
+        '<tr><td>Bright Path LLC</td><td>$3,850</td><td><span class="tag open">Open</span></td><td></td></tr>'+
+        '<tr><td>Cedar Clinic</td><td>$7,200</td><td><span class="tag paid">Paid</span></td><td></td></tr>'+
+        '</tbody></table><p class="note">$12,400 is stuck. You could be eligible for up to $40,000.</p></div></div>'},
+    {url:'app.partneros.com/financing/confirm', foot:'One clear yes',
+     cap:'The consent step. This is the only real request in the whole flow, and it says exactly what gets shared.',
+     mech:[['win','One small yes instead of six screens','Agreeing once is far easier than filling in a six step form.'],
+           ['win','Says exactly what is shared','Naming the data lowers the sense of risk.']],
+     audit:['Consent screen shown','Scope listed: identity, revenue, bank','Soft check, no credit score impact'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+
+        '<h2>Use your PartnerOS information to finish this?</h2><p class="sub">This is exactly what would be shared with Kanmon.</p>'+
+        '<div class="rows"><div class="r"><span>Business identity and EIN</span><span>from your profile</span></div>'+
+        '<div class="r"><span>Revenue and deposit history</span><span>from PartnerOS</span></div>'+
+        '<div class="r"><span>Linked bank account</span><span>already connected</span></div></div>'+
+        '<p class="note">Checking your estimate will not affect your credit score. You can withdraw access at any time.</p>'+
+        '<div style="margin-top:.7rem"><button class="cta">Agree and continue</button></div></div></div>'},
+    {url:'app.partneros.com/financing/apply', foot:'1 field typed', fields:1,
+     cap:'Five of the six steps are gone. Not pre-filled, gone. One real decision is left: how much.',
+     mech:[['win','Whole steps disappear','Identity, financials and bank were already covered by the shared data, so those screens do not need to exist.'],
+           ['win','Checking is easier than remembering','Confirming values you can see costs far less than recalling them.'],
+           ['win','One step left pulls people through','A single visible step is much easier to finish than six.']],
+     audit:['Consent recorded','Business name from PartnerOS profile','EIN from PartnerOS profile','Revenue from 12 months of platform data','Bank reused from existing connection','Fields typed by owner: 1'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+stepbar(APPSTEPS,5,[0,1,2,3,4])+
+        '<h2>Confirm and submit</h2><p class="sub">We already have what we need.</p><div class="fields">'+
+        field('Legal business name','Northside Dental LLC')+field('EIN or Tax ID','Ends 4821')+
+        field('Annual revenue','$540,000')+field('Bank account','Chase ending 4471')+
+        '<div class="f full"><label>How much do you need?</label><div class="inp filled" style="background:var(--kanmon-soft);border-color:#fed7aa;color:var(--kanmon-deep)">$40,000 <span class="tick" style="color:var(--kanmon-deep)">up to $40,000</span></div></div>'+
+        '</div><div style="margin-top:.8rem"><button class="cta">Confirm and submit</button></div>'+
+        '<p class="note">Business, owner, financials, bank and documents were all covered by information already shared.</p></div></div>'},
+    {url:'app.partneros.com/financing/offer', foot:'Answer in seconds',
+     cap:'A real offer in seconds instead of days, while the need is still live.',
+     mech:[['win','The answer arrives while it still matters','Intent is highest right now, so this is when an answer converts.']],
+     audit:['Application submitted','Underwriting decision returned','Offer: $40,000, 12 month line'],
+     html:'<div class="app">'+SIDE('Financing')+'<div class="main">'+
+        '<div class="kbanner"><span class="kpill">Approved</span>'+
+        '<div class="amt" style="margin-top:.35rem">$40,000 approved</div>'+
+        '<p>12 month line of credit. Draw any time.</p></div>'+
+        '<div class="rows"><div class="r"><span>Amount</span><span>$40,000</span></div>'+
+        '<div class="r"><span>Term</span><span>12 months</span></div>'+
+        '<div class="r"><span>Funds available</span><span>within 1 business day</span></div></div>'+
+        '<div style="margin-top:.8rem"><button class="cta">Accept offer</button></div></div></div>'},
+    {url:'app.partneros.com/financing/funded', foot:'Funded',
+     cap:'Funded inside the software they already use, on the same day they felt the problem.',
+     mech:[['win','They never left the platform','Need, number, confirm, funded, all in one place.']],
+     audit:['Offer accepted','Funds releasing to Chase ending 4471','Total fields typed by owner: 1'],
+     html:'<div class="main wait"><div class="big">&#127881;</div><h2>You are funded</h2>'+
+        '<p class="sub">$40,000 is available in your linked account.</p>'+
+        '<p class="note">About 90 seconds of work, one field typed, no documents.</p></div>'},
+  ];
+
+  var mode='old', i=0;
+  var flow=function(){ return mode==='old'?OLD:NEW; };
+  var $=function(id){ return document.getElementById(id); };
+
+  function totals(f){ return {screens:f.length,
+    fields:f.reduce(function(a,s){return a+(s.fields||0);},0),
+    docs:f.reduce(function(a,s){return a+(s.docs||0);},0),
+    time: f===OLD?'15 min':'90 sec'}; }
+
+  function renderMeter(){
+    var t=totals(flow()), good=(mode==='new');
+    $('meter').innerHTML=
+      '<div class="m '+(good?'good':'bad')+'"><b>'+t.screens+'</b><span>screens</span></div>'+
+      '<div class="m '+(good?'good':'bad')+'"><b>'+t.fields+'</b><span>fields typed</span></div>'+
+      '<div class="m '+(good?'good':'bad')+'"><b>'+t.docs+'</b><span>documents</span></div>'+
+      '<div class="m '+(good?'good':'bad')+'"><b>'+t.time+'</b><span>effort</span></div>';
+  }
+  function renderLog(){
+    var f=flow(), out=[], n=0;
+    for(var k=0;k<=i;k++){
+      (f[k].audit||[]).forEach(function(line){
+        n++;
+        var cls = /Consent|consent/.test(line) ? 'consent' : (/from |reused|Basis/.test(line) ? 'src' : '');
+        out.push('<li class="'+cls+'"><span class="t">'+String(n).padStart(2,'0')+'</span><b>'+line+'</b></li>');
+      });
+    }
+    $('log').innerHTML=out.join('');
+    $('log').scrollTop=$('log').scrollHeight;
+  }
+  function render(){
+    var f=flow(), s=f[i];
+    $('screen').innerHTML=s.html; $('url').textContent=s.url; $('cap').textContent=s.cap;
+    $('footlbl').textContent='Screen '+(i+1)+' of '+f.length+'. '+s.foot;
+    $('trackbar').style.width=((i+1)/f.length*100)+'%';
+    $('mech').innerHTML=(s.mech||[]).map(function(m){
+      return '<div><span class="mech '+(m[0]==='cost'?'cost':'')+'">'+m[1]+'</span><p class="mechbody">'+m[2]+'</p></div>'; }).join('');
+    var o=totals(OLD), n=totals(NEW);
+    $('delta').innerHTML = (mode==='new')
+      ? 'Compared with today: <b>'+o.screens+' screens down to '+n.screens+'</b>, <b>'+o.fields+' fields down to '+n.fields+'</b>, <b>'+o.docs+' documents down to '+n.docs+'</b>.'
+      : 'The improved flow does this in <b>'+n.screens+' screens</b> with <b>'+n.fields+' field typed</b>.';
+    $('back').disabled=(i===0); $('next').disabled=(i===f.length-1);
+    renderLog();
+    $('screen').scrollTop=0;
+  }
+  function advance(){ if(i<flow().length-1){ i++; render(); } }
+  function setMode(m){ mode=m; i=0;
+    $('m-old').setAttribute('aria-pressed', String(m==='old'));
+    $('m-new').setAttribute('aria-pressed', String(m==='new'));
+    renderMeter(); render(); }
+
+  $('m-old').onclick=function(){ setMode('old'); };
+  $('m-new').onclick=function(){ setMode('new'); };
+  $('next').onclick=advance;
+  $('back').onclick=function(){ if(i>0){ i--; render(); } };
+  $('restart').onclick=function(){ i=0; render(); };
+  $('screen').addEventListener('click', function(e){
+    if(e.target.closest('.cta') || e.target.closest('.side a.fin')) advance();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight') advance();
+    if(e.key==='ArrowLeft' && i>0){ i--; render(); }
+    if(e.key==='t'||e.key==='T') setMode(mode==='old'?'new':'old');
+  });
+  setMode('old');
+})();
+</script>
+</body>
+</html>

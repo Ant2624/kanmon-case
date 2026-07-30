@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Soft pre-check + prefill, experience mirror</title>
+  <style>
+    :root {
+      --ink: #0f172a; --muted: #64748b; --line: #e2e8f0; --bg: #f1f5f9; --card: #fff;
+      --accent: #c25200; --accent-soft: #fff1e6; --warn: #b45309; --warn-soft: #ffedd5;
+      --danger: #b91c1c; --ok: #15803d; --shadow: 0 1px 2px rgba(15,23,42.05);
+      --sans: "IBM Plex Sans", "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--bg); padding: 1rem 1.1rem 2.5rem; -webkit-font-smoothing: antialiased; }
+    .mirror-banner {
+      max-width: 1180px; margin: 0 auto 1rem; padding: .65rem .85rem; border-radius: 10px;
+      background: #0f172a; color: #e2e8f0; font-size: .82rem; line-height: 1.4;
+    }
+    .mirror-banner a { color: #5eead4; font-weight: 650; }
+    .note { font-size: .76rem; color: var(--muted); }
+    .jump { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; font-weight: 650; text-decoration: underline; }
+    .kicker { font-size: .62rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+/*, Experience mock (#experience-mock), */
+    .xm-wrap { max-width: 1180px; }
+    .xm-assumptions {
+      display: flex; flex-wrap: wrap; gap: .35rem; margin: .55rem 0 .75rem;
+    }
+    .xm-assumptions span {
+      font-size: .65rem; font-weight: 650; border-radius: 999px; padding: .18rem .5rem;
+      background: var(--warn-soft); color: var(--warn); border: 1px solid #fdba74;
+    }
+    .xm-assumptions span.ok { background: #dcfce7; color: var(--ok); border-color: #86efac; }
+    .xm-controls {
+      display: flex; flex-wrap: wrap; gap: .55rem .75rem; align-items: flex-end;
+      background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+      padding: .7rem .85rem; margin-bottom: .65rem; box-shadow: var(--shadow);
+    }
+    .xm-controls label {
+      display: flex; flex-direction: column; gap: .22rem;
+      font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
+    }
+    .xm-controls select, .xm-seg {
+      font: inherit; font-size: .8rem; font-weight: 550; text-transform: none; letter-spacing: 0;
+      color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: .38rem .5rem; background: #fff; min-width: 9.5rem;
+    }
+    .xm-seg { display: inline-flex; padding: 0; overflow: hidden; min-width: 0; }
+    .xm-seg button {
+      border: 0; background: transparent; padding: .38rem .7rem; font: inherit; font-size: .78rem;
+      cursor: pointer; color: var(--muted); border-right: 1px solid var(--line);
+    }
+    .xm-seg button:last-child { border-right: 0; }
+    .xm-seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+    .xm-ba {
+      display: inline-flex; border: 2px solid var(--ink); border-radius: 999px; overflow: hidden; background: #fff;
+    }
+    .xm-ba button {
+      border: 0; background: transparent; padding: .42rem .95rem; font: inherit; font-size: .82rem; font-weight: 700;
+      cursor: pointer; color: var(--muted); letter-spacing: -.01em;
+    }
+    .xm-ba button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+    .xm-ba button.before[aria-pressed="true"] { background: #64748b; }
+    .xm-ba button.after[aria-pressed="true"] { background: var(--accent); }
+    .xm-unlock {
+      margin: 0 0 .75rem; padding: .65rem .8rem; border-radius: 10px;
+      background: #f0fdfa; border: 1px solid #99f6e4; font-size: .82rem; line-height: 1.45; color: #134e4a;
+    }
+    .xm-unlock strong { color: var(--accent); }
+    .xm-friction {
+      margin: 0 0 .75rem; padding: .65rem .8rem; border-radius: 10px;
+      background: #fff7ed; border: 1px solid #fdba74; font-size: .82rem; line-height: 1.45; color: #9a3412;
+    }
+    .xm-friction strong { color: #9a3412; }
+    .xm-rail {
+      display: flex; flex-wrap: wrap; gap: .3rem; margin: 0 0 .75rem;
+    }
+    .xm-rail button {
+      border: 1px solid var(--line); background: #fff; border-radius: 999px;
+      padding: .28rem .6rem; font: inherit; font-size: .7rem; cursor: pointer; color: var(--muted);
+    }
+    .xm-rail button[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .xm-rail button:disabled { opacity: .4; cursor: not-allowed; }
+    .xm-stage {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; align-items: start;
+    }
+    @media (max-width: 900px) { .xm-stage { grid-template-columns: 1fr; } }
+    .xm-phone {
+      border: 1px solid var(--line); border-radius: 28px; overflow: hidden; background: #fff;
+      box-shadow: 0 12px 32px rgba(15,23,42.08); max-width: 390px; margin: 0 auto; min-height: 560px;
+      display: flex; flex-direction: column;
+    }
+    .xm-phone .sb {
+      display: flex; justify-content: space-between; padding: .55rem 1.1rem .25rem;
+      font-size: .68rem; font-weight: 650;
+    }
+    .xm-phone .nb {
+      display: flex; align-items: center; gap: .35rem; padding: .25rem 1rem .65rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .xm-phone .nb .bk { border: 0; background: 0; color: #0071e3; font: inherit; font-size: .88rem; cursor: pointer; padding: .2rem; }
+    .xm-phone .nb h3 { flex: 1; margin: 0; text-align: center; font-size: .92rem; font-weight: 650; padding-right: 1.6rem; letter-spacing: -.01em; }
+    .xm-chrome {
+      padding: .75rem 1rem; border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fafafa, #f5f5f7);
+    }
+    .xm-chrome .ey { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #86868b; }
+    .xm-chrome .ob { margin: .28rem 0 0; font-size: 1.02rem; font-weight: 650; letter-spacing: -.015em; }
+    .xm-chrome .mt { margin: .2rem 0 0; font-size: .78rem; color: #6e6e73; }
+    .xm-body { padding: 1rem 1rem 1.2rem; flex: 1; }
+    .xm-sheet {
+      border: 1px solid var(--line); border-radius: 16px; padding: 1rem .95rem; background: #fff;
+      box-shadow: var(--shadow);
+    }
+    .xm-sheet h4 { margin: 0; font-size: 1.05rem; font-weight: 650; letter-spacing: -.02em; line-height: 1.25; }
+    .xm-sheet p { margin: .5rem 0 0; font-size: .84rem; color: #6e6e73; line-height: 1.45; }
+    .xm-hint {
+      margin-top: .65rem; padding: .55rem .65rem; border-radius: 10px; font-size: .74rem; line-height: 1.4;
+      background: #f5f5f7; color: #6e6e73;
+    }
+    .xm-hint.ok { background: #e8f5ee; color: #1d7a46; }
+    .xm-hint.warn { background: #faf3e6; color: #8a6116; }
+    .xm-hint.bad { background: #fef2f2; color: #991b1b; }
+    .xm-actions { display: flex; flex-direction: column; gap: .4rem; margin-top: 1rem; }
+    .xm-btn {
+      font: inherit; font-size: .9rem; font-weight: 600; border-radius: 980px; padding: .68rem 1rem;
+      border: 0; cursor: pointer; text-align: center;
+    }
+    .xm-btn.pri { background: #0071e3; color: #fff; }
+    .xm-btn.sec { background: transparent; color: #0071e3; font-weight: 500; }
+    .xm-btn.ghost { background: #f5f5f7; color: var(--ink); }
+    .xm-prog { display: flex; gap: .3rem; margin-bottom: .85rem; }
+    .xm-prog i { flex: 1; height: 4px; border-radius: 4px; background: #e8e8ed; display: block; }
+    .xm-prog i.on { background: #0071e3; }
+    .xm-field { margin-bottom: .65rem; }
+    .xm-field label { display: block; font-size: .68rem; font-weight: 650; color: #86868b; margin-bottom: .22rem; }
+    .xm-field .val {
+      border: 1px solid var(--line); border-radius: 10px; padding: .58rem .7rem; font-size: .86rem;
+      background: #fbfbfd; display: flex; justify-content: space-between; gap: .4rem; align-items: center;
+    }
+    .xm-field .val.pf { background: #f0f7ff; border-color: #b3d4f7; }
+    .xm-field .val.empty { color: #94a3b8; }
+    .xm-tag { font-size: .62rem; font-weight: 700; color: #0071e3; white-space: nowrap; }
+    .xm-tag.need { color: #b45309; }
+    .xm-foot { margin-top: .85rem; font-size: .7rem; color: #86868b; text-align: center; line-height: 1.4; }
+    .xm-caption {
+      background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+      padding: .85rem .95rem; box-shadow: var(--shadow);
+    }
+    .xm-caption .kicker { margin-bottom: .25rem; }
+    .xm-caption h3 { margin: 0 0 .35rem; font-size: .95rem; }
+    .xm-caption p { margin: 0 0 .45rem; font-size: .82rem; line-height: 1.45; color: #475569; }
+    .xm-caption ul { margin: .2rem 0 0; padding-left: 1.05rem; }
+    .xm-caption li { font-size: .8rem; margin: .2rem 0; color: #334155; }
+    .xm-diff {
+      margin-top: .65rem; padding-top: .55rem; border-top: 1px dashed var(--line);
+      font-size: .78rem; line-height: 1.4; color: #334155;
+    }
+    .xm-diff .lab { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); display: block; margin-bottom: .2rem; }
+    .xm-email {
+      border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; box-shadow: var(--shadow);
+      max-width: 520px;
+    }
+    .xm-email .eh {
+      background: #f8fafc; border-bottom: 1px solid var(--line); padding: .65rem .85rem; font-size: .74rem; color: #475569;
+    }
+    .xm-email .eh strong { color: var(--ink); font-weight: 650; }
+    .xm-email .eb { padding: 1rem 1.05rem; font-size: .86rem; line-height: 1.5; color: #334155; }
+    .xm-email .eb h4 { margin: 0 0 .45rem; font-size: 1rem; }
+    .xm-email .eb .cta {
+      display: inline-block; margin-top: .65rem; background: #0071e3; color: #fff; text-decoration: none;
+      border-radius: 8px; padding: .5rem .85rem; font-size: .82rem; font-weight: 650;
+    }
+    .xm-email .ef { padding: .55rem .85rem; border-top: 1px solid var(--line); font-size: .68rem; color: #94a3b8; }
+    .xm-list { display: flex; flex-direction: column; gap: .45rem; margin-top: .35rem; }
+    .xm-row {
+      display: grid; grid-template-columns: 1fr auto auto; gap: .45rem; align-items: center;
+      padding: .55rem .6rem; border: 1px solid var(--line); border-radius: 10px; font-size: .78rem;
+    }
+    .xm-row.hot { border-color: #99f6e4; background: #f0fdfa; }
+    .xm-row .amt { font-weight: 650; }
+    .xm-row .st { font-size: .65rem; font-weight: 650; color: var(--warn); }
+    .xm-mini-cta {
+      font-size: .68rem; font-weight: 650; border: 1px solid rgba(255,107,0.35); background: #fff;
+      color: var(--accent); border-radius: 999px; padding: .22rem .5rem; cursor: pointer;
+    }
+    .xm-nav-next {
+      display: flex; gap: .4rem; justify-content: center; margin-top: .85rem; flex-wrap: wrap;
+    }
+    .xm-nav-next button {
+      border: 1px solid var(--line); background: #fff; border-radius: 8px;
+      padding: .35rem .7rem; font: inherit; font-size: .75rem; cursor: pointer; color: var(--ink);
+    }
+    .xm-nav-next button.pri { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .xm-hero { margin: 0 0 .65rem; }
+    .xm-hero h2 { margin: .1rem 0 .25rem; font-size: 1.15rem; letter-spacing: -.02em; }
+    .xm-subline { margin: 0; font-size: .84rem; color: #475569; line-height: 1.45; }
+    .xm-caption .xm-subline { margin: 0 0 .45rem; font-size: .8rem; color: var(--accent); font-weight: 550; }
+    .xm-clicked {
+      margin: 0 0 .75rem; padding: .45rem .65rem; border-radius: 8px; font-size: .74rem; line-height: 1.35;
+      background: #ecfeff; border: 1px solid #a5f3fc; color: #0e7490;
+    }
+    .xm-trail {
+      display: flex; flex-wrap: wrap; gap: .25rem .2rem; align-items: center;
+      margin: 0 0 .65rem; padding: .5rem .65rem; background: #fff; border: 1px solid var(--line);
+      border-radius: 10px; font-size: .68rem; color: #94a3b8;
+    }
+    .xm-trail span.cur { color: var(--ink); font-weight: 700; }
+    .xm-trail span.done { color: var(--accent); }
+    .xm-trail i { font-style: normal; color: #cbd5e1; margin: 0 .1rem; }
+    .xm-pill {
+      display: inline-block; font-size: .62rem; font-weight: 700; padding: .12rem .4rem;
+      border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+    }
+    .xm-matrix { margin-top: 1rem; border: 1px solid var(--line); border-radius: 10px; background: #fff; padding: .55rem .75rem; }
+    .xm-matrix > summary { cursor: pointer; font-size: .82rem; font-weight: 650; color: var(--ink); }
+    .xm-matrix-body { margin-top: .55rem; overflow-x: auto; }
+    .xm-mat { width: 100%; border-collapse: collapse; font-size: .72rem; }
+    .xm-mat th, .xm-mat td { text-align: left; padding: .4rem .35rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .xm-mat th { font-size: .62rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    .xm-mat .muted { color: var(--muted); font-size: .65rem; }
+    .xm-mat .before-cell { color: #9a3412; }
+    .xm-sms .eb { background: #f8fafc; }
+    .xm-email .xm-btn.pri { display: block; }
+
+  
+  </style>
+</head>
+<body>
+  <div class="mirror-banner">
+    <strong>Mirror.</strong> Primary home:
+    <a href="kanmon-case-study-capital-moments.html#experience-mock">case workbench #experience-mock</a>
+  </div>
+  <div style="max-width:1180px;margin:0 auto">
+    <div id="experience-mock-body"><p>Loading…</p></div>
+  </div>
+  <script>
+/* Experience mock — partner soft pre-check + prefill
+   Subline: easier finish in-flow + better top-of-funnel invites
+   Full funnel click-through · Before|After on every entry including email */
+(function () {
+  const root = document.getElementById('experience-mock-body');
+  if (!root || root.getAttribute('data-xm-ready') === '1') return;
+  root.setAttribute('data-xm-ready', '1');
+
+  const PRODUCTS = {
+    invoice: {
+      label: 'Invoice / EDI',
+      shaped: 'Cleo-shaped · fictional',
+      partner: 'WebEDI Portal',
+      short: 'WebEDI',
+      nav: 'Invoices',
+      merchant: 'Harbor Supply Co LLC',
+      object: 'INV-10482',
+      meta: '$12,400 · Net-60 · Due Aug 12',
+      objectLabel: 'Invoice',
+      objectValue: 'INV-10482 · $12,400',
+      need: 'Unpaid invoice while payroll/freight still hit',
+      softSignal: 'strong'
+    },
+    wallet: {
+      label: 'Wallet / payments',
+      shaped: 'PingPong-shaped · fictional',
+      partner: 'CrossPay Wallet',
+      short: 'CrossPay',
+      nav: 'Financing',
+      merchant: 'Bright Peak Retail LLC',
+      object: 'Supplier pay window',
+      meta: 'Large outbound · peak stock-up [assumption]',
+      objectLabel: 'Context',
+      objectValue: 'Wallet tenure 14 mo · volume proxy',
+      need: 'Stock suppliers without draining ops cash',
+      softSignal: 'strong'
+    },
+    staffing: {
+      label: 'Staffing',
+      shaped: 'Avionté-shaped · fictional',
+      partner: 'StaffFlow Ops',
+      short: 'StaffFlow',
+      nav: 'Client invoices',
+      merchant: 'Northline Staffing LLC',
+      object: 'CI-2209',
+      meta: '$9,800 · Payroll Friday',
+      objectLabel: 'Client invoice',
+      objectValue: 'CI-2209 · $9,800',
+      need: 'Bridge payroll vs unpaid client invoice',
+      softSignal: 'strong'
+    }
+  };
+
+  /* Entry = how we talk to the user. Each has Before + After full click paths. */
+  const ENTRIES = {
+    inproduct: {
+      label: 'In-product soft invite',
+      who: 'Partner product UI',
+      before: ['surface', 'cold', 'long', 'quit'],
+      after: ['surface', 'soft', 'handoff', 'prefill', 'mid', 'submit', 'done']
+    },
+    invite: {
+      label: 'Email · first soft invite',
+      who: 'Partner-branded email · powered by Kanmon',
+      before: ['email', 'cold', 'long', 'quit'],
+      after: ['email', 'land', 'soft', 'handoff', 'prefill', 'mid', 'submit', 'done']
+    },
+    recover: {
+      label: 'Email · abandon recovery',
+      who: 'Kanmon apply email · partner context',
+      before: ['email', 'resume-bad', 'long', 'quit'],
+      after: ['email', 'resume', 'mid', 'submit', 'done']
+    },
+    nurture: {
+      label: 'Email · not-now follow-up',
+      who: 'Partner-branded email · powered by Kanmon',
+      before: ['email', 'cold', 'quit'],
+      after: ['email', 'land', 'soft', 'handoff', 'prefill', 'mid', 'submit', 'done']
+    },
+    sms: {
+      label: 'SMS · finish apply [assumption]',
+      who: 'Kanmon short code · secondary channel',
+      before: ['sms', 'cold', 'quit'],
+      after: ['sms', 'resume', 'mid', 'submit', 'done']
+    }
+  };
+
+  const STEP_LABEL = {
+    surface: 'Partner surface',
+    soft: 'Soft result',
+    handoff: 'You clicked → handoff',
+    prefill: 'Prefill apply',
+    mid: 'Mid-apply',
+    submit: 'Review · submit',
+    done: 'Submitted',
+    noneed: 'Not now · stay',
+    email: 'Email',
+    sms: 'SMS',
+    land: 'You clicked → land',
+    cold: 'Cold apply',
+    long: 'Long mid-form',
+    quit: 'Quit / abandon',
+    resume: 'You clicked → resume',
+    'resume-bad': 'Broken resume'
+  };
+
+  const state = { product: 'invoice', entry: 'inproduct', era: 'after', stepIdx: 0, overlay: null };
+
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function p() { return PRODUCTS[state.product]; }
+  function steps() {
+    const e = ENTRIES[state.entry];
+    return state.era === 'before' ? e.before : e.after;
+  }
+  function stepId() {
+    const s = steps();
+    return s[Math.min(state.stepIdx, s.length - 1)];
+  }
+
+  function softInviteCopy(prod) {
+    if (state.product === 'invoice') {
+      return {
+        head: `Check funding for invoice ${prod.object}`,
+        body: `We’ll use details already in ${prod.short} to speed this up. This is not a funding decision.`,
+        hint: 'Soft pre-check: strong · no dollar amount · UW still owns hard decision'
+      };
+    }
+    if (state.product === 'wallet') {
+      return {
+        head: 'Based on your payout activity, you can run a quick funding check',
+        body: `We’ll use what we can from your ${prod.short} profile. This is not a funding decision.`,
+        hint: 'Soft pre-check: strong · “decent odds to check” ≠ approved'
+      };
+    }
+    return {
+      head: `Check funding against client invoice ${prod.object}`,
+      body: 'Payroll is soon — optional funding check if cash is tight. This is not a funding decision.',
+      hint: 'Soft pre-check ran · invite only if useful · dismiss is normal'
+    };
+  }
+
+  function phone(title, chrome, body, foot) {
+    return `<div class="xm-phone">
+      <div class="sb"><span>9:41</span><span>●●●</span></div>
+      <div class="nb"><button type="button" class="bk" data-xm-prev aria-label="Back">‹</button><h3>${esc(title)}</h3></div>
+      ${chrome || ''}
+      <div class="xm-body">${body}${foot ? `<p class="xm-foot">${foot}</p>` : ''}</div>
+    </div>`;
+  }
+
+  function chrome(prod) {
+    return `<div class="xm-chrome"><div class="ey">${esc(prod.need)}</div><p class="ob">${esc(prod.object)}</p><p class="mt">${esc(prod.meta)}</p></div>`;
+  }
+
+  function clickedBanner(text) {
+    return `<div class="xm-clicked"><strong>You clicked →</strong> ${esc(text)}</div>`;
+  }
+
+  /* —— Screens —— */
+  function renderSurfaceBefore(prod) {
+    const body = state.product === 'wallet'
+      ? `<div class="xm-list">
+          <div class="xm-row"><div>Financing tab</div><div class="st">Buried</div><div></div></div>
+          <div class="xm-sheet" style="margin-top:.65rem"><h4>Need capital?</h4>
+            <p>Start an application. Time and fit unclear.</p>
+            <div class="xm-hint warn">Generic ask · no soft fit · cold handoff next</div>
+            <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Get capital</button>
+            <button type="button" class="xm-btn sec">Not now</button></div></div></div>`
+      : `<div class="xm-list">
+          <div class="xm-row hot"><div><strong>${esc(prod.object)}</strong><br/><span style="font-size:.7rem;color:#6e6e73">${esc(prod.meta)}</span></div><div class="amt">Open</div><div></div></div>
+        </div>
+        <div class="xm-sheet" style="margin-top:.75rem"><h4>Get capital</h4>
+          <p>Apply with Kanmon. Effort unknown. No sense of whether checking is worth it.</p>
+          <div class="xm-hint warn">Mistimed/generic · raises rejection anxiety · blank form next</div>
+          <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Start application</button>
+          <button type="button" class="xm-btn sec">Dismiss</button></div></div>`;
+    return phone(prod.nav, chrome(prod), body, 'Before · no soft pre-check program');
+  }
+
+  function renderSurfaceAfter(prod) {
+    const c = softInviteCopy(prod);
+    return phone(prod.nav, chrome(prod), `
+      <div class="xm-sheet">
+        <h4>${esc(c.head)}</h4>
+        <p>${esc(c.body)}</p>
+        <div class="xm-hint ok">${esc(c.hint)}</div>
+        <div class="xm-actions">
+          <button type="button" class="xm-btn pri" data-xm-next>Check funding</button>
+          <button type="button" class="xm-btn sec" data-xm-entry="nurture" data-xm-goto-end>Not now</button>
+        </div>
+      </div>`, 'Checking isn’t approval. Kanmon makes the credit decision.');
+  }
+
+  function renderSoft(prod) {
+    return phone('Funding check', '', `
+      ${clickedBanner('Soft result after soft pre-check')}
+      <div class="xm-sheet">
+        <h4>Continue with details filled in from ${esc(prod.short)}</h4>
+        <p>Review everything next. You can edit before you submit. Soft check did not approve a loan amount.</p>
+        <div class="xm-hint ok">System knows: soft strong · identity seed + ${esc(prod.objectLabel.toLowerCase())} context · UI may say “quick check / worth checking” only</div>
+        <div class="xm-actions">
+          <button type="button" class="xm-btn pri" data-xm-next>Continue application</button>
+          <button type="button" class="xm-btn sec" data-xm-prev>Back</button>
+        </div>
+      </div>`, 'Soft ≠ hard · UW owns models');
+  }
+
+  function renderNoneed(prod) {
+    return phone('Funding check', '', `
+      <div class="xm-sheet">
+        <h4>No problem — you can leave this</h4>
+        <p>Financing stays in ${esc(prod.short)} if you want it later. Soft pre-check still ran for program scope; skipping is normal.</p>
+        <div class="xm-hint ok">Control preserved · no shame · cooldown on follow-up</div>
+        <div class="xm-actions">
+          <button type="button" class="xm-btn pri" data-xm-goto="0">Back to ${esc(prod.short)}</button>
+        </div>
+      </div>`, '');
+  }
+
+  function renderHandoff(prod) {
+    return phone('Application', '', `
+      ${clickedBanner(`Session bound from ${prod.short} · soft prefill token`)}
+      <div class="xm-prog"><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="xm-sheet">
+        <h4>You’re in the application</h4>
+        <p>Entry: ${esc(ENTRIES[state.entry].label)}. Soft pre-check + prefill hydrate what’s next — so finishing in-flow is shorter.</p>
+        <div class="xm-hint ok">Same submit event as today · hard decision still after submit</div>
+        <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Continue</button></div>
+      </div>`, '');
+  }
+
+  function renderLand(prod) {
+    const fromEmail = state.entry === 'invite' || state.entry === 'nurture';
+    return phone(prod.short, chrome(prod), `
+      ${clickedBanner(fromEmail ? 'Opened from email CTA' : 'Opened from notification')}
+      <div class="xm-sheet">
+        <h4>Back in ${esc(prod.short)}</h4>
+        <p>${state.entry === 'nurture'
+          ? 'You said not now earlier. Soft state may still be fresh — invite stays optional and calm.'
+          : `Soft pre-check already ran. You can check funding for ${esc(prod.object)} without a blank start.`}</p>
+        <div class="xm-hint ok">Partner surface · soft confidence layered carefully · never approved for $X</div>
+        <div class="xm-actions">
+          <button type="button" class="xm-btn pri" data-xm-next>${state.entry === 'nurture' ? 'See funding check' : 'Continue to soft result'}</button>
+          <button type="button" class="xm-btn sec" data-xm-next-skip>Not now</button>
+        </div>
+      </div>`, '');
+  }
+
+  function renderPrefill(prod, longForm) {
+    const fields = longForm
+      ? `<div class="xm-field"><label>Legal business name</label><div class="val empty">Type full legal name <span class="xm-tag need">Needed</span></div></div>
+         <div class="xm-field"><label>Business address</label><div class="val empty">Street, city, state <span class="xm-tag need">Needed</span></div></div>
+         <div class="xm-field"><label>${esc(prod.objectLabel)}</label><div class="val empty">Re-enter object <span class="xm-tag need">Needed</span></div></div>
+         <div class="xm-field"><label>Tax ID</label><div class="val empty">Add EIN <span class="xm-tag need">Needed</span></div></div>`
+      : `<div class="xm-field"><label>Legal business name</label><div class="val pf">${esc(prod.merchant)} <span class="xm-tag">From partner</span></div></div>
+         <div class="xm-field"><label>Business address</label><div class="val pf">1840 Peachtree St NW, Atlanta, GA <span class="xm-tag">From partner</span></div></div>
+         <div class="xm-field"><label>${esc(prod.objectLabel)}</label><div class="val pf">${esc(prod.objectValue)} <span class="xm-tag">From partner</span></div></div>
+         <div class="xm-field"><label>Tax ID</label><div class="val">Add EIN <span class="xm-tag need">Still needed</span></div></div>`;
+    return phone('Application', '', `
+      ${longForm ? '' : clickedBanner('Prefill from soft pre-check payload')}
+      <div class="xm-prog"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+      <p style="margin:0 0 .75rem;font-size:.78rem;color:#6e6e73">${longForm ? 'Step 1 of 6 · blank start' : 'Step 2 of 4 · already known vs still asked'}</p>
+      ${fields}
+      <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Continue</button>
+      <button type="button" class="xm-btn sec">Save and exit</button></div>`, longForm ? 'Before · no prefill' : 'Soft pre-check + prefill · editable');
+  }
+
+  function renderMid(prod, before) {
+    if (before) {
+      return phone('Application', '', `
+        <div class="xm-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+        <p style="margin:0 0 .75rem;font-size:.78rem;color:#6e6e73">Step 3 of 6 · ownership & bank · effort unclear</p>
+        <div class="xm-field"><label>Beneficial owners</label><div class="val empty">Add each owner <span class="xm-tag need">Needed</span></div></div>
+        <div class="xm-field"><label>Bank link</label><div class="val empty">Connect with Plaid <span class="xm-tag need">Needed</span></div></div>
+        <div class="xm-field"><label>Monthly revenue</label><div class="val empty">Estimate <span class="xm-tag need">Needed</span></div></div>
+        <div class="xm-hint bad">Common quit · “I don’t have this on hand” · Start→Submit ~40% [SIM]</div>
+        <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Continue</button>
+        <button type="button" class="xm-btn ghost" data-xm-next>I’ll finish later</button></div>`, 'Before · long mid-form');
+    }
+    const resume = state.entry === 'recover' || state.entry === 'sms';
+    return phone('Application', '', `
+      ${resume ? clickedBanner('Resume mid-apply · remaining fields only') : ''}
+      <div class="xm-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+      <p style="margin:0 0 .75rem;font-size:.78rem;color:#6e6e73">Step 3 of 4 · what’s left after soft prefill</p>
+      <div class="xm-field"><label>Already known</label><div class="val pf">Legal entity · address · ${esc(prod.objectLabel.toLowerCase())} <span class="xm-tag">Done</span></div></div>
+      <div class="xm-field"><label>Tax ID</label><div class="val">12-3456789 <span class="xm-tag">Added</span></div></div>
+      <div class="xm-field"><label>Bank link</label><div class="val empty">Connect business account <span class="xm-tag need">Still needed</span></div></div>
+      <div class="xm-field"><label>Ownership</label><div class="val empty">Confirm owners <span class="xm-tag need">Still needed</span></div></div>
+      <div class="xm-hint ok">Shorter remaining path · feature = soft pre-check + prefill</div>
+      <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Continue</button>
+      <button type="button" class="xm-btn sec">Save and exit</button></div>`, '');
+  }
+
+  function renderCold(prod) {
+    return phone('Kanmon apply', '', `
+      ${clickedBanner('Cold handoff — no soft prefill')}
+      <div class="xm-prog"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="xm-sheet">
+        <h4>Tell us about your business</h4>
+        <p>Nothing carried from ${esc(prod.short)}. Re-enter identity and ${esc(prod.objectLabel.toLowerCase())}. Apply feels long and uncertain.</p>
+        <div class="xm-hint warn">Before soft pre-check program · higher cognitive load · rejection fear</div>
+        <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Begin</button></div>
+      </div>`, '');
+  }
+
+  function renderQuit() {
+    return phone('Application', '', `
+      <div class="xm-sheet">
+        <h4>Left mid-apply</h4>
+        <p>~288 abandon / mo [SIM]. Recovery email is residual — soft pre-check + prefill aims to prevent quit while they’re still here.</p>
+        <div class="xm-hint bad">Before path ends here · flip to After to see continuous finish</div>
+        <div class="xm-actions">
+          <button type="button" class="xm-btn pri" data-xm-era="after">See After journey</button>
+        </div>
+      </div>`, '');
+  }
+
+  function renderResumeBad() {
+    return phone('Resume application', '', `
+      ${clickedBanner('Old recovery link')}
+      <div class="xm-sheet">
+        <h4>Continue your application</h4>
+        <p>Link works, but the form still feels like starting over. No soft prefill. Progress unclear.</p>
+        <div class="xm-hint warn">Before · chase without shortening the path</div>
+        <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Open form</button></div>
+      </div>`, '');
+  }
+
+  function renderResume(prod) {
+    return phone('Resume application', '', `
+      ${clickedBanner('Recovery CTA · soft prefill session')}
+      <div class="xm-sheet">
+        <h4>Pick up where you left off</h4>
+        <p>Your ${esc(prod.short)} details and ${esc(prod.objectLabel.toLowerCase())} are still filled. A few fields remain — then submit.</p>
+        <div class="xm-hint ok">Secondary to in-flow finish · soft pre-check already shaped the short path</div>
+        <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Continue application</button></div>
+      </div>`, '');
+  }
+
+  function renderSubmit() {
+    return phone('Review and submit', '', `
+      <div class="xm-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+      <div class="xm-sheet">
+        <h4>Ready to submit</h4>
+        <p>Bank link and ownership complete. Submitting starts Kanmon’s credit review — separate from soft pre-check.</p>
+        <div class="xm-hint ok">Entry was ${esc(ENTRIES[state.entry].label)} · same submit event</div>
+        <div class="xm-actions"><button type="button" class="xm-btn pri" data-xm-next>Submit application</button>
+        <button type="button" class="xm-btn sec" data-xm-prev>Edit</button></div>
+      </div>`, '');
+  }
+
+  function renderDone(prod) {
+    return phone('Submitted', '', `
+      <div class="xm-sheet">
+        <h4>Application submitted</h4>
+        <p>Kanmon reviews credit separately. Timing varies; often within a few business days if you qualify.</p>
+        <div class="xm-hint ok">Soft pre-check + prefill got you here · never promised $X</div>
+        <div class="xm-actions">
+          <button type="button" class="xm-btn pri" data-xm-goto="0">Done · ${esc(prod.short)}</button>
+          <button type="button" class="xm-btn sec" data-xm-era="before">Compare Before</button>
+        </div>
+      </div>`, '');
+  }
+
+  function notifyMeta(kind, era, prod) {
+    const after = era === 'after';
+    const table = {
+      invite: {
+        before: {
+          from: `${prod.short} Marketing`,
+          subj: 'Need working capital for your business?',
+          preview: 'Apply now for fast funding options.',
+          title: 'Unlock capital today',
+          body: `Growing businesses like yours often need capital.<br/><br/>Apply now to see your options. Limited-time opportunities — don’t miss out.`,
+          cta: 'Apply now',
+          trigger: 'Batch blast · not tied to object or soft state',
+          psych: 'Loan push · urgency · no fit signal → stigma + rejection fear',
+          soft: 'None — soft pre-check program not in place',
+          friction: 'Mistimed generic ask. No point-of-need. Click leads to cold blank apply.'
+        },
+        after: {
+          from: `${prod.short} Financing · powered by Kanmon`,
+          subj: `Quick funding check in ${prod.short}`,
+          preview: 'Check whether funding fits — we prefill what we already have. Not an approval.',
+          title: 'You can check whether funding fits',
+          body: `You’re working an open ${prod.objectLabel.toLowerCase()} in ${prod.short} (${esc(prod.object)}).<br/><br/>A soft check already ran on your account. You can review funding without starting from a blank form. <strong>This is not an approval</strong> and not a promised dollar amount.`,
+          cta: `Check in ${prod.short}`,
+          trigger: `Good-candidate soft state + object context (${prod.need})`,
+          psych: 'Optional tool for a concrete job · control · lower cognitive load',
+          soft: 'May influence tone: “worth a quick check” / prefill promise — never hard $',
+          unlock: 'Better top-of-funnel invite because soft pre-check + short apply are real'
+        }
+      },
+      recover: {
+        before: {
+          from: 'Kanmon Applications',
+          subj: 'Your application is incomplete!',
+          preview: 'Finish now or you may lose your progress.',
+          title: 'Don’t lose your application',
+          body: `You started a funding application but didn’t finish.<br/><br/>Complete it now so you don’t have to start over.`,
+          cta: 'Finish now',
+          trigger: 'Any abandon · same nag for everyone',
+          psych: 'Pressure + fear of loss · still lands in long form',
+          soft: 'None',
+          friction: 'Chase without shortening. Secondary channel doing primary job poorly.'
+        },
+        after: {
+          from: `Kanmon · via ${prod.short}`,
+          subj: `Pick up your ${prod.short} funding application`,
+          preview: 'A few fields left — partner details still filled in.',
+          title: 'Pick up where you left off',
+          body: `You started from ${prod.short} and left before submitting. Soft prefill from ${prod.short} is still on the application — a few fields remain.<br/><br/>Finishing in-product is still the main path. This email is a quiet recovery track.`,
+          cta: 'Continue application',
+          trigger: 'Started + abandoned · residual after in-flow soft prefill',
+          psych: 'Helpful resume · low shame · honest effort left',
+          soft: 'Prefill session still valid · soft was for invite/shorten, not a promise',
+          unlock: 'Recovery secondary; soft pre-check + prefill already cut mid-apply friction'
+        }
+      },
+      nurture: {
+        before: {
+          from: `${prod.short} Capital offers`,
+          subj: 'Still need funding? Last chance',
+          preview: 'Other businesses are getting capital — are you?',
+          title: 'Don’t fall behind',
+          body: `You passed on financing earlier. Many peers use capital to grow.<br/><br/>Reopen your application before this window closes.`,
+          cta: 'Get capital',
+          trigger: 'Dismissed once · still sold hard',
+          psych: 'Shame / social proof pressure · kills trust with partner brand',
+          soft: 'None',
+          friction: 'Ignores “not now.” Treats control as objection to crush.'
+        },
+        after: {
+          from: `${prod.short} Financing · powered by Kanmon`,
+          subj: `Funding stays available in ${prod.short}`,
+          preview: 'You said not now — that’s fine. Calm reminder only.',
+          title: 'Still here if you need it later',
+          body: `You chose not to check funding right now. That’s completely fine.<br/><br/>If cash timing changes (like ${esc(prod.need.toLowerCase())}), you can check from ${prod.short}. Soft details can still speed the form — without promising approval.`,
+          cta: `Open ${prod.short}`,
+          trigger: 'Not-now / no-need · cooldown elapsed [assumption]',
+          psych: 'Respect control · capital as optional tool · partner trust intact',
+          soft: 'May still be soft-strong; UI stays invitational, not “you’re missing approval”',
+          unlock: 'Soft program still ran; nurture doesn’t pretend they failed'
+        }
+      },
+      sms: {
+        before: {
+          from: 'Kanmon SMS',
+          subj: 'SMS',
+          preview: '',
+          title: '',
+          body: `${prod.short}: Finish your loan app now → https://…`,
+          cta: 'Open link',
+          trigger: 'Abandon · SMS-first [blocked in case prefs — shown as anti-pattern]',
+          psych: 'Interruptive · high stigma · low context',
+          soft: 'None',
+          friction: 'SMS-first chase. Case preference: not SMS-first.'
+        },
+        after: {
+          from: 'Kanmon SMS [assumption · secondary]',
+          subj: 'SMS',
+          preview: '',
+          title: '',
+          body: `${prod.short}: A few fields left on your funding check. Continue: https://… (soft details saved). Not an approval.`,
+          cta: 'Continue',
+          trigger: 'Opt-in abandon only · email preferred · SMS capped [assumption]',
+          psych: 'Short · factual · effort left · no hard $',
+          soft: 'Resume token only',
+          unlock: 'Secondary channel after soft prefill already shortened apply'
+        }
+      }
+    };
+    // Map entry keys
+    const key = kind === 'invite' || kind === 'inproduct' ? (kind === 'inproduct' ? null : 'invite') : kind;
+    if (kind === 'inproduct') return null;
+    return table[kind][era];
+  }
+
+  function renderEmailOrSms(prod, id) {
+    const kind = state.entry; // invite|recover|nurture|sms
+    const meta = notifyMeta(kind, state.era, prod);
+    if (!meta) return '';
+    const isSms = kind === 'sms';
+    if (isSms) {
+      return `<div class="xm-email xm-sms">
+        <div class="eh"><strong>SMS</strong> · ${esc(meta.from)} · ${state.era === 'before' ? 'Before' : 'After'}</div>
+        <div class="eb"><p style="margin:0;font-family:ui-monospace,Menlo,monospace;font-size:.82rem">${esc(meta.body)}</p>
+          <div class="xm-actions" style="margin-top:.85rem"><button type="button" class="xm-btn pri" data-xm-next>${esc(meta.cta)}</button></div>
+        </div>
+        <div class="ef">Trigger: ${esc(meta.trigger)}</div>
+      </div>`;
+    }
+    return `<div class="xm-email">
+      <div class="eh">
+        <div><strong>From:</strong> ${esc(meta.from)}</div>
+        <div style="margin-top:.25rem"><strong>Subject:</strong> ${esc(meta.subj)}</div>
+        <div style="margin-top:.25rem;color:#94a3b8"><strong>Preview:</strong> ${esc(meta.preview)}</div>
+        <div style="margin-top:.35rem;font-size:.68rem"><span class="xm-pill">${state.era === 'before' ? 'Before · no soft program' : 'After · soft pre-check + prefill'}</span></div>
+      </div>
+      <div class="eb">
+        <h4>${esc(meta.title)}</h4>
+        <p style="margin:0">${meta.body}</p>
+        <button type="button" class="xm-btn pri" style="margin-top:.85rem;width:100%" data-xm-next>${esc(meta.cta)}</button>
+      </div>
+      <div class="ef">${state.era === 'after' ? 'Unsubscribe / fewer emails · cooldown caps' : 'Batch cadence · weak suppress'}</div>
+    </div>`;
+  }
+
+  function renderFrame(prod, id) {
+    if (id === 'surface') return state.era === 'before' ? renderSurfaceBefore(prod) : renderSurfaceAfter(prod);
+    if (id === 'email' || id === 'sms') return renderEmailOrSms(prod, id);
+    if (id === 'soft') return renderSoft(prod);
+    if (id === 'noneed') return renderNoneed(prod);
+    if (id === 'handoff') return renderHandoff(prod);
+    if (id === 'land') return renderLand(prod);
+    if (id === 'prefill') return renderPrefill(prod, false);
+    if (id === 'mid') return renderMid(prod, state.era === 'before');
+    if (id === 'cold') return renderCold(prod);
+    if (id === 'long') return renderMid(prod, true);
+    if (id === 'quit') return renderQuit();
+    if (id === 'resume-bad') return renderResumeBad();
+    if (id === 'resume') return renderResume(prod);
+    if (id === 'submit') return renderSubmit();
+    if (id === 'done') return renderDone(prod);
+    return renderSurfaceAfter(prod);
+  }
+
+  function caption(prod, id) {
+    const entry = ENTRIES[state.entry];
+    const nMeta = (state.entry !== 'inproduct' && (id === 'email' || id === 'sms'))
+      ? notifyMeta(state.entry, state.era, prod) : null;
+
+    let title = `${entry.label} · ${state.era === 'before' ? 'Before' : 'After'}`;
+    let paras = [];
+    let friction = '';
+    let unlock = '';
+    let psych = '';
+    let soft = '';
+
+    if (nMeta) {
+      title = `${entry.label} · ${state.era === 'before' ? 'Before' : 'After'} notification`;
+      paras = [
+        `Who sends: ${entry.who}`,
+        `Point of need: ${prod.need}`,
+        `Customer state: ${state.era === 'before' ? 'No soft signal · higher uncertainty' : 'Soft pre-check already ran for program scope'}`
+      ];
+      psych = nMeta.psych;
+      soft = nMeta.soft;
+      friction = nMeta.friction || '';
+      unlock = nMeta.unlock || '';
+    } else if (id === 'surface' && state.era === 'before') {
+      friction = 'Generic or buried invite; no soft fit; click opens cold apply.';
+      paras = ['Feature not live yet: partner soft pre-check + prefill.', `Need is real (${prod.need}) but messaging doesn’t use it.`];
+    } else if (id === 'surface' && state.era === 'after') {
+      unlock = 'Soft pre-check + prefill power an honest in-product check CTA — finish path is shorter if they continue.';
+      soft = 'UI may reflect soft-strong as “worth checking / quick check” only.';
+      psych = 'Capital as optional tool for this invoice/payout/payroll gap — not a loan shove.';
+    } else if (id === 'cold' || id === 'long' || id === 'quit' || id === 'resume-bad') {
+      friction = 'Click-through pain without soft prefill: blank form, long mid-apply, abandon.';
+      paras = ['This is what the Before CTA actually opens.', 'Contrast with After: soft result → prefilled shorter apply.'];
+    } else if (id === 'land' || id === 'handoff' || id === 'resume') {
+      paras = ['Click continuity: notification/CTA → this intermediate → apply steps that match entry intent.'];
+      unlock = state.entry === 'recover'
+        ? 'Abandon recovery lands on remaining fields, not a first-time blank form.'
+        : 'First-time soft invite lands on soft confirmation + prefill handoff.';
+    } else if (id === 'prefill' || id === 'mid' || id === 'submit' || id === 'done') {
+      paras = [
+        'Feature: partner soft pre-check and prefill.',
+        'Payoff in-flow: easier to finish because fields are already known.',
+        'Payoff upstream: invites can honestly say checking is quick.'
+      ];
+      soft = 'Hard credit decision only after submit · UW owns models.';
+    } else if (id === 'soft') {
+      soft = 'System may know decent soft odds; UI says check / continue — never approved for $X.';
+      unlock = 'Confirms soft state, then hands into prefilled apply.';
+    } else if (id === 'noneed') {
+      psych = 'Control honored. Soft still ran; dismiss is success for trust.';
+    }
+
+    return `<div class="xm-caption">
+      <div class="kicker">Feature: soft pre-check + prefill · ${esc(prod.label)} · ${esc(prod.shaped)}</div>
+      <h3>${esc(title)}</h3>
+      <p class="xm-subline">Makes the application easier to finish in-flow (and better top-of-funnel invites).</p>
+      ${paras.map(x => `<p>${esc(x)}</p>`).join('')}
+      ${psych ? `<div class="xm-diff"><span class="lab">Psychology</span>${esc(psych)}</div>` : ''}
+      ${soft ? `<div class="xm-diff"><span class="lab">Soft pre-check may influence</span>${esc(soft)}</div>` : ''}
+      ${friction ? `<div class="xm-friction" style="margin-top:.5rem"><strong>Before friction:</strong> ${esc(friction)}</div>` : ''}
+      ${unlock ? `<div class="xm-unlock" style="margin-top:.5rem"><strong>After unlocks:</strong> ${esc(unlock)}</div>` : ''}
+      <ul>
+        <li>Path step: <strong>${esc(STEP_LABEL[id] || id)}</strong></li>
+        <li>Volumes [SIM] · shaped partners · never approved for $X</li>
+      </ul>
+    </div>`;
+  }
+
+  function pathTrail() {
+    const s = steps();
+    return `<div class="xm-trail" aria-label="Click path">${s.map((id, i) => {
+      const cur = i === state.stepIdx;
+      const done = i < state.stepIdx;
+      return `<span class="${cur ? 'cur' : done ? 'done' : ''}">${esc(STEP_LABEL[id] || id)}</span>${i < s.length - 1 ? '<i>→</i>' : ''}`;
+    }).join('')}</div>`;
+  }
+
+  function banner() {
+    if (state.era === 'before') {
+      return `<div class="xm-friction"><strong>Before · no soft pre-check program.</strong> Generic invites, cold handoff, long apply, weak recovery. Toggle <strong>After</strong> for soft pre-check + prefill end-to-end.</div>`;
+    }
+    return `<div class="xm-unlock"><strong>After · partner soft pre-check and prefill.</strong> Honest invites, soft confidence without $X, shorter finish in-flow. Click CTAs to walk the funnel.</div>`;
+  }
+
+  function paint() {
+    const prod = p();
+    const s = steps();
+    if (state.stepIdx >= s.length) state.stepIdx = 0;
+    const id = state.overlay || stepId();
+    if (state.overlay) {
+      /* keep stepIdx; overlay is a branch (e.g. not-now dismiss) */
+    }
+
+    const rail = s.map((sid, i) =>
+      `<button type="button" role="tab" aria-selected="${i === state.stepIdx}" data-xm-step="${i}">${i + 1} · ${esc(STEP_LABEL[sid] || sid)}</button>`
+    ).join('');
+
+    root.innerHTML = `
+      <div class="xm-wrap">
+        <div class="xm-hero">
+          <div class="kicker">Feature</div>
+          <h2>Partner soft pre-check and prefill</h2>
+          <p class="xm-subline">Makes the application easier to finish in-flow (and better top-of-funnel invites) — not the other way around.</p>
+        </div>
+        <div class="xm-assumptions">
+          <span class="ok">Exploration mock · not live UI</span>
+          <span>Volumes simulated</span>
+          <span>Soft ≠ approved for $X</span>
+          <span>Shaped partners</span>
+        </div>
+        <div class="xm-controls">
+          <label>Product
+            <select id="xm-product">${Object.entries(PRODUCTS).map(([k, v]) =>
+              `<option value="${k}" ${state.product === k ? 'selected' : ''}>${esc(v.label)}</option>`).join('')}</select>
+          </label>
+          <label>Entry / how we talk
+            <select id="xm-entry">${Object.entries(ENTRIES).map(([k, v]) =>
+              `<option value="${k}" ${state.entry === k ? 'selected' : ''}>${esc(v.label)}</option>`).join('')}</select>
+          </label>
+          <label>Before / After
+            <div class="xm-ba" role="group">
+              <button type="button" class="before" data-xm-era="before" aria-pressed="${state.era === 'before'}">Before</button>
+              <button type="button" class="after" data-xm-era="after" aria-pressed="${state.era === 'after'}">After</button>
+            </div>
+          </label>
+        </div>
+        ${banner()}
+        ${pathTrail()}
+        <div class="xm-rail" role="tablist">${rail}</div>
+        <div class="xm-stage">
+          ${renderFrame(prod, id)}
+          ${caption(prod, id)}
+        </div>
+        <div class="xm-nav-next">
+          <button type="button" data-xm-prev>← Prev</button>
+          <button type="button" class="pri" data-xm-next>Next / click through →</button>
+          <button type="button" data-xm-era="${state.era === 'before' ? 'after' : 'before'}">Flip to ${state.era === 'before' ? 'After' : 'Before'}</button>
+        </div>
+        <details class="xm-matrix">
+          <summary>Notification matrix (trigger · psychology · soft influence)</summary>
+          <div class="xm-matrix-body">${matrixHtml(prod)}</div>
+        </details>
+        <p class="note" style="margin:.75rem 0 0">
+          <button type="button" class="jump" data-go="architecture">Architecture</button> ·
+          <button type="button" class="jump" data-go="prove" data-anchor="funnel-lift">Funnel lift</button> ·
+          <a href="kanmon-preauth-partner-copy-20260730.md">Partner copy</a> ·
+          <a href="kanmon-preauth-experience-mock-20260730.html" target="_blank" rel="noopener">Standalone mirror ↗</a>
+        </p>
+      </div>`;
+  }
+
+  function matrixHtml(prod) {
+    const rows = ['invite', 'recover', 'nurture', 'sms'].map((k) => {
+      const a = notifyMeta(k, 'after', prod);
+      const b = notifyMeta(k, 'before', prod);
+      return `<tr>
+        <td><strong>${esc(ENTRIES[k].label)}</strong><br/><span class="muted">${esc(ENTRIES[k].who)}</span></td>
+        <td>${esc(a.trigger)}</td>
+        <td>${esc(a.psych)}</td>
+        <td>${esc(a.soft)}</td>
+        <td class="before-cell">${esc(b.friction)}</td>
+      </tr>`;
+    }).join('');
+    return `<table class="xm-mat">
+      <thead><tr><th>Type</th><th>After trigger</th><th>Psychology</th><th>Soft may influence</th><th>Before friction</th></tr></thead>
+      <tbody>${rows}
+        <tr><td><strong>In-product invite</strong><br/><span class="muted">Partner UI</span></td>
+          <td>Object moment + soft state</td><td>Optional tool on the cash object</td>
+          <td>Strong → confident check CTA; weak → quieter</td>
+          <td class="before-cell">Generic Get capital / buried tab</td></tr>
+      </tbody></table>
+      <p class="note" style="margin:.5rem 0 0">SMS is secondary / assumption — case preference is not SMS-first.</p>`;
+  }
+
+  root.addEventListener('click', (ev) => {
+    const t = ev.target.closest('[data-xm-era],[data-xm-step],[data-xm-next],[data-xm-prev],[data-xm-goto],[data-xm-next-skip],[data-xm-entry],.jump');
+    if (!t) return;
+    if (t.classList.contains('jump') && t.getAttribute('data-go')) {
+      ev.preventDefault();
+      const go = t.getAttribute('data-go');
+      const anchor = t.getAttribute('data-anchor');
+      const btn = (anchor && document.querySelector(`[data-go="${go}"][data-anchor="${anchor}"]`))
+        || document.querySelector(`.skim .chip[data-go="${go}"]`)
+        || document.querySelector(`#sub-solve button[data-stage="${go}"]`);
+      if (btn) btn.click();
+      return;
+    }
+    if (t.hasAttribute('data-xm-era')) {
+      state.era = t.getAttribute('data-xm-era');
+      state.stepIdx = 0;
+      state.overlay = null;
+      paint();
+      return;
+    }
+    if (t.hasAttribute('data-xm-step')) {
+      state.stepIdx = parseInt(t.getAttribute('data-xm-step'), 10) || 0;
+      state.overlay = null;
+      paint();
+      return;
+    }
+    if (t.hasAttribute('data-xm-entry')) {
+      state.entry = t.getAttribute('data-xm-entry');
+      state.era = 'after';
+      state.stepIdx = t.hasAttribute('data-xm-goto-end') ? Math.max(0, steps().length - 1) : 0;
+      paint();
+      return;
+    }
+    if (t.hasAttribute('data-xm-goto')) {
+      state.stepIdx = parseInt(t.getAttribute('data-xm-goto'), 10) || 0;
+      paint();
+      return;
+    }
+    if (t.hasAttribute('data-xm-next-skip')) {
+      state.overlay = 'noneed';
+      paint();
+      return;
+    }
+    if (t.hasAttribute('data-xm-next')) {
+      state.overlay = null;
+      const s = steps();
+      if (state.stepIdx < s.length - 1) state.stepIdx += 1;
+      else if (state.era === 'before') { state.era = 'after'; state.stepIdx = 0; }
+      paint();
+      return;
+    }
+    if (t.hasAttribute('data-xm-prev')) {
+      state.overlay = null;
+      if (state.stepIdx > 0) state.stepIdx -= 1;
+      paint();
+    }
+  });
+
+  root.addEventListener('change', (ev) => {
+    if (ev.target.id === 'xm-product') {
+      state.product = ev.target.value;
+      state.stepIdx = 0;
+      paint();
+    }
+    if (ev.target.id === 'xm-entry') {
+      state.entry = ev.target.value;
+      state.stepIdx = 0;
+      paint();
+    }
+  });
+
+  paint();
+})();
+
+  </script>
+</body>
+</html>

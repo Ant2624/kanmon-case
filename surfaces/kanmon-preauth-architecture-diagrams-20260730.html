@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kanmon soft pre-check, architecture diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 52, rankSpacing: 64, padding: 18 },
+        sequence: { mirrorActors: false, actorMargin: 42, messageMargin: 38, boxMargin: 12, noteMargin: 14, width: 172 }
+      });
+    }
+  </script>
+  <style>
+    :root {
+      --ink: #0f172a; --muted: #64748b; --line: #e2e8f0; --bg: #f8fafc; --card: #fff;
+      --accent: #c25200;
+      --sans: "IBM Plex Sans", "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: var(--sans); color: var(--ink); background: var(--bg);
+      line-height: 1.45;
+    }
+    .bar {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; flex-wrap: wrap; gap: .75rem; align-items: baseline;
+      justify-content: space-between;
+      padding: .55rem .9rem; background: var(--card); border-bottom: 1px solid var(--line);
+    }
+    .bar strong { font-size: .9rem; }
+    .bar .sub { font-size: .72rem; color: var(--muted); }
+    .bar a { color: var(--accent); font-size: .78rem; }
+    main { max-width: 1180px; margin: 0 auto; padding: 1.1rem 1.25rem 2.5rem; }
+    h1 { font-size: 1.35rem; letter-spacing: -.02em; margin: 0 0 .4rem; }
+    h2 {
+      font-size: 1.05rem; margin: 1.5rem 0 .35rem;
+      border-top: 1px solid var(--line); padding-top: .9rem;
+    }
+    h2:first-of-type { border-top: 0; padding-top: 0; }
+    .cap {
+      font-size: .86rem; color: #334155; margin: 0 0 .75rem;
+    }
+    .note {
+      font-size: .78rem; color: var(--muted); margin: 0 0 1rem;
+      padding: .55rem .7rem; background: #f0fdfa; border-left: 3px solid var(--accent);
+    }
+    nav.toc {
+      font-size: .8rem; display: flex; flex-wrap: wrap; gap: .35rem .65rem;
+      margin: .75rem 0 0;
+    }
+    nav.toc a { color: var(--accent); }
+    pre.mermaid {
+      background: #fff; border: 1px solid var(--line); border-radius: 10px;
+      padding: 1.1rem 1.25rem; text-align: center; overflow-x: auto; margin: 0 0 1.25rem;
+    }
+    pre.mermaid svg { max-width: none; height: auto; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div>
+      <strong>Soft pre-check architecture diagrams</strong>
+      <div class="sub">Mermaid · soft ≠ hard approval · volumes elsewhere are simulated</div>
+    </div>
+    <a href="kanmon-preauth-architecture-by-product-20260730.md">Full architecture prose</a>
+  </div>
+  <main>
+    <h1>Soft pre-check + partner prefill</h1>
+    <p class="note">Same diagrams as the architecture markdown. Soft ranks invite and prefills apply; UW owns hard credit. Soft strong is not “approved for $X.”</p>
+    <nav class="toc" aria-label="Diagrams">
+      <a href="#systems">Systems</a>
+      <a href="#who">Who enters</a>
+      <a href="#funnel">Funnel</a>
+      <a href="#e2e">E2E sequence</a>
+      <a href="#data">Data flow</a>
+      <a href="#overview">Product overview</a>
+      <a href="#invoice">Invoice</a>
+      <a href="#wallet">Wallet</a>
+      <a href="#erp">ERP / PO</a>
+      <a href="#payments">Payments</a>
+      <a href="#staffing">Staffing</a>
+    </nav>
+
+    <h2 id="systems">1 · Systems and trust boundary</h2>
+    <p class="cap">Soft pre-check ranks invite and hydrates apply. It does not mint a hard approval amount. UW and credit models own the hard decision after submit.</p>
+    <pre class="mermaid">
+flowchart TB
+  subgraph PartnerZone["Partner trust zone"]
+    PApp["Partner app"]
+    PData["Partner features and events"]
+  end
+
+  subgraph SoftZone["Kanmon soft layer - design assumption"]
+    SoftSvc["Soft pre-check service"]
+    Prefill["Prefill token store"]
+  end
+
+  subgraph HardZone["Kanmon hard credit - UW owns"]
+    Apply["Kanmon apply"]
+    SoftPull["Soft bureau pull on apply"]
+    UW["UW and credit models"]
+    Fund["Fund and service"]
+  end
+
+  PApp -->|"customer id plus context"| SoftSvc
+  PData --> SoftSvc
+  SoftSvc -->|"soft state plus prefill token"| PApp
+  SoftSvc --> Prefill
+  PApp -->|"open apply with token"| Apply
+  Prefill --> Apply
+  Apply --> SoftPull
+  SoftPull --> UW
+  UW --> Fund
+
+  SoftSvc -.->|"does not set hard amount"| UW
+    </pre>
+
+    <h2 id="who">2 · Who enters soft pre-check</h2>
+    <p class="cap">Program eligibility decides who gets a soft check. Cash need decides when to nudge, not whether soft runs.</p>
+    <pre class="mermaid">
+flowchart TD
+  Start["Partner surface in financing program scope"] --> Prog{"Program eligible?"}
+  Prog -->|no| Quiet["No soft UI or quiet unavailable"]
+  Prog -->|yes| Run["Run soft pre-check for everyone in set"]
+  Run --> NeedNote["Need cash is for timing only - not a soft gate"]
+  NeedNote --> Soft{"Soft state?"}
+  Soft -->|strong| Invite["Invite plus prefill path"]
+  Soft -->|weak| Careful["Careful check CTA or quieter invite"]
+  Soft -->|unavailable| Std["Invite without soft claim - more fields later"]
+  Soft -->|exclude| Suppress["Suppress campaign - no eligibility promise"]
+  Invite --> NoNeed{"Merchant needs financing now?"}
+  Careful --> NoNeed
+  NoNeed -->|yes| ApplyPath["Open apply with prefill"]
+  NoNeed -->|no| Dismiss["Dismiss snooze or no-need - no shame"]
+    </pre>
+
+    <h2 id="funnel">3 · Where soft plugs into the funnel</h2>
+    <p class="cap">Bird 2 helps See and Start. Bird 1 shortens Apply via prefill. Offer and Fund stay on hard UW.</p>
+    <pre class="mermaid">
+flowchart LR
+  See["See"] --> Start["Start"]
+  Start --> Apply["Apply"]
+  Apply --> Submit["Submit"]
+  Submit --> Offer["Offer"]
+  Offer --> Fund["Fund"]
+
+  SoftInv["Soft invite Bird 2"] -.-> See
+  SoftInv -.-> Start
+  Prefill["Prefill shorter form Bird 1"] -.-> Apply
+  HardUW["Hard UW unchanged"] -.-> Offer
+  HardUW -.-> Fund
+    </pre>
+
+    <h2 id="e2e">4 · End-to-end sequence</h2>
+    <p class="cap">Partner calls soft; soft returns state + token; apply still goes to UW for the hard path.</p>
+    <pre class="mermaid">
+sequenceDiagram
+  actor SMB as Merchant
+  participant Partner as Partner app
+  participant Soft as Soft pre-check service
+  participant Apply as Kanmon apply
+  participant UW as Underwriting
+
+  SMB->>Partner: Works in product
+  Partner->>Soft: SoftCheck with partner customer id and context
+  Soft-->>Partner: Soft state plus prefill token
+  alt Soft strong or weak
+    Partner-->>SMB: Soft invite or quiet check CTA
+    SMB->>Apply: Open apply with prefill token
+    Apply-->>SMB: Prefill form
+    SMB->>Apply: Finish and submit
+    Apply->>UW: Hard decision path
+    UW-->>Apply: Offer or decline
+  else No need or not now
+    Partner-->>SMB: Dismiss without shame
+  else Soft exclude or data unavailable
+    Partner-->>SMB: No soft claim or standard apply only
+  end
+    </pre>
+
+    <h2 id="data">5 · Data flow overview</h2>
+    <p class="cap">Partner sends features and events, not a raw ledger. Soft returns coarse state, never hard score or approve amount.</p>
+    <pre class="mermaid">
+flowchart LR
+  subgraph In["Partner to Kanmon"]
+    ID["Identity seed"]
+    Perf["Performance features"]
+    Obj["Object cash context"]
+    Risk["Partner risk flags"]
+    Cons["Consent"]
+  end
+
+  Soft["Soft pre-check service"]
+
+  subgraph Out["Kanmon to partner"]
+    State["Soft state codes"]
+    Tok["Prefill token"]
+    Evt["App lifecycle events"]
+    Supp["Campaign suppress"]
+  end
+
+  ID --> Soft
+  Perf --> Soft
+  Obj --> Soft
+  Risk --> Soft
+  Cons --> Soft
+  Soft --> State
+  Soft --> Tok
+  Soft --> Evt
+  Soft --> Supp
+    </pre>
+
+    <h2 id="overview">6 · Product overview</h2>
+    <p class="cap">Same soft contract; the trigger object and partner moment change by archetype.</p>
+    <pre class="mermaid">
+flowchart TB
+  Soft["Soft pre-check plus prefill"]
+
+  Soft --> A["A Invoice EDI"]
+  Soft --> B["B Wallet"]
+  Soft --> C["C ERP PO"]
+  Soft --> D["D Payments"]
+  Soft --> E["E Staffing"]
+
+  A --> ObjA["Object: unpaid invoice"]
+  B --> HubB["Hub: Financing tab plus volume spike"]
+  C --> ObjC["Object: PO or stock risk"]
+  D --> VolD["Volume plus boarding flags"]
+  E --> PayE["Payroll vs unpaid client invoice"]
+    </pre>
+
+    <h2 id="invoice">A · Invoice / EDI</h2>
+    <p class="cap">Object CTA on the unpaid invoice; dismiss leaves invoice work intact. Partner never shows approved advance $.</p>
+    <pre class="mermaid">
+sequenceDiagram
+  actor SMB as Supplier ops
+  participant Cleo as Invoice EDI partner
+  participant Soft as Soft pre-check
+  participant Apply as Kanmon apply
+  participant UW as Underwriting
+
+  SMB->>Cleo: Open unpaid invoice
+  Cleo->>Soft: SoftCheck with invoice context
+  Soft-->>Cleo: Soft state plus prefill token
+  alt Soft strong or weak
+    Cleo-->>SMB: Finance CTA on this invoice
+    SMB->>Apply: Start with prefill
+    Apply-->>SMB: Entity and invoice prefilled
+    SMB->>Apply: Submit
+    Apply->>UW: Hard path
+    UW-->>Apply: Offer or decline
+  else No need for this invoice
+    Cleo-->>SMB: Dismiss - invoice work continues
+  end
+    </pre>
+
+    <h2 id="wallet">B · Wallet</h2>
+    <p class="cap">Financing tab or volume-spike moment; AP vs term picked after soft invite. Cooldown if they leave.</p>
+    <pre class="mermaid">
+sequenceDiagram
+  actor Seller as Seller
+  participant PP as Wallet partner
+  participant Soft as Soft pre-check
+  participant Apply as Kanmon apply
+  participant UW as Underwriting
+
+  Seller->>PP: Open Financing or hit volume spike
+  PP->>Soft: SoftCheck with wallet tenure and volume
+  Soft-->>PP: Soft state plus prefill token
+  alt Soft strong or weak
+    PP-->>Seller: Check if you qualify CTA
+    Seller->>Apply: Start with KYC seed prefill
+    Note over Apply: Product pick AP vs term after soft invite
+    Seller->>Apply: Submit
+    Apply->>UW: Hard path
+    UW-->>Apply: Offer or decline
+  else Not now
+    PP-->>Seller: Leave Financing - cooldown on campaign
+  end
+    </pre>
+
+    <h2 id="erp">C · ERP / PO</h2>
+    <p class="cap">PO-tied soft invite into Capital hub. Soft UI must not imply stacking products.</p>
+    <pre class="mermaid">
+flowchart LR
+  PO["PO approved or stock risk"] --> Soft["Soft pre-check"]
+  Soft --> Hub["Capital hub CTA on that PO"]
+  Soft --> Skip["Not now"]
+  Hub --> Prefill["Prefill entity plus PO"]
+  Prefill --> Submit["Submit"]
+  Submit --> UW["Hard UW"]
+  UW --> Fund["Fund AP"]
+    </pre>
+
+    <h2 id="payments">D · Payments processor</h2>
+    <p class="cap">Volume + boarding features; chargeback or reserve → soft exclude. Less object-tied than invoice/PO.</p>
+    <pre class="mermaid">
+flowchart TD
+  Board["Boarding complete"] --> Soft["Soft pre-check"]
+  Vol["Rolling volume features"] --> Soft
+  CB["Chargeback or reserve flag"] --> Soft
+  Soft -->|exclude| Quiet["No soft claim"]
+  Soft -->|strong or weak| CTA["Hub CTA - less object-tied"]
+  Soft -->|unavailable| Std["Standard apply only"]
+  CTA --> Prefill["Prefill entity plus volume context"]
+  Prefill --> UW["Submit then hard UW"]
+    </pre>
+
+    <h2 id="staffing">E · Staffing</h2>
+    <p class="cap">Soft still runs in program scope during quiet weeks; dismiss is normal when there is no cash pressure.</p>
+    <pre class="mermaid">
+sequenceDiagram
+  actor Agency as Staffing agency
+  participant Vert as Staffing partner
+  participant Soft as Soft pre-check
+  participant Apply as Kanmon apply
+  participant UW as Underwriting
+
+  Note over Vert,Soft: Soft still runs if in program scope - even in quiet weeks
+  Vert->>Soft: SoftCheck with unpaid client invoice and payroll calendar
+  Soft-->>Vert: Soft state plus prefill token
+  alt Soft strong or weak and cash pressure
+    Vert-->>Agency: Bridge payroll CTA
+    Agency->>Apply: Prefill employer entity
+    Agency->>Apply: Submit
+    Apply->>UW: Hard path
+  else Quiet week - no need
+    Vert-->>Agency: Dismiss is normal
+  end
+    </pre>
+  </main>
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 52, rankSpacing: 64, padding: 18 },
+      sequence: { mirrorActors: false, actorMargin: 42, messageMargin: 38, boxMargin: 12, noteMargin: 14, width: 172 }
+    });
+
+    let arLastW = 0;
+    async function arRender(force) {
+      const nodes = [...document.querySelectorAll('pre.mermaid')];
+      nodes.forEach(n => { if (!n.dataset.src) n.dataset.src = n.textContent; });
+      if (force) nodes.forEach(n => {
+        n.removeAttribute('data-processed'); n.removeAttribute('id');
+        n.innerHTML=''; n.textContent = n.dataset.src.trim();
+      });
+      try { await mermaid.run({ nodes }); } catch (err) { console.warn('Mermaid render', err); }
+      arLastW = document.body.clientWidth || 0;
+    }
+    arRender(false);
+    let arT;
+    window.addEventListener('resize', () => {
+      clearTimeout(arT);
+      arT = setTimeout(() => {
+        if (Math.abs((document.body.clientWidth||0) - arLastW) > 80) arRender(true);
+      }, 150);
+    });
+    window.addEventListener('message', (e) => {
+      if (e && e.data && e.data.type === 'kanmon-chart-resize') arRender(true);
+    });
+
+  </script>
+</body>
+</html>

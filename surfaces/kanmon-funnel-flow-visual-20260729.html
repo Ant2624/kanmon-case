@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kanmon funnel, partner × product [SIM]</title>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --bg: #f8fafc;
+      --card: #fff;
+      --accent: #c25200;
+      --sans: "IBM Plex Sans", "Source Sans 3", system-ui, sans-serif;
+      --invoice: #c25200;
+      --ap: #0369a1;
+      --term: #7c3aed;
+      --loc: #c2410c;
+      --leak: #64748b;
+      --prevent: #ea580c;
+      --risk: #b91c1c;
+      --funded: #15803d;
+      --focus: #c25200;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(720px 320px at 8% -10%, #fff1e6 0%, transparent 55%),
+        var(--bg);
+      min-height: 100vh;
+      padding: 1.1rem 1.35rem 2.25rem;
+    }
+    header {
+      max-width: 1380px;
+      margin: 0 auto 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    h1 {
+      font-size: 1.28rem;
+      margin: 0.35rem 0 0;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0.35rem 0 0;
+      max-width: 54rem;
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.64rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: #ffedd5;
+      color: #9a3412;
+      letter-spacing: 0.02em;
+    }
+    .badge.ok {
+      background: #ecfdf5;
+      color: #065f46;
+    }
+    .badge.case {
+      background: #e0f2fe;
+      color: #075985;
+    }
+    a.back {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 650;
+      text-decoration: none;
+    }
+    a.back:hover { text-decoration: underline; }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.3rem;
+    }
+    .case-callout {
+      max-width: 1380px;
+      margin: 0 auto 0.75rem;
+      background: #f0fdfa;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.78rem;
+      color: #134e4a;
+      line-height: 1.45;
+    }
+    .case-callout strong { color: #c25200; }
+    .case-callout .kill {
+      margin-top: 0.35rem;
+      color: #64748b;
+      font-size: 0.72rem;
+    }
+    .toolbar {
+      max-width: 1380px;
+      margin: 0 auto 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 0.85rem;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.6rem 0.85rem;
+    }
+    .toolbar .lbl {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    .toolbar select {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.35rem 0.55rem;
+      font: inherit;
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: var(--ink);
+      min-width: 8.5rem;
+    }
+    .toolbar .sep {
+      width: 1px;
+      height: 1.35rem;
+      background: var(--line);
+      margin: 0 0.15rem;
+    }
+    .toolbar label.toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.74rem;
+      color: #475569;
+      cursor: pointer;
+      user-select: none;
+    }
+    .toolbar label.toggle input { accent-color: var(--accent); }
+    .wrap {
+      max-width: 1380px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      padding: 0.9rem 1.05rem 1rem;
+      overflow-x: auto;
+    }
+    .chart-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.4rem 1rem;
+      margin-bottom: 0.45rem;
+    }
+    .chart-head h2 {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .chart-head .hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    #chart {
+      width: 100%;
+      min-height: 780px;
+      position: relative;
+    }
+    #chart svg { display: block; }
+    .legend {
+      max-width: 1380px;
+      margin: 0.8rem auto 0;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.55rem 1.25rem;
+      align-items: start;
+      font-size: 0.74rem;
+      color: var(--muted);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.65rem 0.85rem;
+    }
+    .legend .group-title {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      color: #475569;
+      padding-top: 0.15rem;
+    }
+    .legend .swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.85rem;
+    }
+    .legend i {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      margin-right: 0.3rem;
+      vertical-align: -1px;
+    }
+    .panels {
+      max-width: 1380px;
+      margin: 0.9rem auto 0;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 900px) {
+      .panels { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.8rem 0.9rem;
+    }
+    .card h2 {
+      font-size: 0.84rem;
+      margin: 0 0 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.74rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.34rem 0.3rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .num { font-variant-numeric: tabular-nums; font-weight: 650; }
+    .muted { color: var(--muted); }
+    .leak-row td:first-child { color: var(--muted); padding-left: 0.85rem; }
+    .focus-row td:first-child { color: #c25200; font-weight: 650; }
+    .pill {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: 999px;
+      color: #fff;
+    }
+    .pill.invoice { background: var(--invoice); }
+    .pill.ap { background: var(--ap); }
+    .pill.term { background: var(--term); }
+    .pill.loc { background: var(--loc); }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    @media (max-width: 800px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+    .stat {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.5rem 0.55rem;
+    }
+    .stat.focus {
+      background: #f0fdfa;
+      border-color: #fed7aa;
+    }
+    .stat .l {
+      font-size: 0.6rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.045em;
+      font-weight: 650;
+    }
+    .stat .v {
+      font-size: 1.12rem;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      margin-top: 0.1rem;
+    }
+    .note {
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0.55rem 0 0;
+    }
+    .case-note {
+      max-width: 1380px;
+      margin: 0.75rem auto 0;
+      font-size: 0.74rem;
+      color: #475569;
+      line-height: 1.45;
+      padding: 0.55rem 0.15rem;
+    }
+    .tooltip {
+      position: fixed;
+      pointer-events: none;
+      z-index: 40;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 0.74rem;
+      line-height: 1.4;
+      padding: 0.55rem 0.65rem;
+      border-radius: 9px;
+      max-width: 300px;
+      opacity: 0;
+      transition: opacity 0.1s;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.28);
+    }
+    .tooltip strong { display: block; margin-bottom: 0.2rem; font-size: 0.78rem; }
+    .tooltip .row { color: #cbd5e1; }
+    .tooltip .kind {
+      display: inline-block;
+      margin-top: 0.35rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #94a3b8;
+    }
+    .node-label { font-family: var(--sans); pointer-events: none; }
+    .zone-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      fill: #94a3b8;
+      text-transform: uppercase;
+    }
+    .seen-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 1.1rem;
+      align-items: baseline;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 0.45rem 0.7rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.74rem;
+      color: #475569;
+    }
+    .seen-strip .k {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      color: #94a3b8;
+      margin-right: 0.3rem;
+    }
+    .seen-strip .v { font-weight: 750; color: #0f172a; font-variant-numeric: tabular-nums; }
+    .seen-strip .dim { color: #94a3b8; font-weight: 550; }
+
+    /* Compact for Prove iframe */
+    body.embed {
+      background: #fff;
+      padding: 0.45rem 0.55rem 0.65rem;
+      min-height: 0;
+    }
+    body.embed header,
+    body.embed .case-callout,
+    body.embed .case-note,
+    body.embed .panels { display: none; }
+    body.embed .toolbar { margin-bottom: 0.45rem; }
+    body.embed .wrap { margin-bottom: 0.45rem; }
+    body.embed .legend { margin-top: 0.45rem; margin-bottom: 0; }
+    body.embed #chart { min-height: 620px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+</head>
+<body>
+  <header>
+    <div>
+      <span class="badge">[SIM] · not Kanmon disclosed</span>
+      <span class="badge case" style="margin-left:0.35rem">Case lens · A2 + I1</span>
+      <h1>Partner × product funnel + stage-local leaks</h1>
+      <p class="sub">
+        Main continuing path starts at <strong>Click</strong> (Seen is a compact summary. A2), then
+        Partner×product → Click → Start → Submit → Offer → Funded.
+        Leaks drop <strong>under that stage column</strong>. Min lane thickness keeps PxP ribbons readable; true N stays in tooltips.
+      </p>
+    </div>
+    <div class="nav-links">
+      <a class="back" href="kanmon-case-study-capital-moments.html#prove">← Live Prove</a>
+      <a class="back" href="kanmon-funnel-volume-simulation-20260729.md">Volume simulation md</a>
+    </div>
+  </header>
+
+  <div class="case-callout" role="note">
+    <strong>No click de-emphasized for this case</strong> (visibility assumed solid. A2).
+    Chart focus: abandon mid-apply, preventable declines, and Start→Submit→Offer→Funded.
+    <div class="kill">
+      Kill / reopen: if A2 dies (Seen/surface is actually scarce), expand No click to true scale and re-prioritize partner surface, this demotion is <em>not</em> a claim that partners never have a surface problem.
+    </div>
+  </div>
+
+  <div class="toolbar" role="toolbar" aria-label="Partner × product filters">
+    <span class="badge ok">Partner × product</span>
+    <span class="sep" aria-hidden="true"></span>
+    <span class="lbl">Focus product</span>
+    <select id="productFilter" aria-label="Focus product">
+      <option value="all">All products</option>
+      <option value="invoice">Invoice</option>
+      <option value="ap">AP</option>
+      <option value="term">Term</option>
+      <option value="loc">LOC</option>
+    </select>
+    <span class="lbl">Focus partner</span>
+    <select id="partnerFilter" aria-label="Focus partner">
+      <option value="all">All partners</option>
+    </select>
+    <label class="toggle" title="When unchecked, non-focus lanes stay visible but muted">
+      <input type="checkbox" id="hideNonFocus" />
+      Hide non-focus
+    </label>
+    <span class="sep" aria-hidden="true"></span>
+    <label class="toggle" title="Default compresses No click under A2; expand only when diagnosing surface">
+      <input type="checkbox" id="trueScaleNoClick" />
+      Show No click at true scale
+    </label>
+  </div>
+
+  <div class="wrap">
+    <div class="stats" id="stats"></div>
+    <div id="seenStrip" class="seen-strip" aria-label="Seen summary"></div>
+    <div class="chart-head">
+      <h2>Flow · Click→Funded (top) · stage-local leaks (bottom)</h2>
+      <p class="hint">Lanes floored at 5px for readability · hover for true N · focus partner/product to thicken one lane.</p>
+    </div>
+    <div id="chart"></div>
+  </div>
+
+  <div class="legend" aria-label="Legend">
+    <div class="group-title">Continuing</div>
+    <div class="swatches">
+      <span><i style="background:#c25200"></i>Invoice</span>
+      <span><i style="background:#0369a1"></i>AP</span>
+      <span><i style="background:#7c3aed"></i>Term</span>
+      <span><i style="background:#c2410c"></i>LOC</span>
+      <span><i style="background:#15803d"></i>Funded</span>
+    </div>
+    <div class="group-title">Leaks (stage-local)</div>
+    <div class="swatches">
+      <span><i style="background:#94a3b8;opacity:.45"></i>No click (de-emphasized · this case)</span>
+      <span><i style="background:#64748b"></i>Abandon / no-accept / unfunded</span>
+      <span><i style="background:#c25200"></i>Abandon · mid-apply (focus)</span>
+      <span><i style="background:#ea580c"></i>Preventable decline (focus)</span>
+      <span><i style="background:#b91c1c"></i>True risk decline</span>
+    </div>
+  </div>
+
+  <p class="case-note">
+    Case lens: partner × product ribbons from <strong>Click</strong> (Seen = compact strip under A2).
+    Focus partner/product thickens that lane and mutes others; check Hide non-focus to isolate.
+    Shelves [FACT]; volumes [SIM].
+  </p>
+
+  <div class="panels">
+    <div class="card">
+      <h2>Partner × product shelf <span class="muted">[FACT shelf · SIM mix]</span></h2>
+      <table id="shelfTable"></table>
+    </div>
+    <div class="card">
+      <h2>Active slice, stage + leaks</h2>
+      <table id="stageTable"></table>
+      <p class="note">Factoring / BNPL = <strong>0</strong> in base (roadmap <span class="badge" style="background:#e0e7ff;color:#3730a3">INTERVIEW</span>).</p>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tip" role="tooltip"></div>
+
+<script>
+/** [SIM] monthly journeys — power-law partners; shelves from public partner docs */
+const PRODUCTS = {
+  invoice: { id: 'invoice', label: 'Invoice', color: '#c25200', ticket: 9000 },
+  ap: { id: 'ap', label: 'AP', color: '#0369a1', ticket: 14000 },
+  term: { id: 'term', label: 'Term', color: '#7c3aed', ticket: 45000 },
+  loc: { id: 'loc', label: 'LOC', color: '#c2410c', ticket: 12000 }
+};
+
+const PRODUCT_ORDER = { invoice: 0, ap: 1, term: 2, loc: 3 };
+
+const PRODUCT_CVR = {
+  invoice: { click: 1.15, start: 1.05, submit: 1.08, offer: 1.05, accept: 1.05, fund: 1.02 },
+  ap:      { click: 1.0,  start: 1.0,  submit: 1.0,  offer: 1.0,  accept: 1.0,  fund: 1.0 },
+  term:    { click: 0.85, start: 0.9,  submit: 0.88, offer: 0.9,  accept: 0.92, fund: 0.95 },
+  loc:     { click: 0.95, start: 0.95, submit: 0.95, offer: 0.95, accept: 0.85, fund: 0.9 }
+};
+
+const PARTNERS = [
+  { id: 'cleo', label: 'Cleo', shelf: ['invoice'], seen: 2200, note: 'WebEDI object CTA · invoice' },
+  { id: 'pingpong', label: 'PingPong', shelf: ['ap', 'term'], seen: 1800, note: 'AP + term · wallet fund' },
+  { id: 'cin7', label: 'Cin7', shelf: ['ap', 'invoice', 'loc'], seen: 1600, note: 'AP / invoice / LOC' },
+  { id: 'nuvei', label: 'Nuvei', shelf: ['invoice'], seen: 1200, note: 'A/R advance in payments' },
+  { id: 'avionte', label: 'Avionté', shelf: ['invoice'], seen: 800, note: 'Staffing invoice advance' },
+  { id: 'other', label: 'Other live', shelf: ['ap', 'term', 'loc', 'invoice'], seen: 400, note: 'Long-tail originating partners' }
+];
+
+const BASE = {
+  clickOfSeen: 0.12,
+  startOfClick: 0.50,
+  submitOfStart: 0.40,
+  decideOfSubmit: 0.95,
+  offerOfDecide: 0.45,
+  preventShareOfDecline: 0.18,
+  acceptOfOffer: 0.70,
+  fundOfAccept: 0.90
+};
+
+const STAGE = {
+  seen: { id: 'seen', label: 'Seen', tip: 'Seen' },
+  click: { id: 'click', label: 'Click', tip: 'Clicked' },
+  start: { id: 'start', label: 'Start', tip: 'Started application' },
+  submit: { id: 'submit', label: 'Submit', tip: 'Submitted' },
+  offer: { id: 'offer', label: 'Offer', tip: 'Offer extended' },
+  funded: { id: 'funded', label: 'Funded', tip: 'Funded' }
+};
+
+/** Leak sinks keyed to the stage column they sit under */
+const LEAK = {
+  noClick: {
+    id: 'noClick', label: 'No click', tip: 'No click (seen, no CTA)', kind: 'leak',
+    under: 'seen', focus: false, deemphasize: true
+  },
+  beforeStart: {
+    id: 'beforeStart', label: 'Abandon · pre-start', tip: 'Abandon before start', kind: 'leak',
+    under: 'click', focus: false, deemphasize: false
+  },
+  midApply: {
+    id: 'midApply', label: 'Abandon · mid-apply', tip: 'Abandon mid-apply', kind: 'focus',
+    under: 'start', focus: true, deemphasize: false
+  },
+  prevent: {
+    id: 'prevent', label: 'Preventable decline', tip: 'Preventable decline', kind: 'prevent',
+    under: 'submit', focus: true, deemphasize: false
+  },
+  risk: {
+    id: 'risk', label: 'True risk decline', tip: 'True risk decline', kind: 'risk',
+    under: 'submit', focus: false, deemphasize: false
+  },
+  noAccept: {
+    id: 'noAccept', label: 'No accept', tip: 'Offer not accepted', kind: 'leak',
+    under: 'offer', focus: false, deemphasize: false
+  },
+  unfunded: {
+    id: 'unfunded', label: 'Unfunded', tip: 'Accepted but unfunded', kind: 'leak',
+    under: 'offer', focus: false, deemphasize: false
+  }
+};
+
+const KIND_LABEL = {
+  leak: 'Leak / abandon',
+  focus: 'Case focus leak',
+  prevent: 'Preventable decline (case focus)',
+  risk: 'True risk decline',
+  invoice: 'Continuing · Invoice',
+  ap: 'Continuing · AP',
+  term: 'Continuing · Term',
+  loc: 'Continuing · LOC',
+  noClickDim: 'No click · de-emphasized for this case (A2)'
+};
+
+function round(n) { return Math.max(0, Math.round(n)); }
+
+function pairLabel(partnerLabel, product) {
+  return partnerLabel + ' × ' + PRODUCTS[product].label;
+}
+
+function funnelFor(partner, product) {
+  const m = PRODUCT_CVR[product];
+  const seen = partner.seen * (partner.shelf.includes(product) ? (1 / partner.shelf.length) : 0);
+  if (seen < 1) return null;
+  const clicked = round(seen * BASE.clickOfSeen * m.click);
+  const started = round(clicked * BASE.startOfClick * m.start);
+  const submitted = round(started * BASE.submitOfStart * m.submit);
+  const decided = round(submitted * BASE.decideOfSubmit);
+  const offered = round(decided * BASE.offerOfDecide * m.offer);
+  const declined = Math.max(0, decided - offered);
+  const preventable = round(declined * BASE.preventShareOfDecline);
+  const trueRisk = declined - preventable;
+  const noDecision = Math.max(0, submitted - decided);
+  const accepted = round(offered * BASE.acceptOfOffer * m.accept);
+  const funded = round(accepted * BASE.fundOfAccept * m.fund);
+  return {
+    partner: partner.id,
+    partnerLabel: partner.label,
+    product,
+    pairLabel: pairLabel(partner.label, product),
+    seen: round(seen),
+    clicked, started, submitted, decided, offered,
+    preventable, trueRisk, noDecision,
+    accepted, funded,
+    noClick: Math.max(0, round(seen) - clicked),
+    abandonBeforeStart: Math.max(0, clicked - started),
+    abandonMidApply: Math.max(0, started - submitted),
+    noAccept: Math.max(0, offered - accepted),
+    unfunded: Math.max(0, accepted - funded),
+    ticket: PRODUCTS[product].ticket,
+    funded$: funded * PRODUCTS[product].ticket
+  };
+}
+
+function allSlices() {
+  const out = [];
+  for (const p of PARTNERS) {
+    for (const prod of p.shelf) {
+      const f = funnelFor(p, prod);
+      if (f && f.seen > 0) out.push(f);
+    }
+  }
+  out.sort((a, b) =>
+    PRODUCT_ORDER[a.product] - PRODUCT_ORDER[b.product] ||
+    b.seen - a.seen ||
+    a.partnerLabel.localeCompare(b.partnerLabel)
+  );
+  return out;
+}
+
+function filterSlices(product, partner, hideNonFocus) {
+  let s = allSlices();
+  if (!hideNonFocus) return s; // focus mode keeps all lanes; mute in render
+  if (product !== 'all') s = s.filter(x => x.product === product);
+  if (partner !== 'all') s = s.filter(x => x.partner === partner);
+  return s;
+}
+
+function isFocusedSlice(s, product, partner) {
+  if (product !== 'all' && s.product !== product) return false;
+  if (partner !== 'all' && s.partner !== partner) return false;
+  return true;
+}
+
+function sumField(slices, key) {
+  return slices.reduce((a, b) => a + (b[key] || 0), 0);
+}
+
+function addLink(links, source, target, value, kind, meta, step, opts) {
+  if (value < 1) return;
+  links.push({
+    source, target, value, kind,
+    meta: meta || '',
+    step: step || '',
+    product: PRODUCTS[kind] ? kind : '',
+    partner: (opts && opts.partner) || '',
+    leak: !!(opts && opts.leak),
+    focus: !!(opts && opts.focus),
+    deemphasize: !!(opts && opts.deemphasize),
+    laneFocus: !!(opts && opts.laneFocus)
+  });
+}
+
+/** Min visible stroke for continuing PxP lanes (true N still in tooltip). */
+const MIN_LINK_PX = 5;
+const MIN_LINK_FOCUS_PX = 8;
+
+/**
+ * Continuing graph starts at Click (Seen is compact summary under A2).
+ * Origins sized by clicked volume so vertical real estate goes to completions path.
+ */
+function buildContinuingGraph(slices, productFocus, partnerFocus) {
+  const nodeMap = new Map();
+  const rawLinks = [];
+
+  const ensure = (key, name, role, tip) => {
+    if (!nodeMap.has(key)) {
+      nodeMap.set(key, { key, name, tip: tip || name, role: role || 'stage' });
+    }
+    return key;
+  };
+
+  // No Seen stage in main path — Click → Funded only
+  ['click', 'start', 'submit', 'offer', 'funded'].forEach(id => {
+    const s = STAGE[id];
+    ensure(s.id, s.label, 'stage', s.tip);
+  });
+
+  for (const s of slices) {
+    const origin = ensure('o:' + s.partner + ':' + s.product, s.pairLabel, 'origin', s.pairLabel);
+    const meta = s.pairLabel;
+    const k = s.product;
+    const laneFocus = isFocusedSlice(s, productFocus, partnerFocus);
+    const o = { partner: s.partner, laneFocus };
+    // Enter at Click with clicked volume (not Seen)
+    addLink(rawLinks, origin, STAGE.click.id, s.clicked, k, meta, 'Enter at Click (from Seen)', o);
+    addLink(rawLinks, STAGE.click.id, STAGE.start.id, s.started, k, meta, 'Click → Start', o);
+    addLink(rawLinks, STAGE.start.id, STAGE.submit.id, s.submitted, k, meta, 'Start → Submit', o);
+    addLink(rawLinks, STAGE.submit.id, STAGE.offer.id, s.offered, k, meta, 'Submit → Offer', o);
+    addLink(rawLinks, STAGE.offer.id, STAGE.funded.id, s.funded, k, meta, 'Offer → Funded', o);
+  }
+
+  const merged = new Map();
+  for (const l of rawLinks) {
+    const key = l.source + '→' + l.target + '|' + l.kind + '|' + l.meta;
+    if (!merged.has(key)) merged.set(key, { ...l });
+    else merged.get(key).value += l.value;
+  }
+  const links = [...merged.values()];
+  const used = new Set();
+  for (const l of links) { used.add(l.source); used.add(l.target); }
+  const nodes = [...nodeMap.values()].filter(n => used.has(n.key));
+  return { nodes, links };
+}
+
+/** Aggregate leak volumes + attach to parent stage for local drop */
+function buildLeakTotals(slices) {
+  const mid = sumField(slices, 'abandonMidApply') + sumField(slices, 'noDecision');
+  return [
+    {
+      ...LEAK.noClick,
+      value: sumField(slices, 'noClick'),
+      parent: 'seen',
+      step: 'Leak: no click'
+    },
+    {
+      ...LEAK.beforeStart,
+      value: sumField(slices, 'abandonBeforeStart'),
+      parent: 'click',
+      step: 'Leak: abandon pre-start'
+    },
+    {
+      ...LEAK.midApply,
+      value: mid,
+      parent: 'start',
+      step: 'Leak: abandon mid-apply'
+    },
+    {
+      ...LEAK.prevent,
+      value: sumField(slices, 'preventable'),
+      parent: 'submit',
+      step: 'Leak: preventable decline'
+    },
+    {
+      ...LEAK.risk,
+      value: sumField(slices, 'trueRisk'),
+      parent: 'submit',
+      step: 'Leak: true risk decline'
+    },
+    {
+      ...LEAK.noAccept,
+      value: sumField(slices, 'noAccept'),
+      parent: 'offer',
+      step: 'Leak: no accept'
+    },
+    {
+      ...LEAK.unfunded,
+      value: sumField(slices, 'unfunded'),
+      parent: 'offer',
+      step: 'Leak: unfunded'
+    }
+  ].filter(d => d.value > 0);
+}
+
+function linkColor(kind, focus) {
+  if (kind === 'focus' || focus) return '#c25200';
+  if (kind === 'prevent') return '#ea580c';
+  if (kind === 'risk') return '#b91c1c';
+  if (kind === 'leak') return '#64748b';
+  if (PRODUCTS[kind]) return PRODUCTS[kind].color;
+  return '#e05d00';
+}
+
+function nodeFill(d) {
+  if (d.role === 'leak') {
+    if (d.deemphasize) return '#94a3b8';
+    if (d.focus && d.key === 'midApply') return '#c25200';
+    if (d.key === 'prevent') return '#ea580c';
+    if (d.key === 'risk') return '#b91c1c';
+    return '#64748b';
+  }
+  if (d.role === 'origin') {
+    const prod = d.key.split(':')[2];
+    if (PRODUCTS[prod]) return PRODUCTS[prod].color;
+  }
+  if (d.key === 'funded') return '#15803d';
+  return '#0f172a';
+}
+
+function kindLabel(kind, deemphasize) {
+  if (deemphasize) return KIND_LABEL.noClickDim;
+  return KIND_LABEL[kind] || kind;
+}
+
+function pct(n, den) {
+  if (!den) return '—';
+  return Math.round(1000 * n / den) / 10 + '%';
+}
+
+function showTip(event, html) {
+  const tip = document.getElementById('tip');
+  tip.innerHTML = html;
+  tip.style.opacity = 1;
+  const pad = 14;
+  let x = event.clientX + pad;
+  let y = event.clientY + pad;
+  const tw = 300;
+  const th = tip.offsetHeight || 90;
+  if (x + tw > window.innerWidth - 8) x = event.clientX - tw - 8;
+  if (y + th > window.innerHeight - 8) y = event.clientY - th - 8;
+  tip.style.left = x + 'px';
+  tip.style.top = y + 'px';
+}
+
+function hideTip() {
+  document.getElementById('tip').style.opacity = 0;
+}
+
+function linkTipHtml(d) {
+  const trueN = d.trueValue != null ? d.trueValue : d.value;
+  const isStageLeak = d.meta === 'Stage leak' || (d.step && String(d.step).startsWith('Leak:'));
+  // Stage leaks are drawn outside the sankey graph, so source.sourceLinks is only the
+  // continuing path — not a valid denominator. Use the parent stage node value instead.
+  const den = !d.source
+    ? 0
+    : (isStageLeak
+      ? (d.source.value || 0)
+      : (d3.sum(d.source.sourceLinks || [], x => x.value) || d.source.value || 0));
+  const share = den ? pct(trueN, den) : '';
+  const ofLabel = d.source ? (d.source.name || d.parentLabel || 'stage') : '';
+  const floorNote = d.minFloored
+    ? `<div class="row">Drawn ≥${MIN_LINK_PX}px for readability (layout width ${Math.round(d.layoutWidth || d.width || 0)}px)</div>`
+    : '';
+  const extra = d.deemphasize && !d.trueScale
+    ? `<div class="row">True N = ${trueN.toLocaleString()} · chart compressed under A2</div>`
+    : '';
+  const mute = d.muted ? `<div class="row">Muted (not in focus)</div>` : '';
+  return `<strong>${d.meta || 'Path'}</strong>
+    <div class="row">${d.step || ((d.source && d.source.name) + ' → ' + (d.target && d.target.name))}</div>
+    <div class="row"><strong style="display:inline;font-size:inherit">N = ${trueN.toLocaleString()}</strong>${share ? ' · ' + share + ' of ' + ofLabel : ''}</div>
+    ${floorNote}${extra}${mute}
+    <span class="kind">${kindLabel(d.kind, d.deemphasize)}</span>`;
+}
+
+function nodeTipHtml(d) {
+  if (d.role === 'leak') {
+    const trueN = d.trueValue != null ? d.trueValue : d.value;
+    const parentDen = d.parentValue || 0;
+    const share = parentDen ? pct(trueN, parentDen) : '';
+    const dim = d.deemphasize && !d.trueScale
+      ? `<div class="row">De-emphasized for this case (A2). True N = ${trueN.toLocaleString()}</div>`
+      : '';
+    return `<strong>${d.tip || d.name}</strong>
+      <div class="row">Leak under ${d.parentLabel || d.parent}</div>
+      <div class="row">N = ${trueN.toLocaleString()}${share ? ' · ' + share + ' of ' + (d.parentLabel || d.parent) : ''}</div>
+      ${dim}
+      <span class="kind">${kindLabel(d.kind, d.deemphasize)} · [SIM]</span>`;
+  }
+  if (d.role === 'seenStub') {
+    return `<strong>Seen (context)</strong>
+      <div class="row">Not on main path — A2 assumes visibility solid</div>
+      <div class="row">Seen N = ${d.value.toLocaleString()}</div>
+      <span class="kind">[SIM] · compact summary</span>`;
+  }
+  const inflow = d3.sum(d.targetLinks || [], x => x.value);
+  const outflow = d3.sum(d.sourceLinks || [], x => x.value);
+  const role = d.role === 'origin' ? 'Partner × product origin' : 'Funnel stage';
+  return `<strong>${d.tip || d.name}</strong>
+    <div class="row">${role}</div>
+    <div class="row">In ${inflow.toLocaleString()} · Out ${outflow.toLocaleString()}</div>
+    <span class="kind">[SIM]</span>`;
+}
+
+/** Short vertical-ish path from stage bar bottom into leak node under same column */
+function leakLinkPath(d) {
+  const x0 = (d.source.x0 + d.source.x1) / 2;
+  const y0 = d.source.y1;
+  const x1 = (d.target.x0 + d.target.x1) / 2;
+  const y1 = d.target.y0;
+  const midY = y0 + Math.max(18, (y1 - y0) * 0.45);
+  return `M${x0},${y0} C${x0},${midY} ${x1},${midY} ${x1},${y1}`;
+}
+
+/**
+ * Visual height for a leak under a column.
+ * No-click defaults to a thin muted band (A2 case demotion) unless true-scale toggle is on.
+ */
+function leakVisualHeight(leak, pxPerUnit, trueScaleNoClick) {
+  if (leak.deemphasize && !trueScaleNoClick) {
+    return Math.max(10, Math.min(22, leak.value * pxPerUnit * 0.045));
+  }
+  const boost = leak.focus ? 1.15 : 1;
+  return Math.max(leak.focus ? 16 : 10, leak.value * pxPerUnit * boost);
+}
+
+function continuingStrokeWidth(d, focusActive) {
+  const layout = d.width || 1;
+  d.layoutWidth = layout;
+  const floor = (focusActive && d.laneFocus) ? MIN_LINK_FOCUS_PX : MIN_LINK_PX;
+  const w = Math.max(floor, layout);
+  d.minFloored = w > layout + 0.01;
+  d.trueValue = d.value;
+  return w;
+}
+
+function render() {
+  const product = document.getElementById('productFilter').value;
+  const partner = document.getElementById('partnerFilter').value;
+  const hideNonFocus = document.getElementById('hideNonFocus').checked;
+  const trueScaleNoClick = document.getElementById('trueScaleNoClick').checked;
+  const focusActive = product !== 'all' || partner !== 'all';
+  const slices = filterSlices(product, partner, hideNonFocus);
+  const statsSlices = hideNonFocus
+    ? slices
+    : (focusActive
+        ? allSlices().filter(s => isFocusedSlice(s, product, partner))
+        : slices);
+
+  const seen = sumField(statsSlices, 'seen');
+  const clicked = sumField(statsSlices, 'clicked');
+  const started = sumField(statsSlices, 'started');
+  const submitted = sumField(statsSlices, 'submitted');
+  const funded = sumField(statsSlices, 'funded');
+  const funded$ = sumField(statsSlices, 'funded$');
+  const midLeak = sumField(statsSlices, 'abandonMidApply');
+  const preventable = sumField(statsSlices, 'preventable');
+  const noClick = sumField(statsSlices, 'noClick');
+
+  document.getElementById('seenStrip').innerHTML = `
+    <span><span class="k">Seen</span><span class="v">${seen.toLocaleString()}</span> <span class="dim">[SIM] · not on main path</span></span>
+    <span><span class="k">No click</span><span class="dim">${noClick.toLocaleString()} · de-emphasized for this case (A2)</span></span>
+    <span><span class="k">Chart starts</span><span class="v">Click ${clicked.toLocaleString()}</span> → Funded</span>`;
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="l">Pairs drawn</div><div class="v">${slices.length}</div></div>
+    <div class="stat"><div class="l">Click [SIM]</div><div class="v">${clicked.toLocaleString()}</div></div>
+    <div class="stat focus"><div class="l">Start → Submit</div><div class="v">${started ? Math.round(100 * submitted / started) : 0}%</div></div>
+    <div class="stat focus"><div class="l">Mid-apply lost</div><div class="v">${midLeak.toLocaleString()}</div></div>
+    <div class="stat focus"><div class="l">Preventable · Funded $</div><div class="v">${preventable} · $${(funded$ / 1000).toFixed(0)}k</div></div>`;
+
+  const stageRows = [
+    ['Seen (summary only)', seen, false, false],
+    ['Click', clicked, false, false],
+    ['No click (de-emphasized · this case)', noClick, true, false],
+    ['Start', started, false, false],
+    ['Abandon · pre-start', sumField(statsSlices, 'abandonBeforeStart'), true, false],
+    ['Submit', submitted, false, true],
+    ['Abandon · mid-apply', midLeak, true, true],
+    ['Offer', sumField(statsSlices, 'offered'), false, true],
+    ['Preventable declines', preventable, true, true],
+    ['True risk declines', sumField(statsSlices, 'trueRisk'), true, false],
+    ['Accepted', sumField(statsSlices, 'accepted'), false, false],
+    ['No accept', sumField(statsSlices, 'noAccept'), true, false],
+    ['Funded', funded, false, true],
+    ['Unfunded', sumField(statsSlices, 'unfunded'), true, false]
+  ];
+  document.getElementById('stageTable').innerHTML =
+    '<tr><th>Stage / leak</th><th>N [SIM]</th></tr>' +
+    stageRows.map(([l, n, isLeak, isFocus]) =>
+      `<tr class="${isFocus ? 'focus-row' : isLeak ? 'leak-row' : ''}"><td>${l}</td><td class="num">${n.toLocaleString()}</td></tr>`
+    ).join('');
+
+  const graph = buildContinuingGraph(slices, product, partner);
+  const leaks = buildLeakTotals(statsSlices.length ? statsSlices : slices);
+  const el = document.getElementById('chart');
+  el.innerHTML = '';
+  const width = Math.max(1120, el.clientWidth || 1200);
+  // Extra top padding so column heads + zone label do not collide
+  const upperH = Math.max(440, 96 + slices.length * 36);
+  const leakZoneH = 250;
+  const height = upperH + leakZoneH + 64;
+
+  if (!graph.links.length) {
+    el.innerHTML = '<p class="note">No click volume in this slice — widen focus or uncheck Hide non-focus.</p>';
+    return;
+  }
+
+  const sankey = d3.sankey()
+    .nodeId(d => d.key)
+    .nodeWidth(18)
+    .nodePadding(14)
+    .nodeSort((a, b) => {
+      if (a.role === 'origin' && b.role === 'origin') {
+        const ap = (a.key || '').split(':')[2];
+        const bp = (b.key || '').split(':')[2];
+        const ao = PRODUCT_ORDER[ap] ?? 9;
+        const bo = PRODUCT_ORDER[bp] ?? 9;
+        if (ao !== bo) return ao - bo;
+        return (b.value || 0) - (a.value || 0);
+      }
+      return 0;
+    })
+    .linkSort((a, b) => {
+      if (focusActive) {
+        if (a.laneFocus && !b.laneFocus) return -1;
+        if (b.laneFocus && !a.laneFocus) return 1;
+      }
+      const ao = PRODUCT_ORDER[a.kind] ?? 9;
+      const bo = PRODUCT_ORDER[b.kind] ?? 9;
+      if (ao !== bo) return ao - bo;
+      return (b.value || 0) - (a.value || 0);
+    })
+    // Leave left gutter for Seen stub column
+    .extent([[220, 44], [width - 120, upperH]]);
+
+  let data;
+  try {
+    data = sankey({
+      nodes: graph.nodes.map(d => ({ ...d })),
+      links: graph.links.map(d => ({ ...d }))
+    });
+  } catch (e) {
+    el.innerHTML = `<p class="note">Sankey layout error — focus one partner. (${e.message})</p>`;
+    return;
+  }
+
+  // Tag muted links when focus is active
+  for (const l of data.links) {
+    l.muted = focusActive && !l.laneFocus && !hideNonFocus;
+    l.trueValue = l.value;
+  }
+
+  const stageByKey = new Map(data.nodes.filter(n => n.role === 'stage').map(n => [n.key, n]));
+
+  // Compact Seen stub (not in main path) — anchors No click leak under its own column
+  const clickNode = stageByKey.get('click');
+  const originNodes = data.nodes.filter(n => n.role === 'origin');
+  const seenStub = {
+    key: 'seen',
+    name: 'Seen',
+    tip: 'Seen (context)',
+    role: 'seenStub',
+    value: seen,
+    x0: 48,
+    x1: 66,
+    y0: originNodes.length ? d3.min(originNodes, d => d.y0) : 50,
+    y1: originNodes.length ? d3.min(originNodes, d => d.y0) + Math.max(28, Math.min(72, upperH * 0.12)) : 90
+  };
+  stageByKey.set('seen', seenStub);
+
+  // Place leak sinks under parent stage columns
+  const leakNodes = [];
+  const leakLinks = [];
+  const byParent = d3.group(leaks, d => d.parent);
+  const pxPerUnit = Math.max(0.04, (upperH - 80) / Math.max(1, clicked));
+
+  for (const [parentKey, group] of byParent) {
+    const parent = stageByKey.get(parentKey);
+    if (!parent) continue;
+    let y = upperH + 36;
+    const gap = 10;
+    for (const leak of group) {
+      const h = leakVisualHeight(leak, pxPerUnit, trueScaleNoClick);
+      const node = {
+        key: leak.id,
+        name: leak.label,
+        tip: leak.tip,
+        role: 'leak',
+        kind: leak.kind,
+        focus: leak.focus,
+        deemphasize: leak.deemphasize,
+        trueScale: trueScaleNoClick,
+        trueValue: leak.value,
+        value: leak.value,
+        parent: parentKey,
+        parentLabel: parent.name,
+        parentValue: parent.value || 0,
+        x0: parent.x0,
+        x1: parent.x1,
+        y0: y,
+        y1: y + h
+      };
+      leakNodes.push(node);
+      leakLinks.push({
+        source: parent,
+        target: node,
+        value: leak.value,
+        trueValue: leak.value,
+        kind: leak.kind,
+        focus: leak.focus,
+        deemphasize: leak.deemphasize,
+        trueScale: trueScaleNoClick,
+        meta: 'Stage leak',
+        step: leak.step,
+        width: Math.max(leak.focus ? 3.5 : 1.5, Math.min(parent.x1 - parent.x0 - 2, h))
+      });
+      y += h + gap;
+    }
+  }
+
+  const svg = d3.select('#chart').append('svg')
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('width', '100%')
+    .attr('height', height)
+    .attr('role', 'img')
+    .attr('aria-label', 'Partner times product Sankey from Click with stage-local leaks');
+
+  const colOrder = ['seen', 'origin', 'click', 'start', 'submit', 'offer', 'funded'];
+  const colTitle = {
+    seen: 'Seen',
+    origin: 'Partner × product',
+    click: 'Click',
+    start: 'Start',
+    submit: 'Submit',
+    offer: 'Offer',
+    funded: 'Funded'
+  };
+  const colX = new Map();
+  colX.set('seen', (seenStub.x0 + seenStub.x1) / 2);
+  for (const n of data.nodes) {
+    const col = n.role === 'origin' ? 'origin' : n.key;
+    if (!colX.has(col)) {
+      colX.set(col, n.role === 'origin' ? n.x0 : (n.x0 + n.x1) / 2);
+    }
+  }
+  svg.append('g')
+    .attr('class', 'col-heads')
+    .selectAll('text')
+    .data(colOrder.filter(k => colX.has(k)))
+    .join('text')
+    .attr('x', d => colX.get(d))
+    .attr('y', 16)
+    .attr('text-anchor', d => d === 'origin' ? 'end' : 'middle')
+    .attr('font-size', 10)
+    .attr('font-weight', 700)
+    .attr('fill', d => d === 'seen' ? '#94a3b8' : '#64748b')
+    .attr('letter-spacing', '0.04em')
+    .text(d => colTitle[d].toUpperCase());
+
+  svg.append('line')
+    .attr('x1', 40)
+    .attr('x2', width - 40)
+    .attr('y1', upperH + 10)
+    .attr('y2', upperH + 10)
+    .attr('stroke', '#e2e8f0')
+    .attr('stroke-dasharray', '4 4');
+
+  svg.append('text')
+    .attr('class', 'zone-label')
+    .attr('x', 228)
+    .attr('y', 32)
+    .text('Continuing path · from Click (min ' + MIN_LINK_PX + 'px lanes)');
+
+  svg.append('text')
+    .attr('class', 'zone-label')
+    .attr('x', 48)
+    .attr('y', upperH + 28)
+    .text('Leaks under each stage');
+
+  const linksG = svg.append('g').attr('class', 'links');
+  const leakLinksG = svg.append('g').attr('class', 'leak-links');
+  const nodesG = svg.append('g').attr('class', 'nodes');
+  const leakNodesG = svg.append('g').attr('class', 'leak-nodes');
+
+  // Draw muted links first, then focus links on top
+  const sortedLinks = data.links.slice().sort((a, b) => (a.muted ? 0 : 1) - (b.muted ? 0 : 1));
+
+  linksG.selectAll('path')
+    .data(sortedLinks)
+    .join('path')
+    .attr('d', d3.sankeyLinkHorizontal())
+    .attr('stroke', d => linkColor(d.kind))
+    .attr('stroke-opacity', d => {
+      if (d.muted) return 0.12;
+      if (focusActive && d.laneFocus) return 0.82;
+      return 0.62;
+    })
+    .attr('stroke-width', d => continuingStrokeWidth(d, focusActive))
+    .attr('fill', 'none')
+    .style('cursor', 'pointer')
+    .on('mousemove', (event, d) => showTip(event, linkTipHtml(d)))
+    .on('mouseleave', hideTip)
+    .on('mouseenter', function (event, d) {
+      d3.select(this).attr('stroke-opacity', d.muted ? 0.35 : 0.95);
+    })
+    .on('mouseout', function (event, d) {
+      const op = d.muted ? 0.12 : (focusActive && d.laneFocus ? 0.82 : 0.62);
+      d3.select(this).attr('stroke-opacity', op);
+    });
+
+  leakLinksG.selectAll('path')
+    .data(leakLinks)
+    .join('path')
+    .attr('d', leakLinkPath)
+    .attr('stroke', d => {
+      if (d.deemphasize && !d.trueScale) return '#94a3b8';
+      return linkColor(d.kind, d.focus);
+    })
+    .attr('stroke-opacity', d => {
+      if (d.deemphasize && !d.trueScale) return 0.22;
+      if (d.focus || d.kind === 'prevent') return 0.62;
+      return 0.38;
+    })
+    .attr('stroke-width', d => {
+      if (d.deemphasize && !d.trueScale) return Math.max(1.2, Math.min(4, d.width * 0.35));
+      return Math.max(d.focus ? 3 : 1.6, d.width * 0.85);
+    })
+    .attr('fill', 'none')
+    .style('cursor', 'pointer')
+    .on('mousemove', (event, d) => showTip(event, linkTipHtml(d)))
+    .on('mouseleave', hideTip);
+
+  // Seen stub
+  const stubG = nodesG.append('g')
+    .datum(seenStub)
+    .style('cursor', 'pointer')
+    .on('mousemove', (event, d) => showTip(event, nodeTipHtml(d)))
+    .on('mouseleave', hideTip);
+  stubG.append('rect')
+    .attr('x', d => d.x0)
+    .attr('y', d => d.y0)
+    .attr('height', d => Math.max(1.5, d.y1 - d.y0))
+    .attr('width', d => d.x1 - d.x0)
+    .attr('fill', '#94a3b8')
+    .attr('opacity', 0.55)
+    .attr('rx', 3);
+  stubG.append('text')
+    .attr('class', 'node-label')
+    .attr('x', d => (d.x0 + d.x1) / 2)
+    .attr('y', d => d.y0 - 5)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 9)
+    .attr('font-weight', 700)
+    .attr('fill', '#94a3b8')
+    .text(d => d.value.toLocaleString());
+
+  const node = nodesG.selectAll('g.cont')
+    .data(data.nodes)
+    .join('g')
+    .attr('class', 'cont')
+    .style('cursor', 'pointer')
+    .attr('opacity', d => {
+      if (!focusActive || hideNonFocus || d.role !== 'origin') return 1;
+      const parts = (d.key || '').split(':');
+      const ok = isFocusedSlice({ partner: parts[1], product: parts[2] }, product, partner);
+      return ok ? 1 : 0.28;
+    })
+    .on('mousemove', (event, d) => showTip(event, nodeTipHtml(d)))
+    .on('mouseleave', hideTip);
+
+  node.append('rect')
+    .attr('x', d => d.x0)
+    .attr('y', d => d.y0)
+    .attr('height', d => Math.max(MIN_LINK_PX, d.y1 - d.y0))
+    .attr('width', d => d.x1 - d.x0)
+    .attr('fill', d => nodeFill(d))
+    .attr('rx', 3);
+
+  node.append('text')
+    .attr('class', 'node-label')
+    .attr('x', d => d.role === 'origin' ? d.x0 - 8 : d.x1 + 8)
+    .attr('y', d => (d.y0 + d.y1) / 2)
+    .attr('dy', '0.35em')
+    .attr('text-anchor', d => d.role === 'origin' ? 'end' : 'start')
+    .attr('font-size', d => {
+      const h = d.y1 - d.y0;
+      if (d.role === 'origin') return h < 14 ? 9.5 : 11;
+      return 0;
+    })
+    .attr('font-weight', 650)
+    .attr('fill', '#0f172a')
+    .text(d => {
+      if (d.role !== 'origin') return '';
+      const h = d.y1 - d.y0;
+      if (h < 8) return '';
+      if (h < 14) {
+        return d.name.replace(' × Invoice', '·Inv')
+          .replace(' × AP', '·AP')
+          .replace(' × Term', '·Term')
+          .replace(' × LOC', '·LOC')
+          .replace('Other live', 'Other');
+      }
+      return d.name;
+    });
+
+  nodesG.selectAll('text.stage-n')
+    .data(data.nodes.filter(n => n.role === 'stage'))
+    .join('text')
+    .attr('class', 'stage-n')
+    .attr('x', d => (d.x0 + d.x1) / 2)
+    .attr('y', d => d.y0 - 5)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 9)
+    .attr('font-weight', 700)
+    .attr('fill', d => d.key === 'funded' ? '#15803d' : '#475569')
+    .text(d => d.value.toLocaleString());
+
+  const lnode = leakNodesG.selectAll('g')
+    .data(leakNodes)
+    .join('g')
+    .style('cursor', 'pointer')
+    .on('mousemove', (event, d) => showTip(event, nodeTipHtml(d)))
+    .on('mouseleave', hideTip);
+
+  lnode.append('rect')
+    .attr('x', d => d.x0)
+    .attr('y', d => d.y0)
+    .attr('height', d => Math.max(1.5, d.y1 - d.y0))
+    .attr('width', d => d.x1 - d.x0)
+    .attr('fill', d => nodeFill(d))
+    .attr('opacity', d => (d.deemphasize && !d.trueScale) ? 0.45 : 1)
+    .attr('rx', 3)
+    .attr('stroke', d => (d.focus || d.kind === 'prevent') ? (d.kind === 'prevent' ? '#ea580c' : '#c25200') : 'none')
+    .attr('stroke-width', d => (d.focus || d.kind === 'prevent') ? 1.5 : 0);
+
+  lnode.append('text')
+    .attr('class', 'node-label')
+    .attr('x', d => d.x1 + 8)
+    .attr('y', d => (d.y0 + d.y1) / 2)
+    .attr('dy', '0.35em')
+    .attr('text-anchor', 'start')
+    .attr('font-size', d => (d.deemphasize && !d.trueScale) ? 9 : (d.focus ? 11 : 10))
+    .attr('font-weight', d => (d.focus || d.kind === 'prevent') ? 750 : 600)
+    .attr('fill', d => {
+      if (d.deemphasize && !d.trueScale) return '#94a3b8';
+      if (d.kind === 'prevent') return '#c2410c';
+      if (d.focus) return '#c25200';
+      if (d.kind === 'risk') return '#b91c1c';
+      return '#475569';
+    })
+    .each(function (d) {
+      const t = d3.select(this);
+      const n = d.trueValue != null ? d.trueValue : d.value;
+      if (d.deemphasize && !d.trueScale) {
+        t.append('tspan').text('No click (de-emph · this case)');
+        t.append('tspan')
+          .attr('x', d.x1 + 8)
+          .attr('dy', '1.15em')
+          .attr('font-size', 8)
+          .attr('font-weight', 500)
+          .attr('fill', '#94a3b8')
+          .text('N=' + n.toLocaleString() + ' · expand if diagnosing surface');
+      } else {
+        t.text(d.name + ' · ' + n.toLocaleString());
+      }
+    });
+}
+
+function fillShelfTable() {
+  const rows = allSlices().map(s => `<tr>
+      <td><strong>${s.pairLabel}</strong></td>
+      <td><span class="pill ${s.product}">${PRODUCTS[s.product].label}</span></td>
+      <td class="num">${s.seen.toLocaleString()}</td>
+      <td class="num">${s.funded}</td>
+      <td class="num">$${(s.funded$ / 1000).toFixed(0)}k</td>
+    </tr>`).join('');
+  document.getElementById('shelfTable').innerHTML =
+    '<tr><th>Partner × product</th><th>Product</th><th>Seen [SIM]</th><th>Funded</th><th>Funded $</th></tr>' + rows;
+}
+
+function initPartners() {
+  const sel = document.getElementById('partnerFilter');
+  for (const p of PARTNERS) {
+    const o = document.createElement('option');
+    o.value = p.id;
+    o.textContent = p.label;
+    sel.appendChild(o);
+  }
+}
+
+document.getElementById('productFilter').addEventListener('change', render);
+document.getElementById('partnerFilter').addEventListener('change', render);
+document.getElementById('hideNonFocus').addEventListener('change', render);
+document.getElementById('trueScaleNoClick').addEventListener('change', render);
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(render, 120);
+});
+window.addEventListener('message', (ev) => {
+  if (!ev.data || ev.data.type !== 'kanmon-chart-resize') return;
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(render, 40);
+});
+
+initPartners();
+fillShelfTable();
+if (/(?:^\?|&)embed=1(?:&|$)/.test(location.search) || window.self !== window.top) {
+  document.body.classList.add('embed');
+}
+render();
+</script>
+</body>
+</html>

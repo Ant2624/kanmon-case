@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Funnel lift, soft pre-check (simulated)</title>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --bg: #f8fafc;
+      --card: #fff;
+      --accent: #c25200;
+      --new: #0369a1;
+      --lift: #15803d;
+      --leak: #94a3b8;
+      --sans: "IBM Plex Sans", "Source Sans 3", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(720px 320px at 8% -10%, #fff1e6 0%, transparent 55%),
+        var(--bg);
+      min-height: 100vh;
+      padding: 1.1rem 1.35rem 2.5rem;
+    }
+    body.embed {
+      background: #fff;
+      padding: 0.55rem 0.65rem 0.85rem;
+      min-height: 0;
+    }
+    body.embed header { display: none; }
+    body.embed .lift-mod { max-width: none; }
+    body.embed .lift-punch { display: none; }
+    header {
+      max-width: 1080px;
+      margin: 0 auto 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    h1 {
+      margin: 0.25rem 0 0;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .sub {
+      margin: 0.35rem 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      max-width: 40rem;
+      line-height: 1.45;
+    }
+    .sim {
+      display: inline-block;
+      font-size: 0.66rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: #ffedd5;
+      color: #9a3412;
+    }
+    a.back {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 650;
+      text-decoration: none;
+    }
+    a.back:hover { text-decoration: underline; }
+
+    /*, shared lift module (mirrored in case workbench), */
+    .lift-mod { max-width: 1080px; margin: 0 auto; }
+    .lift-punch {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 0.7rem;
+    }
+    @media (max-width: 720px) {
+      .lift-punch { grid-template-columns: 1fr 1fr; }
+    }
+    .lift-punch .tile {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.7rem 0.8rem;
+    }
+    .lift-punch .tile .k {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    .lift-punch .tile .v {
+      margin-top: 0.2rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .lift-punch .tile .d {
+      margin-top: 0.12rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .lift-punch .tile.new .v { color: var(--new); }
+    .lift-punch .tile.save .v { color: var(--accent); }
+    .lift-punch .tile.fund .v,
+    .lift-punch .tile.doll .v { color: var(--lift); }
+    .lift-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 0.85rem;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.6rem 0.85rem;
+      margin-bottom: 0.7rem;
+    }
+    .lift-toolbar .lbl {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    .lift-seg {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .lift-seg button {
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: 0;
+      background: #fff;
+      color: #475569;
+      padding: 0.42rem 0.7rem;
+      cursor: pointer;
+    }
+    .lift-seg button[aria-pressed="true"] {
+      background: #c25200;
+      color: #fff;
+    }
+    .lift-seg button:focus-visible {
+      outline: 2px solid #c25200;
+      outline-offset: 2px;
+    }
+    .lift-sep {
+      width: 1px;
+      height: 1.2rem;
+      background: var(--line);
+    }
+    .lift-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      margin-bottom: 0.65rem;
+    }
+    @media (max-width: 800px) {
+      .lift-compare { grid-template-columns: 1fr; }
+    }
+    .lift-col {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 0.75rem 0.85rem 0.9rem;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+    }
+    .lift-col.dim { opacity: 0.55; }
+    .lift-col.hi {
+      border-color: #fed7aa;
+      box-shadow: 0 0 0 1px #fed7aa, 0 8px 22px rgba(255, 107, 0, 0.08);
+    }
+    .lift-col h2 {
+      margin: 0 0 0.15rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .lift-col .hint {
+      margin: 0 0 0.55rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .lift-col svg { width: 100%; height: auto; display: block; }
+    .lift-changed {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+    }
+    @media (max-width: 720px) {
+      .lift-changed { grid-template-columns: 1fr; }
+    }
+    .lift-changed .ch {
+      border-left: 3px solid var(--line);
+      padding-left: 0.65rem;
+    }
+    .lift-changed .ch.new { border-color: var(--new); }
+    .lift-changed .ch.save { border-color: var(--accent); }
+    .lift-changed .ch.agg { border-color: var(--lift); }
+    .lift-changed .ch h3 {
+      margin: 0 0 0.2rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .lift-changed .ch p {
+      margin: 0;
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .lift-legend {
+      margin-top: 0.7rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.45;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 1.1rem;
+    }
+    .lift-legend .sw {
+      display: inline-block;
+      width: 0.7rem;
+      height: 0.7rem;
+      border-radius: 2px;
+      margin-right: 0.3rem;
+      vertical-align: -1px;
+    }
+    .lift-foot {
+      margin-top: 0.45rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <span class="sim">All volumes simulated, not Kanmon disclosed</span>
+      <h1>Funnel lift, soft pre-check program</h1>
+      <p class="sub">Glanceable story: new people enter from soft invite, more existing starters finish, and funded count / financed $ rise vs the simulated baseline month.</p>
+    </div>
+    <div>
+      <a class="back" href="kanmon-case-study-capital-moments.html#funnel-lift">Open in workbench</a><br />
+      <a class="back" href="kanmon-funnel-flow-visual-20260729.html">Baseline partner Sankey</a><br />
+      <a class="back" href="kanmon-preauth-funnel-lift-assumptions-20260730.md">Lift math</a>
+    </div>
+  </header>
+
+  <div class="lift-mod" id="lift-root">
+    <!-- punchline always on top for selected size -->
+    <div class="lift-punch" id="lift-punch" aria-live="polite"></div>
+
+    <div class="lift-toolbar">
+      <span class="lbl">Assumption size</span>
+      <div class="lift-seg" role="group" aria-label="Assumption size">
+        <button type="button" data-size="S" aria-pressed="false">Small</button>
+        <button type="button" data-size="M" aria-pressed="true">Medium</button>
+        <button type="button" data-size="L" aria-pressed="false">Large</button>
+      </div>
+      <span class="lift-sep"></span>
+      <span class="lbl">Highlight</span>
+      <div class="lift-seg" role="group" aria-label="Highlight column">
+        <button type="button" data-hi="both" aria-pressed="true">Both (compare)</button>
+        <button type="button" data-hi="base" aria-pressed="false">Baseline</button>
+        <button type="button" data-hi="lift" aria-pressed="false">With program</button>
+      </div>
+    </div>
+
+    <div class="lift-compare">
+      <div class="lift-col" id="col-base">
+        <h2>Baseline month (simulated)</h2>
+        <p class="hint">Continuing path · thick mid-apply abandon</p>
+        <svg id="svg-base" viewBox="0 0 480 300" role="img" aria-label="Baseline simulated funnel"></svg>
+      </div>
+      <div class="lift-col hi" id="col-lift">
+        <h2 id="lift-col-title">With soft pre-check (simulated lift · Medium)</h2>
+        <p class="hint">Blue = new inflow · thinner abandon · thicker finish path</p>
+        <svg id="svg-lift" viewBox="0 0 480 300" role="img" aria-label="With soft pre-check simulated funnel"></svg>
+      </div>
+    </div>
+
+    <div class="lift-changed" id="lift-changed"></div>
+
+    <div class="lift-legend">
+      <span><span class="sw" style="background:#c25200"></span>Continuing path (parent → next)</span>
+      <span><span class="sw" style="background:#0369a1"></span>New inflow from soft invite (assumption)</span>
+      <span><span class="sw" style="background:#94a3b8"></span>Abandon mid-apply (side leak from Started)</span>
+    </div>
+    <p class="lift-foot">Stage-local rates use the parent stage as denominator. Submit→Funded held at 26.6%. Ticket ~$18k. Completers from abandon reduction + optional new top-of-funnel, never claimed as Kanmon-disclosed data.</p>
+  </div>
+
+  <script>
+(function () {
+  const fmt = (n) => Math.round(n).toLocaleString("en-US");
+  const money = (n) => {
+    const a = Math.abs(n);
+    const sign = n < 0 ? "−" : n > 0 ? "+" : "";
+    if (a >= 1e6) return sign + "$" + (a / 1e6).toFixed(2).replace(/\.00$/, "") + "M";
+    if (a >= 1e3) return sign + "$" + Math.round(a / 1e3) + "k";
+    return sign + "$" + fmt(a);
+  };
+  const moneyAbs = (n) => money(n).replace(/^[+−]/, "");
+
+  const sizes = {
+    S: { clickAdd: 40, startToSubmit: 0.46, recover: 0.10, label: "Small" },
+    M: { clickAdd: 80, startToSubmit: 0.50, recover: 0.17, label: "Medium" },
+    L: { clickAdd: 160, startToSubmit: 0.58, recover: 0.30, label: "Large" }
+  };
+
+  function compute(sizeKey, liftOn) {
+    const s = sizes[sizeKey];
+    const seen = 8000;
+    const fundRate = 0.266;
+    const ticket = 18000;
+    const fundedBase = 51;
+    const financedBase = fundedBase * ticket;
+
+    let clicked = 960;
+    let started = 480;
+    let startToSubmit = 0.40;
+    let newClicks = 0;
+    let newStarts = 0;
+    let savedSubmits = 0;
+    let newSubmits = 0;
+
+    if (liftOn) {
+      newClicks = s.clickAdd;
+      clicked = 960 + newClicks;
+      newStarts = Math.round(newClicks * 0.5);
+      started = 480 + newStarts;
+      startToSubmit = s.startToSubmit;
+      savedSubmits = Math.round(288 * s.recover);
+      newSubmits = Math.round(newStarts * startToSubmit);
+    }
+
+    const submitted = liftOn ? Math.round(started * startToSubmit) : 192;
+    const abandoned = started - submitted;
+    const funded = Math.round(submitted * fundRate);
+    const financed = funded * ticket;
+    const deltaFunded = funded - fundedBase;
+    const deltaFinanced = financed - financedBase;
+    const fundedFromA = liftOn ? Math.round(savedSubmits * fundRate) : 0;
+    const fundedFromB = liftOn ? Math.max(0, deltaFunded - fundedFromA) : 0;
+
+    return {
+      seen, clicked, started, submitted, abandoned, funded, financed,
+      startToSubmit, newClicks, newStarts, savedSubmits, newSubmits,
+      fundedFromA, fundedFromB, deltaFunded, deltaFinanced,
+      fundedBase, financedBase, sizeLabel: s.label
+    };
+  }
+
+  function bandPath(x0, y0, h0, x1, y1, h1) {
+    const y0b = y0 + h0, y1b = y1 + h1;
+    const mx = (x0 + x1) / 2;
+    return `M${x0},${y0} C${mx},${y0} ${mx},${y1} ${x1},${y1} L${x1},${y1b} C${mx},${y1b} ${mx},${y0b} ${x0},${y0b} Z`;
+  }
+
+  function renderFlow(svg, m, opts) {
+    const liftOn = !!opts.liftOn;
+    const stages = [
+      { key: "clicked", label: "Clicked", n: m.clicked },
+      { key: "started", label: "Started", n: m.started },
+      { key: "submitted", label: "Submitted", n: m.submitted },
+      { key: "funded", label: "Funded", n: m.funded }
+    ];
+    const W = 480, H = 300;
+    const left = 56, right = 28, colW = (W - left - right) / (stages.length - 1);
+    const maxN = Math.max(m.clicked, 1040);
+    const maxH = 150;
+    const floor = 28;
+    const topY = 48;
+
+    const nodes = stages.map((s, i) => {
+      const h = Math.max(floor, (s.n / maxN) * maxH);
+      const x = left + i * colW;
+      const y = topY + (maxH - h) / 2;
+      return { ...s, x, y, h };
+    });
+
+    let html = "";
+
+    // continuing bands
+    for (let i = 0; i < nodes.length - 1; i++) {
+      const a = nodes[i], b = nodes[i + 1];
+      const hOut = Math.max(12, (b.n / a.n) * a.h);
+      const yOut = a.y + (a.h - hOut) / 2;
+      const rate = Math.round((b.n / a.n) * 100);
+      html += `<path d="${bandPath(a.x + 52, yOut, hOut, b.x, b.y, b.h)}" fill="#c25200" opacity="0.32">
+        <title>${a.label} → ${b.label}: ${fmt(b.n)} (${rate}% of ${a.label})</title></path>`;
+      const midX = (a.x + 52 + b.x) / 2;
+      html += `<text x="${midX}" y="${Math.min(yOut, b.y) - 6}" text-anchor="middle" font-size="10" fill="#c25200" font-weight="650">${rate}%</text>`;
+    }
+
+    // abandon leak from Started
+    const st = nodes[1];
+    const abH = Math.max(10, (m.abandoned / st.n) * st.h);
+    const abY = st.y + st.h - abH * 0.15;
+    const leakX = st.x + 52;
+    html += `<path d="M${leakX},${st.y + st.h - abH} C${leakX + 36},${st.y + st.h + 8} ${leakX + 48},${st.y + st.h + 42} ${leakX + 72},${st.y + st.h + 58} L${leakX + 72},${st.y + st.h + 58 + abH * 0.45} C${leakX + 48},${st.y + st.h + 42} ${leakX + 36},${st.y + st.h + 8 + abH} ${leakX},${st.y + st.h} Z" fill="#94a3b8" opacity="0.55">
+      <title>Abandoned mid-apply: ${fmt(m.abandoned)} (${Math.round((m.abandoned / st.n) * 100)}% of Started)</title></path>`;
+    html += `<text x="${leakX + 78}" y="${st.y + st.h + 62}" font-size="11" fill="#64748b" font-weight="650">Abandon ${fmt(m.abandoned)}</text>`;
+    html += `<text x="${leakX + 78}" y="${st.y + st.h + 76}" font-size="10" fill="#94a3b8">${Math.round((m.abandoned / st.n) * 100)}% of Started</text>`;
+
+    // new inflow into Clicked
+    if (liftOn && m.newClicks > 0) {
+      const cl = nodes[0];
+      const nh = Math.max(10, (m.newClicks / cl.n) * cl.h);
+      html += `<path d="M${cl.x - 48},${cl.y - 18} C${cl.x - 18},${cl.y - 4} ${cl.x - 8},${cl.y} ${cl.x},${cl.y} L${cl.x},${cl.y + nh} C${cl.x - 8},${cl.y + nh} ${cl.x - 18},${cl.y - 4 + nh} ${cl.x - 48},${cl.y - 18 + nh} Z" fill="#0369a1" opacity="0.55">
+        <title>New from soft invite (assumption): +${fmt(m.newClicks)} clicks</title></path>`;
+      html += `<text x="${cl.x - 50}" y="${cl.y - 24}" font-size="11" fill="#0369a1" font-weight="700">New +${fmt(m.newClicks)}</text>`;
+    }
+
+    nodes.forEach((n) => {
+      const fill = n.key === "funded" ? "#15803d" : "#c25200";
+      html += `<rect x="${n.x}" y="${n.y}" width="52" height="${n.h}" rx="6" fill="${fill}"/>`;
+      html += `<text x="${n.x + 26}" y="${n.y - 8}" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">${n.label}</text>`;
+      html += `<text x="${n.x + 26}" y="${n.y + n.h / 2 + 4}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${fmt(n.n)}</text>`;
+    });
+
+    // financed annotation under Funded
+    const fd = nodes[3];
+    html += `<text x="${fd.x + 26}" y="${fd.y + fd.h + 18}" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">${moneyAbs(m.financed)}</text>`;
+    html += `<text x="${fd.x + 26}" y="${fd.y + fd.h + 32}" text-anchor="middle" font-size="9" fill="#64748b">financed / mo</text>`;
+
+    html += `<text x="240" y="292" text-anchor="middle" font-size="10" fill="#94a3b8">Simulated · Seen→Click omitted for scale · parent denominators</text>`;
+    svg.innerHTML = html;
+  }
+
+  let sizeKey = "M";
+  let hi = "both";
+
+  function refresh() {
+    const base = compute(sizeKey, false);
+    const lift = compute(sizeKey, true);
+
+    document.getElementById("lift-punch").innerHTML = `
+      <div class="tile new"><div class="k">New inflow</div><div class="v">+${fmt(lift.newClicks)}</div><div class="d">Extra clicks from soft invite (assumption)</div></div>
+      <div class="tile save"><div class="k">Saved completers</div><div class="v">+${fmt(lift.savedSubmits)}</div><div class="d">Existing starters who now submit</div></div>
+      <div class="tile fund"><div class="k">Total funded lift</div><div class="v">+${fmt(lift.deltaFunded)}</div><div class="d">${fmt(base.funded)} → ${fmt(lift.funded)} funded / mo</div></div>
+      <div class="tile doll"><div class="k">$ lift</div><div class="v">${money(lift.deltaFinanced)}</div><div class="d">Extra financed / mo (simulated)</div></div>`;
+
+    if (window.parent && window.parent !== window) {
+      try {
+        window.parent.postMessage({
+          type: "kanmon-funnel-lift",
+          size: sizeKey,
+          label: lift.sizeLabel,
+          newClicks: lift.newClicks,
+          savedSubmits: lift.savedSubmits,
+          deltaFunded: lift.deltaFunded,
+          deltaFinanced: lift.deltaFinanced,
+          fundedBase: base.funded,
+          funded: lift.funded,
+          finishBase: base.startToSubmit,
+          finishProgram: lift.startToSubmit
+        }, "*");
+      } catch (_) {}
+    }
+
+    document.getElementById("lift-col-title").textContent =
+      "With soft pre-check (simulated lift · " + lift.sizeLabel + ")";
+
+    const colBase = document.getElementById("col-base");
+    const colLift = document.getElementById("col-lift");
+    colBase.classList.toggle("dim", hi === "lift");
+    colBase.classList.toggle("hi", hi === "base" || hi === "both");
+    colLift.classList.toggle("dim", hi === "base");
+    colLift.classList.toggle("hi", hi === "lift" || hi === "both");
+
+    renderFlow(document.getElementById("svg-base"), base, { liftOn: false });
+    renderFlow(document.getElementById("svg-lift"), lift, { liftOn: true });
+
+    document.getElementById("lift-changed").innerHTML = `
+      <div class="ch new"><h3>1 · New top-of-funnel</h3><p>+${fmt(lift.newClicks)} clicks → +${fmt(lift.newStarts)} starts → ~${fmt(lift.newSubmits)} submits from people who weren’t entering. Upside if soft invite + honest low-effort copy work.</p></div>
+      <div class="ch save"><h3>2 · Existing starters finish</h3><p>Start→Submit ${Math.round(base.startToSubmit * 100)}% → ${Math.round(lift.startToSubmit * 100)}%. Abandon ${fmt(base.abandoned)} → ${fmt(lift.abandoned)}. ~${fmt(lift.savedSubmits)} saved completers; ~${fmt(lift.fundedFromA)} extra funded.</p></div>
+      <div class="ch agg"><h3>3 · Aggregate lift</h3><p>Funded ${fmt(base.funded)} → ${fmt(lift.funded)} (<strong>+${fmt(lift.deltaFunded)}</strong>). Financed ${moneyAbs(base.financed)} → ${moneyAbs(lift.financed)} (<strong>${money(lift.deltaFinanced)}</strong> / mo simulated).</p></div>`;
+  }
+
+  document.querySelectorAll("[data-size]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      sizeKey = btn.getAttribute("data-size");
+      document.querySelectorAll("[data-size]").forEach((b) =>
+        b.setAttribute("aria-pressed", String(b === btn))
+      );
+      refresh();
+    });
+  });
+  document.querySelectorAll("[data-hi]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      hi = btn.getAttribute("data-hi");
+      document.querySelectorAll("[data-hi]").forEach((b) =>
+        b.setAttribute("aria-pressed", String(b === btn))
+      );
+      refresh();
+    });
+  });
+
+  if (/(?:^\?|&)embed=1(?:&|$)/.test(location.search) || window.self !== window.top) {
+    document.body.classList.add("embed");
+  }
+
+  window.addEventListener("message", (ev) => {
+    if (!ev.data || ev.data.type !== "kanmon-chart-resize") return;
+    refresh();
+  });
+  window.addEventListener("resize", () => refresh());
+
+  refresh();
+})();
+  </script>
+</body>
+</html>

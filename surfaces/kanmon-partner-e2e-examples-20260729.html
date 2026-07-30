@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kanmon + partner, end-to-end examples</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose' });
+    }
+  </script>
+  <style>
+    :root {
+      --ink: #0f172a; --muted: #64748b; --line: #e2e8f0; --bg: #f8fafc; --card: #fff;
+      --accent: #c25200; --accent-soft: #fff1e6;
+      --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+      --sans: "IBM Plex Sans", "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: var(--sans); color: var(--ink); background: var(--bg);
+      display: flex; flex-direction: column;
+    }
+    .bar {
+      flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between;
+      gap: .75rem; flex-wrap: wrap; padding: .55rem .9rem;
+      background: var(--card); border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 5;
+    }
+    .bar strong { font-size: .9rem; }
+    .bar .sub { font-size: .7rem; color: var(--muted); }
+    .tabs { display: flex; gap: .3rem; }
+    .tabs button {
+      border: 1px solid var(--line); background: #fff; color: var(--ink);
+      border-radius: 8px; padding: .32rem .7rem; font: inherit; font-size: .75rem; cursor: pointer;
+    }
+    .tabs button[aria-pressed="true"] {
+      background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 650;
+    }
+    .scroll { flex: 1 1 auto; overflow: auto; padding: 1rem 1.25rem 2.5rem; }
+    .pane { display: none; max-width: 1120px; margin: 0 auto; }
+    .pane.on { display: block; }
+    h1 { font-size: 1.45rem; letter-spacing: -.02em; margin: 0 0 .6rem; }
+    h2 { font-size: 1.15rem; margin: 1.4rem 0 .5rem; border-top: 1px solid var(--line); padding-top: .9rem; }
+    h3 { font-size: .95rem; margin: 1rem 0 .35rem; }
+    h4 { font-size: .88rem; margin: .85rem 0 .3rem; }
+    p, li { font-size: .88rem; line-height: 1.5; color: #334155; }
+    a { color: var(--accent); }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 1.1rem 0; }
+    table {
+      width: 100%; border-collapse: collapse; font-size: .8rem; margin: .55rem 0 1rem;
+      background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+    }
+    th, td { text-align: left; padding: .45rem .55rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: #f1f5f9; font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+    strong { color: var(--ink); }
+    code {
+      font-family: var(--mono); font-size: .78em; background: #f1f5f9;
+      padding: .08rem .28rem; border-radius: 4px;
+    }
+    pre {
+      font-family: var(--mono); font-size: .72rem; line-height: 1.45;
+      background: #0f172a; color: #e2e8f0; border-radius: 10px;
+      padding: .85rem 1rem; overflow-x: auto; margin: .6rem 0 1rem;
+    }
+    pre code { background: transparent; color: inherit; padding: 0; font-size: inherit; }
+    pre.mermaid {
+      background: #fff; color: var(--ink); border: 1px solid var(--line);
+      text-align: center; padding: 1.1rem 1.25rem; overflow-x: auto; margin: .6rem 0 1rem;
+    }
+    pre.mermaid svg { max-width: none; height: auto; }
+    blockquote {
+      margin: .6rem 0; padding: .5rem .75rem; border-left: 3px solid var(--accent);
+      background: #f0fdfa; color: #334155; font-size: .86rem;
+    }
+    ul, ol { padding-left: 1.2rem; }
+    .note-bar {
+      font-size: .72rem; color: var(--muted); margin-top: .15rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div>
+      <strong>Partner E2E journeys</strong>
+      <div class="sub">Full fidelity · Mermaid diagrams · works on file:// (content inlined)</div>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Document">
+      <button type="button" role="tab" id="tab-full" aria-pressed="true" data-pane="full">Full examples</button>
+      <button type="button" role="tab" id="tab-cheat" aria-pressed="false" data-pane="cheat">summary</button>
+    </div>
+  </div>
+  <div class="scroll">
+    <article id="pane-full" class="pane on" role="tabpanel"><h1 id="kanmon-partner-end-to-end-examples">Kanmon + partner, end-to-end examples</h1>
+<p><strong>Date:</strong> 2026-07-29<br />
+<strong>Purpose:</strong> Concrete journeys for Anthony’s case understanding, partner software → SMB need → financing → apply → decision → fund → repay.<br />
+<strong>Companion summary:</strong> <code>#summary</code></p>
+<hr />
+<h2 id="how-to-read-this-doc">How to read this doc</h2>
+<table>
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr>
+<th>Label</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>[public fact]</strong></td>
+<td>Stated on Kanmon.com, partner sites, help docs, or press</td>
+</tr>
+<tr>
+<td><strong>[illustrated hypothesis]</strong></td>
+<td>Fills a UX/tech/capital gap that docs do not publish; honest illustration, not confirmed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Origination levers</strong> (from case framing): <strong>surface</strong> · <strong>eligible start</strong> · <strong>offer → accept → fund</strong> · <strong>product fit</strong></p>
+<p><strong>Kanmon products [public fact]:</strong> term loans, lines of credit, invoice financing, AP financing. Kanmon is the licensed lender, provides capital, assumes credit risk (as marketed to partners). Soft credit pull. <strong>Onboarding often &lt;10 min</strong> (kanmon.com FAQ, <em>not</em> “decision &lt;10 min”). Funds often <strong>&lt;2 days</strong> / many within 1 day / “as little as 24 hours”; partner FAQs add same-day ACH (Cleo), ~1 BD (PingPong), or “as little as two days” (Cin7). <strong>Partner portals (<code>*.kanmon.com</code>) are opaque SPAs</strong>, journey facts from FAQ/KB, not pixel UI. Pressure-test: <a href="kanmon-source-check-20260729.md">kanmon-source-check-20260729.md</a>.</p>
+<hr />
+<h2 id="scenario-index">Scenario index</h2>
+<ol type="1">
+<li><strong>Cleo InvoicePay, unpaid EDI invoice → invoice financing</strong></li>
+<li><strong>PingPong Financing, e-commerce inventory peak → AP financing / term loan</strong></li>
+<li><strong>Cin7 Capital, supplier PO due → AP financing (inventory / supply chain)</strong></li>
+</ol>
+<hr />
+<h1 id="scenario-1-cleo-invoicepay-invoice-get-paid-faster">Scenario 1. Cleo InvoicePay (invoice get-paid-faster)</h1>
+<h2 id="partner-smb-who">Partner &amp; SMB (who)</h2>
+<ul>
+<li><strong>Partner [public fact]:</strong> Cleo, supply-chain / EDI software; <strong>Cleo InvoicePay™</strong> embedded in Cleo WebEDI, powered by Kanmon for credit/lending.</li>
+<li><strong>SMB [illustrated hypothesis]:</strong> Mid-size US supplier to a large retailer. Ships goods, invoices Net-60 via WebEDI. Payroll and freight hit before the buyer pays.</li>
+</ul>
+<h2 id="moment-of-need-why-now">Moment of need (why now)</h2>
+<p>Buyer’s preferred terms leave the supplier cash-short. <strong>[public fact]</strong> Cleo positions InvoicePay so suppliers get paid faster while buyers keep payment terms; approved invoices can be paid within ~24 hours (Cleo support).</p>
+<h2 id="where-financing-appears-in-the-product">Where financing appears in the product</h2>
+<p><strong>[public fact]</strong> After company setup (Owner + “Use Cleo InvoicePay” permission), a <strong>Finance</strong> control appears on individual invoices in WebEDI. Application can also start via invitation email on <code>cleo.kanmon.com</code> without logging into Cleo (for owners without EDI logins).</p>
+<p><strong>[illustrated hypothesis]</strong> Banner or empty-state CTA on an aging AR list; eligibility soft-gate before a hard apply.</p>
+<h2 id="what-the-smb-does-plain-narrative">What the SMB does (plain narrative)</h2>
+<ol type="1">
+<li>Owner completes ~15-minute application (bank connect + business info) on the Kanmon-hosted flow.<br />
+</li>
+<li>Receives one or more offers within ~3 business days if qualified.<br />
+</li>
+<li>Once approved, team members can select eligible invoices to finance inside Cleo.<br />
+</li>
+<li>For each financed invoice, funds disburse via same-day ACH; repayments are fixed ACH pulls from the chosen business bank account; early payoff refunds prorated fees.</li>
+</ol>
+<h2 id="what-kanmon-does">What Kanmon does</h2>
+<p><strong>[public fact]</strong> KYC/KYB/AML (Kanmon site); soft credit pull; underwriting using cash-flow / debt / account history / payment frequency etc.; lends and services; same-day ACH on invoice advances (Cleo Kanmon FAQ); late fees $25 / NSF $35.</p>
+<p><strong>[illustrated hypothesis]</strong> Pulls invoice metadata from partner (amount, counterparty, due date) as underwriting / eligibility inputs; webhook updates Cleo when decision, fund, repay events fire.</p>
+<h2 id="what-the-partner-gets">What the partner gets</h2>
+<p><strong>[public fact]</strong> Kanmon markets retention + financing-program insights + upsell targeting to platforms.<br />
+<strong>[illustrated hypothesis]</strong> Rev share or platform fee on funded volume (not published for Cleo); stronger stickiness for WebEDI suppliers.</p>
+<h2 id="origination-levers-that-fired">Origination levers that fired</h2>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th>Lever</th>
+<th>How it shows up here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Surface</strong></td>
+<td>Finance on invoice / Get Started, need is visible in AR workflow</td>
+</tr>
+<tr>
+<td><strong>Eligible start</strong></td>
+<td>Soft eligibility + completed app (~15 min)</td>
+</tr>
+<tr>
+<td><strong>Offer → fund</strong></td>
+<td>Offers ≤3 BD → accept → same-day ACH per invoice</td>
+</tr>
+<tr>
+<td><strong>Product fit</strong></td>
+<td>Invoice financing matches unpaid AR, not a generic term loan</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="customer-journey-smb-operator">Customer journey (SMB operator)</h3>
+<pre><code>STAGE     Notice gap → See Finance → Apply (~15m) → Wait for offers → Enable InvoicePay → Pick invoices → Funds land → Repay ACH
+JOB       Cover payroll / freight while Net-60 waits
+EMOTION   Anxious cash → Relief at in-workflow CTA → Friction (bank link) → Hope → Control (team can finance) → Trust / habit
+DROP RISK Never see CTA | Abandon bank link | Decline | Approve but never finance an invoice | NSF on repayment</code></pre>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 31%" />
+<col style="width: 20%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Operator job</th>
+<th>Emotion</th>
+<th>Drop-off risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cash pressure</td>
+<td>Cover ops before buyer pays</td>
+<td>Anxiety</td>
+<td>Seek outside lender; ignore platform</td>
+</tr>
+<tr>
+<td>Surface</td>
+<td>Notice Finance / invite</td>
+<td>Curiosity</td>
+<td>Buried permission; non-Owner can’t start</td>
+</tr>
+<tr>
+<td>Apply</td>
+<td>KYB + bank link</td>
+<td>Friction</td>
+<td>Abandon Plaid / form</td>
+</tr>
+<tr>
+<td>Decision wait</td>
+<td>Sit ≤3 BD</td>
+<td>Impatience</td>
+<td>Drop if silent</td>
+</tr>
+<tr>
+<td>First finance</td>
+<td>Select invoice + term</td>
+<td>Relief</td>
+<td>Approved but zero draws</td>
+</tr>
+<tr>
+<td>Service</td>
+<td>Watch ACH repay</td>
+<td>Habit or stress</td>
+<td>NSF / late fees → churn</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="swimlane-cleo-invoice-advance">Swimlane. Cleo invoice advance</h3>
+<pre class="mermaid">sequenceDiagram
+  actor SMB as SMB owner or ops
+  participant Cleo as Cleo WebEDI
+  participant Kanmon as Kanmon platform
+  participant Credit as KYB and soft pull
+  participant Bank as ACH SMB bank
+
+  SMB->>Cleo: Open unpaid invoice
+  Cleo-->>SMB: Show Finance CTA
+  Note over Cleo,Kanmon: Public fact - InvoicePay in WebEDI - apply may start on partner portal
+  SMB->>Kanmon: Start or resume application about 15 min
+  Kanmon->>Credit: KYB plus soft credit pull and bank review
+  Credit-->>Kanmon: Decision and offers within 3 BD if qualify
+  Kanmon-->>SMB: Offer sheet
+  SMB->>Kanmon: Accept program or limit
+  Kanmon-->>Cleo: Enable InvoicePay - illustrated hyp webhook
+  SMB->>Cleo: Select eligible invoices to finance
+  Cleo->>Kanmon: Invoice advance request
+  Kanmon->>Bank: Same-day ACH disbursement
+  Bank-->>SMB: Funds available
+  loop Servicing
+    Kanmon->>Bank: Fixed repayment ACH
+    Kanmon-->>Cleo: Balance or status update - illustrated hyp
+  end</pre>
+<h3 id="soft-pre-check-overlay-cleo-shaped">Soft pre-check overlay. Cleo-shaped (<strong>design assumption</strong>)</h3>
+<p>How partner soft pre-check would sit <em>before</em> the public-fact apply path above. Soft ≠ hard approval amount. Full architecture: <a href="kanmon-preauth-architecture-by-product-20260730.md">kanmon-preauth-architecture-by-product-20260730.md</a> · diagrams: <a href="kanmon-preauth-architecture-diagrams-20260730.html">kanmon-preauth-architecture-diagrams-20260730.html</a>.</p>
+<pre class="mermaid">sequenceDiagram
+  actor SMB as SMB owner or ops
+  participant Cleo as Cleo WebEDI
+  participant Soft as Soft pre-check service
+  participant Kanmon as Kanmon apply
+  participant UW as Underwriting
+
+  SMB->>Cleo: Open unpaid invoice
+  Note over Cleo,Soft: Design assumption - soft runs for program-eligible accounts
+  Cleo->>Soft: SoftCheck with invoice context
+  Soft-->>Cleo: Soft state plus prefill token
+  alt Soft strong or weak
+    Cleo-->>SMB: Finance CTA - soft invite only
+    SMB->>Kanmon: Open apply with prefill token
+    Kanmon-->>SMB: Prefill form
+    SMB->>Kanmon: Finish and submit
+    Kanmon->>UW: Hard decision path
+    UW-->>Kanmon: Offer or decline
+  else No need or not now
+    Cleo-->>SMB: Dismiss - invoice work continues
+  else Soft exclude or unavailable
+    Cleo-->>SMB: Standard apply or no soft claim
+  end</pre>
+<hr />
+<h3 id="technical-handshakes-cleo-shaped">Technical handshakes (Cleo-shaped)</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 36%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr>
+<th>Step</th>
+<th>Handshake</th>
+<th>Fact vs hyp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Partner session / Owner permission gate</td>
+<td><strong>[public fact]</strong> Owner + InvoicePay permission</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Redirect or embedded apply on <code>cleo.kanmon.com</code></td>
+<td><strong>[public fact]</strong> invite email login; ~15 min</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Bank link for cash-flow review</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Soft credit pull</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>KYB/KYC/AML</td>
+<td><strong>[public fact]</strong> Kanmon handles</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Underwriting inputs: bank + business history; invoice fields from Cleo</td>
+<td>bank/history <strong>[public fact]</strong>; invoice payload <strong>[illustrated hypothesis]</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>decision.rendered</code> → offers ≤3 BD</td>
+<td><strong>[public fact]</strong> timing</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Per-invoice finance → same-day ACH</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Servicing ACH + early-pay fee rebate</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Partner webhooks / ledger sync</td>
+<td><strong>[illustrated hypothesis]</strong> (Nuvei docs mention ERP ledger sync; Cleo not explicit)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="scenario-2-pingpong-financing-payments-cross-border-sellers">Scenario 2. PingPong Financing (payments / cross-border sellers)</h1>
+<h2 id="partner-smb-who-1">Partner &amp; SMB (who)</h2>
+<ul>
+<li><strong>Partner [public fact]:</strong> PingPong, cross-border payments for US e-commerce sellers; <strong>Financing powered by Kanmon</strong> (AP financing + fixed-term loans).</li>
+<li><strong>SMB [illustrated hypothesis]:</strong> Amazon/Shopify seller stocking for Prime Day; pays overseas suppliers via PingPong.</li>
+</ul>
+<h2 id="moment-of-need-why-now-1">Moment of need (why now)</h2>
+<p>Inventory must land before a demand peak; cash is tied in receivables or prior POs. <strong>[public fact]</strong> PingPong pitches stocking for major e-commerce moments; fund into PingPong account for supplier payments.</p>
+<h2 id="where-financing-appears">Where financing appears</h2>
+<p><strong>[public fact]</strong> Login → <strong>Financing</strong> tab → apply (&lt;5 min claimed) → offers (avg ~24h to offer; ≤3 BD FAQ) → pick offer; for AP financing, select bills to pay → funds deposit to PingPong account.</p>
+<h2 id="what-the-smb-does">What the SMB does</h2>
+<p>Apply in-product; connect bank; choose term loan (typical 6–12 months) and/or AP financing against supplier bills; repay via automated ACH from business bank; early repay OK; late $25 / NSF $35.</p>
+<h2 id="what-kanmon-does-1">What Kanmon does</h2>
+<p>Same lender stack: soft pull, cash-flow review, underwrite, fund, service. <strong>[public fact]</strong> Capital and credit risk on Kanmon vs partner.</p>
+<h2 id="what-the-partner-gets-1">What the partner gets</h2>
+<p><strong>[public fact]</strong> Deeper wallet in payments product; funds stay in PingPong for outbound payments.<br />
+<strong>[illustrated hypothesis]</strong> Economics via funded volume / float adjacency; retention vs pure FX/payments competitors.</p>
+<h2 id="origination-levers">Origination levers</h2>
+<table>
+<colgroup>
+<col style="width: 58%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr>
+<th>Lever</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Surface</strong></td>
+<td>Dedicated Financing tab (discoverable but not always “moment”-based)</td>
+</tr>
+<tr>
+<td><strong>Eligible start</strong></td>
+<td>&lt;5 min apply claim</td>
+</tr>
+<tr>
+<td><strong>Offer → fund</strong></td>
+<td>~24h avg to offer; fund as soon as one BD; into PingPong balance</td>
+</tr>
+<tr>
+<td><strong>Product fit</strong></td>
+<td>AP financing for supplier bills; term for growth/equipment</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="customer-journey-smb-operator-1">Customer journey (SMB operator)</h3>
+<pre><code>STAGE     Peak calendar → Open Financing → Apply (&lt;5m) → Offers → Pick AP bills / term → $ in PingPong → Pay suppliers → Monthly ACH
+JOB       Stock inventory without draining operating cash
+EMOTION   FOMO / urgency → Confidence (in payments app) → Bank-link friction → Choice overload → Action → Relief
+DROP RISK Tab never opened | App abandon | Offer too small | Fund but don&#39;t pay suppliers in-rail | Repayment stress</code></pre>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 16%" />
+<col style="width: 29%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Job</th>
+<th>Emotion</th>
+<th>Drop-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pre-peak planning</td>
+<td>Secure inventory capital</td>
+<td>Urgency</td>
+<td>Wait too long; stockout</td>
+</tr>
+<tr>
+<td>Surface</td>
+<td>Find Financing tab</td>
+<td>Neutral</td>
+<td>Silent tab / no prompt at PO moment</td>
+</tr>
+<tr>
+<td>Apply</td>
+<td>Business + bank</td>
+<td>Mild friction</td>
+<td>Abandon</td>
+</tr>
+<tr>
+<td>Choose product</td>
+<td>AP vs term</td>
+<td>Decision load</td>
+<td>Wrong product → regret</td>
+</tr>
+<tr>
+<td>Deploy funds</td>
+<td>Pay suppliers in PingPong</td>
+<td>Relief</td>
+<td>Leak to external bank (weaker partner value)</td>
+</tr>
+<tr>
+<td>Repay</td>
+<td>Monthly ACH</td>
+<td>Routine</td>
+<td>NSF</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="swimlane-pingpong-ap-term">Swimlane. PingPong AP / term</h3>
+<pre class="mermaid">sequenceDiagram
+  actor Seller as US e-comm seller
+  participant PP as PingPong app
+  participant Kanmon as Kanmon
+  participant UW as Soft pull bank UW
+  participant ACH as ACH rails
+  participant Sup as Overseas supplier
+
+  Seller->>PP: Financing tab
+  Seller->>Kanmon: Application under 5 min claimed
+  Kanmon->>UW: Soft pull and bank cash flow
+  UW-->>Kanmon: Offers avg about 24h, within 3 BD
+  alt AP financing
+    Seller->>PP: Select bills to pay
+    Kanmon->>ACH: Fund to PingPong account
+    Seller->>PP: Pay supplier via PingPong
+    PP->>Sup: Cross-border payment
+  else Term loan
+    Kanmon->>ACH: Fund to PingPong account
+    Seller->>PP: Use for growth or ops
+  end
+  loop Monthly
+    Kanmon->>ACH: Auto-debit business bank
+  end</pre>
+<hr />
+<h3 id="technical-handshakes-pingpong-shaped">Technical handshakes (PingPong-shaped)</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 45%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr>
+<th>Step</th>
+<th>Handshake</th>
+<th>Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Partner auth</td>
+<td>Logged-in PingPong session → Financing</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Embed</td>
+<td>Tab hosts Kanmon apply (iframe/SDK/redirect)</td>
+<td><strong>[illustrated hypothesis]</strong> mechanism</td>
+</tr>
+<tr>
+<td>Bank link</td>
+<td>Cash-flow for offers</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Soft pull</td>
+<td>No score impact</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Offer accept</td>
+<td>Cap request ≤ max offer</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Funding rail</td>
+<td>Deposit to <strong>PingPong account</strong> (not only external bank)</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>AP selection</td>
+<td>Bills selected in partner UI</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Future product</td>
+<td>% of daily sales repayment “soon”</td>
+<td><strong>[public fact]</strong> as roadmap claim</td>
+</tr>
+<tr>
+<td>Webhooks</td>
+<td>Balance sync to Financing dashboard</td>
+<td><strong>[illustrated hypothesis]</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="scenario-3-cin7-capital-inventory-supply-chain-ap">Scenario 3. Cin7 Capital (inventory / supply chain / AP)</h1>
+<h2 id="partner-smb-who-2">Partner &amp; SMB (who)</h2>
+<ul>
+<li><strong>Partner [public fact]:</strong> Cin7 (Core / Omni inventory platforms). <strong>Cin7 Capital</strong>, term, LOC, invoice financing, AP financing; applications reviewed by Kanmon; <strong>Cin7 Capital Invoice Financing provided by Kanmon</strong> (Cin7 marketing FAQ). Help docs also name Kanmon for deposit/repay on business bank account via Plaid.</li>
+<li><strong>SMB [illustrated hypothesis]:</strong> US wholesale / DTC brand on Cin7 Omni; must pay a supplier PO to restock SKUs before a retailer reorder.</li>
+</ul>
+<h2 id="moment-of-need-why-now-2">Moment of need (why now)</h2>
+<p>AP due now; inventory turns later. <strong>[public fact]</strong> AP financing = fund supplier payments now, repay later; term loans for lump-sum CapEx.</p>
+<h2 id="where-financing-appears-1">Where financing appears</h2>
+<p><strong>[public fact]</strong> Cin7 Omni: <strong>Money → Cin7 Capital → funding portal</strong>; choose financing type; response via email ~2 days (help) / within 3 days (marketing FAQ). One active financing type at a time (help apply article).</p>
+<h2 id="what-the-smb-does-1">What the SMB does</h2>
+<p>Answer business questions; connect bank via Plaid to Kanmon; soft pull; receive offers; accept; for AP, finance POs/supplier invoices; repayments auto-debit business bank.</p>
+<h2 id="what-kanmon-does-2">What Kanmon does</h2>
+<p>Underwrite and fund as lender; deposit to / withdraw from business bank. <strong>[public fact]</strong> US businesses only for apply.</p>
+<h2 id="what-the-partner-gets-2">What the partner gets</h2>
+<p><strong>[public fact]</strong> Embedded capital next to inventory ops; Kanmon as trusted partner narrative.<br />
+<strong>[illustrated hypothesis]</strong> Retention when inventory + capital co-located; possible rev share unpublished.</p>
+<h2 id="origination-levers-1">Origination levers</h2>
+<table>
+<colgroup>
+<col style="width: 58%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr>
+<th>Lever</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Surface</strong></td>
+<td>Money menu / Capital portal (hub, not always PO-moment)</td>
+</tr>
+<tr>
+<td><strong>Eligible start</strong></td>
+<td>Plaid + questions; Owner accepts offer</td>
+</tr>
+<tr>
+<td><strong>Offer → fund</strong></td>
+<td>~1–2 BD offers (Kanmon blurb on Cin7); funds to business bank</td>
+</tr>
+<tr>
+<td><strong>Product fit</strong></td>
+<td>AP for supplier payables; term/LOC/invoice as alternatives</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note [public fact nuance]:</strong> Cin7 FAQ singles out invoice financing as “provided by Kanmon”; help overview attributes review of all Capital types to Kanmon. Treat broader product coverage as <strong>partner-documented</strong>, invoice line as <strong>explicitly Kanmon</strong>.</p>
+<hr />
+<h3 id="customer-journey-smb-operator-2">Customer journey (SMB operator)</h3>
+<pre><code>STAGE     PO due → Money/Capital → Apply + Plaid → Wait email → Accept type → Fund AP → Stock lands → Auto repay
+JOB       Pay supplier without starving ops cash
+EMOTION   Deadline stress → “financing is in my ERP” → Trust leap (bank) → Waiting → Clarity → Execution relief
+DROP RISK Never open Money menu | Fail Plaid | Wrong product type lock | One-type-at-a-time constraint | Decline</code></pre>
+<hr />
+<h3 id="swimlane-cin7-ap-financing">Swimlane. Cin7 AP financing</h3>
+<pre class="mermaid">flowchart LR
+  subgraph SMB["SMB ops"]
+    A["PO or supplier invoice due"]
+    B["Apply in Cin7 Capital"]
+    C["Accept offer"]
+    D["Stock and sell"]
+  end
+  subgraph Partner["Cin7 Omni Core"]
+    E["Money to Capital portal"]
+  end
+  subgraph Kanmon["Kanmon"]
+    F["KYB + Plaid + soft pull"]
+    G["Underwrite and offers"]
+    H["Fund and service"]
+  end
+  subgraph Rails["Bank ACH"]
+    I["Business bank deposit"]
+    J["Auto repayment debit"]
+  end
+  A --> E --> B --> F --> G --> C --> H --> I --> D
+  H --> J</pre>
+<hr />
+<h3 id="technical-handshakes-cin7-shaped">Technical handshakes (Cin7-shaped)</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 45%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr>
+<th>Step</th>
+<th>Handshake</th>
+<th>Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nav</td>
+<td>Money → Cin7 Capital portal</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Product picker</td>
+<td>Term / LOC / invoice / AP</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Bank</td>
+<td>Plaid → Kanmon</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Soft pull</td>
+<td>No personal score impact</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Decision email</td>
+<td>~2 days help / ≤3 days marketing</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Constraint</td>
+<td>One financing type active; change via help@kanmon.com</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Funding</td>
+<td>ACH to business bank (not marketplace wallet)</td>
+<td><strong>[public fact]</strong></td>
+</tr>
+<tr>
+<td>Inventory context</td>
+<td>PO/SKU data as UW feature</td>
+<td><strong>[illustrated hypothesis]</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="cross-cutting-full-system-journey">Cross-cutting, full system journey</h1>
+<p>End-to-end across any partner: <strong>distribution in SaaS → origination at Kanmon → credit decision → cash movement → servicing → partner analytics</strong>.</p>
+<pre><code>┌─────────────┐     embed / API / iframe      ┌──────────────────┐
+│ Partner SaaS│ ◄───────────────────────────► │ Kanmon platform  │
+│ (Cleo / PP /│   session, eligibility,       │ apply · offers · │
+│  Cin7 …)    │   invoice/PO context, UI      │ ledger · webhooks│
+└──────┬──────┘                               └────────┬─────────┘
+       │                                               │
+       │ surface / CTA                                 │ KYB AML
+       │                                               ▼
+       │                                      ┌──────────────────┐
+       │                                      │ Underwriting /   │
+       │                                      │ decisioning      │
+       │                                      │ soft pull·bank·  │
+       │                                      │ partner signals  │
+       │                                      └────────┬─────────┘
+       │                                               │ approve
+       │                                               ▼
+       │                                      ┌──────────────────┐
+       │                                      │ Capital / funding│
+       │                                      │ (see bridge)     │
+       │                                      └────────┬─────────┘
+       │                                               │ ACH / wallet
+       ▼                                               ▼
+┌─────────────┐                               ┌──────────────────┐
+│ SMB uses $  │ ◄──── disbursement ────────── │ Servicing /      │
+│ in workflow │ ──── repayments / NSF ──────► │ collections      │
+└─────────────┘                               └────────┬─────────┘
+                                                       │ events
+                                                       ▼
+                                              ┌──────────────────┐
+                                              │ Partner analytics│
+                                              │ retention·volume │
+                                              │ [hyp: dashboards]│
+                                              └──────────────────┘</code></pre>
+<pre class="mermaid">flowchart TB
+  PS["Partner SaaS"] <-->|"API embed webhooks"| KP["Kanmon platform"]
+  KP --> UW["KYB soft pull UW"]
+  UW -->|decision| KP
+  KP --> CAP["Capital funding source"]
+  CAP --> ACH["ACH or partner wallet"]
+  ACH --> SMB["SMB bank or PingPong balance"]
+  KP --> SVC["Servicing and collections"]
+  SVC --> ACH
+  KP -->|"program insights"| PA["Partner analytics"]</pre>
+<p><strong>Origination (product sense):</strong> a funded loan/advance created through a partner surface.<br />
+<strong>Origination (capital sense):</strong> a <strong>loan asset</strong> is born, principal outstanding that someone (Kanmon and/or a capital partner) must fund and whose credit risk someone holds.</p>
+<hr />
+<h1 id="bridge-to-fis-and-capital-markets">Bridge to FIs and capital markets</h1>
+<h2 id="what-is-known-about-kanmon-specifically">What is known about Kanmon specifically</h2>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Label</th>
+<th>Source / note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kanmon is a <strong>licensed business lender</strong>; CA DFPI Finance Lenders Law license cited</td>
+<td><strong>[public fact]</strong></td>
+<td>kanmon.com, partner footers</td>
+</tr>
+<tr>
+<td>“<strong>Kanmon provides the capital</strong>” and “<strong>assumes all credit risk</strong>” (partner-facing)</td>
+<td><strong>[public fact]</strong></td>
+<td>kanmon.com FAQ</td>
+</tr>
+<tr>
+<td>Soft pull; KYC/KYB/AML; servicing/collections</td>
+<td><strong>[public fact]</strong></td>
+<td>kanmon.com</td>
+</tr>
+<tr>
+<td>Equity investors (e.g. a16z, Bessemer, Alumni, TruStage Ventures Discovery Fund, etc.)</td>
+<td><strong>[public fact]</strong></td>
+<td>third-party funding databases / TruStage press listing Kanmon in Discovery Fund</td>
+</tr>
+<tr>
+<td>Named <strong>warehouse bank</strong>, <strong>forward-flow buyer</strong>, or <strong>ABS</strong> deal</td>
+<td><strong>Not found in public research for this doc</strong></td>
+<td>Do <strong>not</strong> invent bank names</td>
+</tr>
+<tr>
+<td>TruStage = automatic credit-union loan funding</td>
+<td><strong>[illustrated hypothesis, do not treat as fact]</strong></td>
+<td>TruStage is an equity/strategic investor signal only</td>
+</tr>
+</tbody>
+</table>
+<h2 id="industry-typical-capital-stack-embedded-commercial-lending">Industry-typical capital stack (embedded commercial lending)</h2>
+<p>Use this to reason in interviews; label clearly as <strong>industry pattern</strong>, not Kanmon disclosure.</p>
+<pre><code>  EQUITY (VC)                    ← absorbs early losses / builds platform
+        │
+        ▼
+  ┌─────────────────┐
+  │ Originator      │  Kanmon as lender of record [public fact for Kanmon]
+  │ (balance sheet) │  holds loans temporarily or longer
+  └────────┬────────┘
+           │ advances against eligible loans
+           ▼
+  ┌─────────────────┐
+  │ Warehouse line  │  bank/FI revolver secured by loan book
+  │ [industry hyp]  │  originator keeps asset; shares risk vs advance rate
+  └────────┬────────┘
+           │ periodic true sale / takeout
+           ▼
+  ┌─────────────────┐
+  │ Forward flow /  │  committed buyer purchases eligible originations
+  │ whole-loan sale │  credit risk moves to buyer (if true sale)
+  └────────┬────────┘
+           │ at scale
+           ▼
+  ┌─────────────────┐
+  │ ABS / rated     │  pool packaged for institutional capital
+  │ vehicle         │  e.g. peers like Parafin announce FF into rated vehicles
+  └─────────────────┘</code></pre>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 36%" />
+<col style="width: 36%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Who funds cash to SMB day-0?</th>
+<th>Who holds credit risk after?</th>
+<th>When used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Balance sheet</strong></td>
+<td>Lender’s own cash / equity</td>
+<td>Lender</td>
+<td>Early stage; small book</td>
+</tr>
+<tr>
+<td><strong>Warehouse</strong></td>
+<td>Warehouse advances most of UPB</td>
+<td>Mostly lender (asset stays on BS)</td>
+<td>Scale without waiting for sale</td>
+</tr>
+<tr>
+<td><strong>Forward flow</strong></td>
+<td>Often wet/dry funded then sold</td>
+<td>Buyer after true sale</td>
+<td>Predictable takeout; recycle capital</td>
+</tr>
+<tr>
+<td><strong>Whole-loan sale</strong></td>
+<td>Originator then buyer at tape</td>
+<td>Buyer</td>
+<td>One-off portfolio sale</td>
+</tr>
+<tr>
+<td><strong>ABS</strong></td>
+<td>SPV / noteholders</td>
+<td>Structure-dependent</td>
+<td>Mature, rated, large pools</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Plain English:</strong> When an SMB gets funded in 24 hours, <strong>cash left someone’s account that day</strong>. Publicly, Kanmon says that someone is <strong>Kanmon</strong> (lender + capital + credit risk). Behind the curtain, many embedded lenders <strong>recycle</strong> that capital via warehouses and forward flows so equity isn’t dollar-for-dollar behind every loan. <strong>No public Kanmon warehouse/FF/ABS name was found</strong>, treat recycling as <strong>plausible scale path</strong>, not confirmed.</p>
+<p><strong>What “origination” means to a capital partner:</strong> a loan that meets <strong>eligibility criteria</strong> (product, FICO/business metrics, geography, concentrations) and can be <strong>purchased or advanced against</strong>. Partner SaaS distribution matters because it creates <strong>flow of eligible assets</strong>, not just marketing leads.</p>
+<hr />
+<h1 id="handshake-catalog-illustrative-api-events">Handshake catalog (illustrative API / events)</h1>
+<p>Names are <strong>[illustrated hypothesis]</strong> unless a partner FAQ implies the behavior. Useful for “how would you instrument originations?” answers.</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 19%" />
+<col style="width: 15%" />
+<col style="width: 42%" />
+</colgroup>
+<thead>
+<tr>
+<th>Event / API</th>
+<th>Direction</th>
+<th>Purpose</th>
+<th>Typical payload (hyp)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session.create</code></td>
+<td>Partner → Kanmon</td>
+<td>Bind logged-in SMB to lending session</td>
+<td><code>partner_id</code>, <code>external_user_id</code>, <code>roles</code></td>
+</tr>
+<tr>
+<td><code>eligibility.check</code></td>
+<td>Partner → Kanmon</td>
+<td>Soft gate before CTA</td>
+<td><code>segment</code>, <code>invoice_age</code>, <code>country=US</code></td>
+</tr>
+<tr>
+<td><code>context.push</code></td>
+<td>Partner → Kanmon</td>
+<td>Invoice/PO/payment context</td>
+<td><code>invoice_id</code>, <code>amount</code>, <code>due_date</code>, <code>counterparty</code></td>
+</tr>
+<tr>
+<td><code>application.submit</code></td>
+<td>SMB → Kanmon</td>
+<td>KYB + consents + bank token</td>
+<td>Plaid public token, beneficial owners</td>
+</tr>
+<tr>
+<td><code>credit.soft_pull</code></td>
+<td>Kanmon → bureau</td>
+<td>Soft inquiry</td>
+<td>consent id</td>
+</tr>
+<tr>
+<td><code>decision.rendered</code></td>
+<td>Kanmon → Partner/SMB</td>
+<td>Offers or decline</td>
+<td><code>offers[]</code>, <code>expires_at</code>, <code>reason_codes</code></td>
+</tr>
+<tr>
+<td><code>offer.accepted</code></td>
+<td>SMB → Kanmon</td>
+<td>Lock product / limit</td>
+<td><code>offer_id</code>, <code>amount</code></td>
+</tr>
+<tr>
+<td><code>draw.request</code></td>
+<td>Partner/SMB → Kanmon</td>
+<td>Finance specific invoice/PO or LOC draw</td>
+<td><code>instrument_id</code>, <code>amount</code></td>
+</tr>
+<tr>
+<td><code>funding.initiated</code></td>
+<td>Kanmon → rails</td>
+<td>ACH or wallet credit started</td>
+<td><code>rail</code>, <code>destination</code></td>
+</tr>
+<tr>
+<td><code>funding.settled</code></td>
+<td>Rails → Kanmon → Partner</td>
+<td>Money available</td>
+<td><code>settled_at</code>, <code>amount</code></td>
+</tr>
+<tr>
+<td><code>repayment.posted</code></td>
+<td>Kanmon → Partner</td>
+<td>Schedule item cleared</td>
+<td><code>amount</code>, <code>principal</code>, <code>fees</code></td>
+</tr>
+<tr>
+<td><code>repayment.failed</code></td>
+<td>Kanmon → Partner</td>
+<td>NSF / late</td>
+<td>fee flags</td>
+</tr>
+<tr>
+<td><code>servicing.statement</code></td>
+<td>Kanmon → SMB/Partner</td>
+<td>Balance / history</td>
+<td>ledger snapshot</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="anti-examples-what-is-not-an-origination">Anti-examples, what is NOT an origination</h1>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th>Event</th>
+<th>Why it doesn’t count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Partner <strong>signed</strong> a Kanmon contract</td>
+<td>Distribution potential, zero funded loans</td>
+</tr>
+<tr>
+<td>SMB <strong>clicked</strong> Finance / opened tab</td>
+<td>Surface only, no start</td>
+</tr>
+<tr>
+<td>Application <strong>started</strong> then abandoned</td>
+<td>No eligible completed start</td>
+</tr>
+<tr>
+<td>Application <strong>declined</strong></td>
+<td>Credit outcome; not a funded origination</td>
+</tr>
+<tr>
+<td>Offer rendered, <strong>not accepted</strong></td>
+<td>No asset created</td>
+</tr>
+<tr>
+<td>Approved limit, <strong>zero draws</strong></td>
+<td>Limit ≠ origination volume</td>
+</tr>
+<tr>
+<td>Marketing email open</td>
+<td>Awareness, not workflow origination</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PM takeaway:</strong> North-star <strong>funded originations through partners</strong> = count <strong><code>funding.settled</code></strong> (and repeat draws), not logos or clicks.</p>
+<hr />
+<h2 id="sources-primary">Sources (primary)</h2>
+<ul>
+<li>https://kanmon.com/<br />
+</li>
+<li>https://cleo.kanmon.com/ · Cleo support InvoicePay articles<br />
+</li>
+<li>https://www.international.pingpongx.com/smb/financing/clients<br />
+</li>
+<li>https://www.cin7.com/features/finance/capital/ · Cin7 Omni/Core Capital help articles<br />
+</li>
+<li>Industry capital patterns: forward-flow / warehouse explainers (e.g. PeerSense, Column, peer FF announcements), <strong>not</strong> Kanmon disclosures</li>
+</ul>
+<hr />
+<h2 id="optional-practice-management-vertical-unnamed">Optional: practice-management vertical (unnamed)</h2>
+<p>Kanmon site markets <strong>practice management → term + LOC</strong>. No named practice-management customer was used here as a confirmed logo. If needed in interview: reuse Scenario 3 shape with <strong>equipment / hiring LOC</strong> and label partner <strong>“practice-management-like [hyp].”</strong></p>
+</article>
+    <article id="pane-cheat" class="pane" role="tabpanel"><h1 id="kanmon-partner-e2e-summary">Kanmon partner E2E, summary</h1>
+<p><strong>Full writeup:</strong> <code>#full</code><br />
+<strong>Labels:</strong> <strong>[F]</strong> = public fact · <strong>[H]</strong> = illustrated hypothesis</p>
+<hr />
+<h2 id="three-scenarios-titles">Three scenarios (titles)</h2>
+<ol type="1">
+<li><strong>Cleo InvoicePay</strong>, unpaid EDI invoice → invoice financing<br />
+</li>
+<li><strong>PingPong Financing</strong>, e-comm inventory peak → AP financing / term loan<br />
+</li>
+<li><strong>Cin7 Capital</strong>, supplier PO due → AP financing (inventory)</li>
+</ol>
+<hr />
+<h2 id="shared-spine-any-partner">Shared spine (any partner)</h2>
+<pre><code>Need in SaaS → SURFACE → eligible START → OFFER → ACCEPT → FUND → USE → REPAY
+                                                      ↑
+                                         Kanmon = lender, capital, credit risk [F]</code></pre>
+<p><strong>Not originations:</strong> signed partner · click only · declined · offer not accepted · limit with $0 draws.</p>
+<hr />
+<h2 id="customer-journey-one-line">Customer journey (one line)</h2>
+<table>
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 25%" />
+<col style="width: 41%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>Cleo</th>
+<th>PingPong</th>
+<th>Cin7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trigger</td>
+<td>Net-60 AR</td>
+<td>Peak inventory</td>
+<td>PO / AP due</td>
+</tr>
+<tr>
+<td>Surface</td>
+<td>Finance on invoice [F]</td>
+<td>Financing tab [F]</td>
+<td>Money → Capital [F]</td>
+</tr>
+<tr>
+<td>Apply</td>
+<td>~15 min + bank [F]</td>
+<td>&lt;5 min + bank [F]</td>
+<td>Questions + Plaid [F]</td>
+</tr>
+<tr>
+<td>Decision</td>
+<td>≤3 BD offers [F]</td>
+<td>~24h avg / ≤3 BD [F]</td>
+<td>~1–2 BD [F]</td>
+</tr>
+<tr>
+<td>Fund rail</td>
+<td>Same-day ACH [F]</td>
+<td>Into PingPong wallet [F]</td>
+<td>Business bank ACH [F]</td>
+</tr>
+<tr>
+<td>Drop risks</td>
+<td>Never see CTA; approve-no-draw</td>
+<td>Silent tab; wrong product</td>
+<td>Hub buried; one-type lock</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="handshake-spine-instrument-this">Handshake spine (instrument this)</h2>
+<pre><code>session.create → eligibility.check → application.submit
+  → credit.soft_pull → decision.rendered → offer.accepted
+  → draw.request → funding.initiated → funding.settled
+  → repayment.posted | repayment.failed</code></pre>
+<p>Names are <strong>[H]</strong>; behaviors (soft pull, ACH, bank link) are <strong>[F]</strong> where partner FAQs say so.</p>
+<hr />
+<h2 id="system-map-boxes">System map (boxes)</h2>
+<pre><code>Partner SaaS ←→ Kanmon platform ←→ UW / KYB / soft pull
+                      ↓
+              Capital / funding  →  ACH or partner wallet  →  SMB
+                      ↓
+              Servicing ←→ Partner analytics / webhooks [H]</code></pre>
+<hr />
+<h2 id="capital-stack-30-seconds">Capital stack, 30 seconds</h2>
+<p><strong>Kanmon [F]:</strong> licensed lender; “provides the capital”; “assumes all credit risk”; equity-backed (a16z/Bessemer/TruStage Ventures Discovery Fund listed publicly as investors, <strong>equity</strong>, not proven loan warehouse).</p>
+<p><strong>Not found [F]:</strong> named warehouse bank, forward-flow buyer, or ABS for Kanmon, <strong>don’t invent</strong>.</p>
+<p><strong>Industry path [H] as scale:</strong> balance sheet → warehouse revolver → forward flow / whole-loan sale → ABS. Day-0 cash always comes from <em>someone</em>; at scale originators recycle via takeout so equity ≠ every dollar of UPB.</p>
+<p><strong>Origination for capital partners:</strong> eligible <strong>loan asset</strong> created (<code>funding.settled</code>), not a SaaS click.</p>
+<hr />
+<h2 id="interview-hooks">Interview hooks</h2>
+<ul>
+<li>North star = <strong>funded originations through partners</strong> → count settled funds.<br />
+</li>
+<li>Levers: surface × eligible start × offer-fund × product fit.<br />
+</li>
+<li>Cleo = best <strong>moment</strong> example (invoice). PingPong/Cin7 = <strong>hub</strong> examples (tab/menu). Capital Moments thesis = move hub → moment.<br />
+</li>
+<li>You own distribution UX; Credit owns who gets an offer.</li>
+</ul>
+</article>
+  </div>
+  <script>
+    /* Disable Mermaid auto-run until the active pane is shown (hidden panes → blank SVG). */
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 48, rankSpacing: 56, padding: 16 },
+      sequence: { mirrorActors: false, actorMargin: 40, messageMargin: 36, boxMargin: 10, noteMargin: 12, width: 168 }
+    });
+    function cacheMermaidSrc(n) {
+      if (!n.dataset.mermaidSrc) n.dataset.mermaidSrc = n.textContent;
+    }
+    function resetMermaidNode(n) {
+      cacheMermaidSrc(n);
+      n.removeAttribute('data-processed');
+      n.removeAttribute('data-mermaid-processed');
+      n.removeAttribute('id');
+      n.innerHTML = '';
+      n.textContent = n.dataset.mermaidSrc.trim();
+    }
+    function mermaidNodeBroken(n) {
+      if (!n.getAttribute('data-processed')) return true;
+      const svg = n.querySelector('svg');
+      if (!svg) return true;
+      const r = svg.getBoundingClientRect();
+      return r.width < 12 || r.height < 12;
+    }
+    async function renderMermaidIn(root, attempt, opts) {
+      if (!root || typeof mermaid === 'undefined') {
+        if ((attempt || 0) < 25) setTimeout(() => renderMermaidIn(root, (attempt || 0) + 1, opts), 120);
+        return;
+      }
+      const force = !!(opts && opts.force);
+      const nodes = [...root.querySelectorAll('pre.mermaid')];
+      if (!nodes.length) return;
+      nodes.forEach(cacheMermaidSrc);
+      const toRun = [];
+      for (const n of nodes) {
+        if (force || mermaidNodeBroken(n)) {
+          resetMermaidNode(n);
+          toRun.push(n);
+        }
+      }
+      if (!toRun.length) return;
+      try { await mermaid.run({ nodes: toRun }); xmLastW = document.body.clientWidth || 0; }
+      catch (err) { console.warn('Mermaid render', err); }
+      if (toRun.some(mermaidNodeBroken) && (attempt || 0) < 8) {
+        setTimeout(() => renderMermaidIn(root, (attempt || 0) + 1, { force: true }), 120);
+      }
+    }
+
+    /* Re-render if our viewport size changes meaningfully (e.g. this page is
+       shown inside an iframe that was hidden when we first rendered). */
+    let xmLastW = 0;
+    function xmRerender(force) {
+      const root = document.querySelector('.pane.on') || document.body;
+      renderMermaidIn(root, 0, { force: !!force });
+      xmLastW = document.body.clientWidth || 0;
+    }
+    let xmT;
+    window.addEventListener('resize', () => {
+      clearTimeout(xmT);
+      xmT = setTimeout(() => {
+        const w = document.body.clientWidth || 0;
+        if (Math.abs(w - xmLastW) > 80) xmRerender(true);
+      }, 150);
+    });
+    window.addEventListener('message', (e) => {
+      if (e && e.data && e.data.type === 'kanmon-chart-resize') xmRerender(true);
+    });
+
+    function showPane(id) {
+      document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + id));
+      document.querySelectorAll('.tabs button').forEach(b => {
+        b.setAttribute('aria-pressed', String(b.dataset.pane === id));
+      });
+      history.replaceState(null, '', id === 'cheat' ? '#summary' : '#full');
+      const pane = document.getElementById('pane-' + id);
+      if (pane) {
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          renderMermaidIn(pane, 0, { force: true });
+        }));
+      }
+    }
+    document.querySelectorAll('.tabs button').forEach(b => {
+      b.addEventListener('click', () => showPane(b.dataset.pane));
+    });
+    const hash = (location.hash || '#full').toLowerCase();
+    const start = (hash === '#summary' || hash === '#cheat') ? 'cheat' : 'full';
+    showPane(start);
+    window.addEventListener('hashchange', () => {
+      const h = (location.hash || '#full').toLowerCase();
+      showPane((h === '#summary' || h === '#cheat') ? 'cheat' : 'full');
+    });
+  </script>
+</body>
+</html>
