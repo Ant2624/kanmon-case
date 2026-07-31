@@ -903,6 +903,14 @@
     #approach-narrative-text ol li{counter-increment:step;position:relative;padding-left:2.3rem;margin:.85rem 0;line-height:1.5;color:#475569;font-size:.9rem;}
     #approach-narrative-text ol li:before{content:counter(step);position:absolute;left:0;top:.05rem;width:1.55rem;height:1.55rem;border-radius:50%;background:var(--accent-soft,#fff1e6);color:var(--accent,#c25200);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;}
     #approach-narrative-text ol li strong{display:block;color:#0f172a;margin-bottom:.12rem;font-size:.95rem;}
+  
+    /* in-page jump nav for the long build-log page */
+    .log-jump{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;
+      margin:0 0 .8rem;padding:.55rem .1rem;background:#ffffff;border-bottom:1px solid var(--line,#e2e8f0);box-shadow:0 4px 10px -6px rgba(15,23,42,.15);}
+    .log-jump .lj-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted,#64748b);font-weight:800;margin-right:.2rem;}
+    .log-jump button{font:inherit;font-size:.76rem;font-weight:650;border:1px solid var(--line,#e2e8f0);background:#fff;color:#334155;border-radius:99px;padding:.3rem .7rem;cursor:pointer;}
+    .log-jump button:hover{border-color:var(--brand,#FF6B00);color:var(--accent,#c25200);}
+    #process-narrative,#log-related,#effort,#process-beats,#wf-timeline,#wf-artifacts{scroll-margin-top:56px;}
   </style>
 </head>
 <body>
@@ -2598,6 +2606,16 @@
     <section id="log" class="stage" role="tabpanel">
 
       <div class="you-are">You are here: <strong>Show</strong> (approach story and process log)</div>
+      <nav class="log-jump" aria-label="Jump within this page">
+        <span class="lj-lbl">On this page</span>
+        <button type="button" data-jump="process-narrative">Approach</button>
+        <button type="button" data-jump="log-related">Related work</button>
+        <button type="button" data-jump="effort">How I built it</button>
+        <button type="button" data-jump="process-beats">The beats</button>
+        <button type="button" data-jump="wf-timeline">Raw timeline</button>
+        <button type="button" data-jump="wf-artifacts">Artifacts</button>
+      </nav>
+
       <div class="feature-banner" id="journey-milestones" style="margin-bottom:.7rem">
         <div class="kicker">Live idea</div>
         <h2>A pre-approval estimate and a shorter application</h2>
@@ -2627,7 +2645,7 @@
         <p class="note" style="margin-top:.65rem">Detailed process beats are below if you want the full work log. Simulation numbers are illustrative, not Kanmon disclosed data.</p>
       </div>
 
-      <div class="card" style="margin-bottom:.7rem">
+      <div class="card" id="log-related" style="margin-bottom:.7rem">
         <div class="kicker">Jump to related work</div>
         <p class="lead" style="margin:0 0 .5rem;font-size:.86rem">Links that match each part of the story above.</p>
         <div class="chapter-list">
@@ -8355,5 +8373,22 @@
     }, true);
   })();
 </script>
+<script>
+
+    // in-page jump nav (build-log page): scroll the real container (#main-canvas) instantly
+    (function(){
+      var canvas=document.getElementById('main-canvas');
+      document.querySelectorAll('.log-jump button[data-jump]').forEach(function(b){
+        b.addEventListener('click',function(){
+          var t=document.getElementById(b.getAttribute('data-jump'));
+          if(!t||!canvas) return;
+          var bar=document.querySelector('.log-jump');
+          var barH=bar?bar.getBoundingClientRect().height:44;
+          var top=t.getBoundingClientRect().top - canvas.getBoundingClientRect().top + canvas.scrollTop - barH - 24;
+          canvas.scrollTo({top:Math.max(0,top), behavior:'auto'});
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
