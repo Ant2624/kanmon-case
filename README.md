@@ -37,7 +37,7 @@ A few of the pages it opens are also built for an audience, the working demo abo
 ```
 index.html      opens on the presentation (the intended view); behind it sits
                 the workbench and build log I worked from
-raw-notes.md    my raw notes, verbatim (also raw-notes.pdf) — the thinking this grew from
+raw-notes.md    my raw notes, verbatim (also raw-notes.pdf), the thinking this grew from
 surfaces/       interactive working pieces: demo, funnel charts, architecture, mocks
 notes/          my working notes behind every claim (indexed, not polished for reading)
 assets/         images

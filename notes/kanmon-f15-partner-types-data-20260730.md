@@ -64,7 +64,7 @@ Soft pre-auth only works if the partner already sits on **signals of identity, c
 | Finance-on-invoice activation state **[FACT]** | Who already opted into lending rail | Soft-pass campaign only to activated + good invoice set |
 
 **Wider net:** campaign SMBs with recurring unpaid AR who never click Finance.  
-**Streamline:** prefill invoice + business from EDI profile.  
+**Prefill:** prefill invoice + business from EDI profile.  
 **Confident drive:** “This invoice is a fit to check funding”, object-true, not generic capital spam.
 
 ---
@@ -78,7 +78,7 @@ Soft pre-auth only works if the partner already sits on **signals of identity, c
 | Business KYC already done for wallet **[HYP]** | Prefill KYB fields | Consent + field map wallet KYC → Kanmon apply |
 
 **Wider net:** high-volume wallet users who never open Financing tab.  
-**Streamline:** skip re-keying entity/volume.  
+**Prefill:** skip re-keying entity/volume.  
 **Confident drive:** “Based on your payout activity, a quick check is low-effort.”
 
 ---
@@ -92,7 +92,7 @@ Soft pre-auth only works if the partner already sits on **signals of identity, c
 | Multi-entity locations | Identity complexity | Entity-resolution assist (ties to F16 research) |
 
 **Wider net:** PO spikes / seasonal builds.  
-**Streamline:** PO-backed apply prefill.  
+**Prefill:** PO-backed apply prefill.  
 **Confident drive:** tie CTA to **that PO**, not a buried Capital hub.
 
 ---
