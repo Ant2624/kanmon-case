@@ -897,6 +897,12 @@
   
   .pm-framing{margin-top:1rem;max-width:60ch;font-size:.82rem;line-height:1.5;color:var(--muted,#64748b);border-left:3px solid var(--brand,#FF6B00);padding:.5rem 0 .5rem .8rem;}
   .wb-context-tag{display:inline-block;font-size:.68rem;font-weight:700;color:var(--accent,#c25200);background:#fff1e6;border:1px solid #fed7aa;border-radius:99px;padding:.15rem .55rem;margin-left:.5rem;vertical-align:middle;}
+  
+    /* approach story: scannable stepped list instead of a wall of paragraphs */
+    #approach-narrative-text ol{counter-reset:step;list-style:none;padding-left:0;margin:.5rem 0;}
+    #approach-narrative-text ol li{counter-increment:step;position:relative;padding-left:2.3rem;margin:.85rem 0;line-height:1.5;color:#475569;font-size:.9rem;}
+    #approach-narrative-text ol li:before{content:counter(step);position:absolute;left:0;top:.05rem;width:1.55rem;height:1.55rem;border-radius:50%;background:var(--accent-soft,#fff1e6);color:var(--accent,#c25200);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;}
+    #approach-narrative-text ol li strong{display:block;color:#0f172a;margin-bottom:.12rem;font-size:.95rem;}
   </style>
 </head>
 <body>
@@ -2605,18 +2611,18 @@
         <div class="story-narr" id="approach-narrative-text" data-static="1">
           <p class="lede">The brief asks how I would own Kanmon’s product roadmap if success means more originations funded through partner platforms. I structured the problem first, then picked one idea and went deep. Here is the path I took.</p>
           <ol>
-            <li><strong>Clarify the win.</strong> An origination counts when a small business on a partner’s platform takes financing and gets funded. More traffic to Kanmon’s own website is not the goal.</li>
-            <li><strong>Map the big steps before picking a feature.</strong> More live partners, how often financing is seen, how many people start and finish applying, offers and accepts, and whether Kanmon can fund approved demand. New loan types sit later because they are new product lines, not a thin first ship.</li>
-            <li><strong>Tested “show financing at the right moment,” then set it aside.</strong> That was the assistant’s early suggestion. I moved on for two reasons: “right moment” is a common industry pitch, and for this case I am assuming financing is already visible enough on live partners. If that assumption is wrong, I reopen visibility work.</li>
-            <li><strong>Fold in how the company runs.</strong> One product manager covering a wide funnel, low volume, little or no A/B testing, and underwriting plus data science owning credit models. Product should not claim to change who gets approved.</li>
-            <li><strong>Size the problem with a simulation, not disclosed Kanmon data.</strong> In the simulation, about 51 loans fund in a month, while about 288 people start an application and quit before submitting. Roughly four in ten starters finish. A partner-and-product flow chart makes those drop-offs visible.</li>
-            <li><strong>Choose the lead feature: a pre-approval estimate and a shorter application.</strong> That makes finishing the application easier while people are still in it. Someone who started already showed interest. Quitting mid-form has many causes, so remove friction in the flow rather than invent demand from cold traffic. Soft ≠ a hard promise of a dollar amount.</li>
-            <li><strong>How a pre-approval estimate and a shorter application work.</strong> Data partners already hold can shorten the form and support a light “you look like a fit” check. Soft language only; credit and legal gate anything stronger.</li>
-            <li><strong>Same work also helps get more of the right people into the funnel.</strong> Honest, low-effort invites for good-fit customers make starting feel easier and less risky. That second payoff is part of why this direction is worth doing, not only helping people who already started.</li>
-            <li><strong>Recovery was seriously considered, then ranked second.</strong> Email and a one-time code to resume a saved application can still bring back volume. When less than half of starters finish, chasing people after they leave is the wrong lead. Keep recovery for the residual after in-form prevention.</li>
-            <li><strong>Preventable declines were seriously considered, then not chosen as the lead.</strong> Some declines come from bad or missing data rather than true credit risk, and those are worth fixing later. That pool is smaller and later in the funnel than mid-apply quit. Diagnose decline reasons before treating it as the main bet.</li>
+            <li><strong>Clarify the win.</strong> An origination is a business on a partner’s platform taking financing and getting funded, not traffic to Kanmon’s own site.</li>
+            <li><strong>Map the big steps before picking a feature.</strong> More live partners, more visibility, more people finishing the form, more offers accepted, and capital to fund them; new loan types come later.</li>
+            <li><strong>Test “show financing at the right moment,” then set it aside.</strong> It was the AI’s early idea, but it is a common pitch and assumes people already finish applying, which the numbers say they do not.</li>
+            <li><strong>Fold in how the company runs.</strong> One PM, a wide funnel, low volume, little A/B, and underwriting owning credit, so the feature grows volume without changing who gets approved.</li>
+            <li><strong>Size the problem with a simulation.</strong> In it, about 51 loans fund a month while about 288 people start and quit before submitting, and a flow chart makes the drop-offs visible.</li>
+            <li><strong>Choose the lead feature: a pre-approval estimate and a shorter application.</strong> People who start already want it, so I cut friction in the flow instead of chasing cold demand; the estimate stays soft, never a promised amount.</li>
+            <li><strong>Show how it works.</strong> Data partners already hold shortens the form and powers a light “you look like a fit” check; credit and legal gate anything stronger.</li>
+            <li><strong>Name the second payoff.</strong> The same estimate makes an honest, low-effort invite for good-fit customers, so it helps new starters too, not only those already in the form.</li>
+            <li><strong>Rank recovery second.</strong> Email and a resume link can bring some people back, but when most never finish, fixing the form beats chasing people after they leave.</li>
+            <li><strong>Rank preventable declines later.</strong> Some declines are bad or missing data rather than real credit risk; worth fixing, but a smaller and later pool than mid-apply quit.</li>
           </ol>
-          <p class="close"><strong>Where this stands now:</strong> the live answer is a pre-approval estimate and a shorter application, so finishing apply is easier in flow. “Right moment” screens under Screens are an archive of an earlier idea, not the pitch. Screens for the live idea and a tighter note are still open.</p>
+          <p class="close"><strong>Where this stands now:</strong> the live answer is a pre-approval estimate and a shorter application, so finishing apply is easier in flow. The “right moment” screens are kept only as an archive of an earlier idea, not the pitch.</p>
         </div>
         <p class="note" style="margin-top:.65rem">Detailed process beats are below if you want the full work log. Simulation numbers are illustrative, not Kanmon disclosed data.</p>
       </div>
