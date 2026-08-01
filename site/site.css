@@ -41,6 +41,8 @@ a{color:var(--kanmon-deep)}
   padding:.85rem 2.1rem;border-radius:0;text-align:center}
 .btn-cta:hover{background:var(--kanmon-deep)}
 .site-header .btn-cta{padding:.6rem 1.3rem}
+@media (min-width:861px){.site-header .wrap{flex-wrap:nowrap}.site-nav{flex-wrap:nowrap}}
+@media (max-width:860px){.site-header .btn-cta{width:100%;order:9}}
 
 /* ---------- layout ---------- */
 .wrap{max-width:1080px;margin:0 auto;padding:0 1.25rem}
@@ -92,6 +94,8 @@ table.own td.who-kan{color:var(--kanmon-deep);font-weight:700}
 .step-card p{margin:0;font-size:.86rem;color:var(--muted)}
 
 /* ---------- figures / captions ---------- */
+.srcline{display:block;font-size:.72rem;color:var(--muted);margin-top:.4rem}
+.band .srcline{color:inherit;opacity:.7}
 figure{margin:0}
 figcaption{font-size:.75rem;color:var(--muted);margin-top:.55rem;line-height:1.45}
 .band figcaption{color:inherit;opacity:.75}

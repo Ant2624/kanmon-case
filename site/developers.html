@@ -44,7 +44,7 @@
         <div class="step-card"><h3>Start the SDK</h3><p>Launch with the token. Kanmon renders the application and offer flow inside your UI.</p></div>
         <div class="step-card"><h3>Kanmon runs the rest</h3><p>Identity checks, underwriting, funding, servicing, and collections happen server-side.</p></div>
       </div>
-      <p class="sub" style="margin-top:.8rem">Source: npm @kanmon/web-sdk, GitHub Kanmon/sdk, kanmon.dev.</p>
+      <p class="sub" style="margin-top:.8rem"><span class="srcline" style="margin-top:0">Source: npm @kanmon/web-sdk, GitHub Kanmon/sdk, kanmon.dev.</span></p>
     </div>
   </section>
 
@@ -62,7 +62,7 @@
 npm install @kanmon/web-sdk
 
 <span class="c"># backend: one call per signed-in business</span>
-<span class="o">POST</span> /api/platform/v2/connect-tokens
+<span class="o">POST</span> /v1/connect-tokens
 
 <span class="c"># frontend: hand the token to the SDK</span>
 KanmonConnect.start({ connectToken })
@@ -82,7 +82,7 @@ KanmonConnect.start({ connectToken })
         <div class="card"><h3>Credit</h3><p>Underwriting, capital, and all credit risk.</p></div>
         <div class="card"><h3>Money</h3><p>Disbursement, servicing, collections, and compliance.</p></div>
       </div>
-      <p class="sub" style="margin-top:.8rem">Your platform does not need embedded payments. Payment data helps underwriting but is not required. Source: kanmon.com FAQ.</p>
+      <p class="sub" style="margin-top:.8rem">Your platform does not need embedded payments. Payment data helps underwriting but is not required.<span class="srcline">Source: kanmon.com FAQ.</span></p>
     </div>
   </section>
 
@@ -96,7 +96,7 @@ KanmonConnect.start({ connectToken })
   <section class="cta-section" id="contact">
     <div class="wrap">
       <h2>Scope the integration with Kanmon's team.</h2>
-      <p>Implement in about one week. Live within a month. Source: kanmon.com FAQ.</p>
+      <p>Implement in about one week. Live within a month.</p>
       <p style="margin-top:1rem"><a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a></p>
       <p class="cta-note">This is a concept page. The button goes to the real Kanmon contact page.</p>
     </div>
