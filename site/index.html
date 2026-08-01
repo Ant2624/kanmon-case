@@ -6,7 +6,8 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Kanmon concept redesign · Home</title>
 <meta name="description" content="Concept redesign of kanmon.com: embedded lending that meets platforms in the moment their customers need capital.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%23FF6B00%22/><text x=%2216%22 y=%2223%22 font-family=%22Arial,sans-serif%22 font-size=%2220%22 font-weight=%22700%22 fill=%22white%22 text-anchor=%22middle%22>K</text></svg>">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -25,6 +26,7 @@
       <a href="platforms.html">For platforms</a>
       <a href="developers.html">Developers</a>
       <a href="about.html">About</a>
+      <a href="index.html#faq">FAQs</a>
     </nav>
     <a class="btn-cta" href="#contact">Contact</a>
   </div>
@@ -37,17 +39,18 @@
       <p class="eyebrow">Embedded lending infrastructure</p>
       <h1>Your customer just hit a cash gap.<br>What does your platform do next?</h1>
       <p class="lead">Kanmon puts a real financing offer inside your product at the moment your customers need it. You earn revenue on every dollar financed. Kanmon carries the risk.</p>
-      <p style="margin-top:1rem"><a class="btn-cta" href="#moment">See the moment</a></p>
+      <p style="margin-top:1.1rem"><a class="btn-cta" href="#contact">Talk to Kanmon</a></p>
+      <p style="margin-top:.7rem"><a class="link-arrow" href="#moment">Or see the moment first &darr;</a></p>
     </div>
   </section>
 
   <section class="section" id="moment">
     <div class="wrap">
-      <h2>The moment looks like this.</h2>
-      <p class="sub">A business inside your platform, waiting on money it has already earned. It will not go hunting for your financing page. It will go to a bank, or a broker, or nowhere. In 2025, only 41 percent of small business loan applicants received all the financing they sought, and 44 percent of firms with funding needs did not apply at all, expecting a denial.</p>
+      <h2>Meet Northside Dental, a customer on your platform.</h2>
+      <p class="sub">They invoiced $18,000 this month. Their buyers pay in 60 days. Payroll leaves in six. They will not go hunting for your financing page. They will go to a bank, or a broker, or nowhere. In 2025, only 41 percent of small business loan applicants received all the financing they sought, and 44 percent of firms with funding needs did not apply at all, expecting a denial.</p>
     </div>
   </section>
-  <section class="band sage">
+  <section class="band stone">
     <div class="wrap">
       <div class="grid2">
 
@@ -59,22 +62,24 @@
               <div class="side">
                 <div class="logo">PartnerOS</div>
                 <a>Dashboard</a><a class="on">Invoices</a><a>Customers</a><a>Reports</a>
+                <div class="user"><span class="av">ND</span>Northside Dental</div>
               </div>
               <div class="main">
                 <h4>Invoices</h4>
-                <p class="mut">4 outstanding</p>
+                <p class="mut">Northside Dental &middot; 2 awaiting payment</p>
+                <div class="mock-toolbar"><span class="mock-search">Search invoices</span><span class="mock-btn-navy">New invoice</span></div>
                 <table class="inv">
-                  <thead><tr><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+                  <thead><tr><th>Customer</th><th class="amt">Amount</th><th>Status</th></tr></thead>
                   <tbody>
-                    <tr><td>Harbor Goods</td><td>$12,400</td><td><span class="tag over">Overdue 32d</span></td></tr>
-                    <tr><td>Bright Path LLC</td><td>$5,600</td><td><span class="tag open">Open</span></td></tr>
-                    <tr><td>Cedar Clinic</td><td>$7,200</td><td><span class="tag paid">Paid</span></td></tr>
-                    <tr><td>Northgate Co.</td><td>$3,850</td><td><span class="tag paid">Paid</span></td></tr>
+                    <tr><td>Harbor Goods<span class="inv-no">INV-2041 &middot; due 32d ago</span></td><td class="amt">$12,400</td><td><span class="tag over">Overdue 32d</span></td></tr>
+                    <tr><td>Bright Path LLC<span class="inv-no">INV-2044 &middot; due in 12d</span></td><td class="amt">$5,600</td><td><span class="tag open">Open</span></td></tr>
+                    <tr><td>Cedar Clinic<span class="inv-no">INV-2038 &middot; paid Jul 24</span></td><td class="amt">$7,200</td><td><span class="tag paid">Paid</span></td></tr>
+                    <tr><td>Northgate Co.<span class="inv-no">INV-2036 &middot; paid Jul 18</span></td><td class="amt">$3,850</td><td><span class="tag paid">Paid</span></td></tr>
                   </tbody>
                 </table>
                 <div class="rows" style="margin-top:.5rem">
                   <div class="r"><span>Next payroll</span><span>in 6 days</span></div>
-                  <div class="r"><span>Cash on hand</span><span>$8,900</span></div>
+                  <div class="r"><span>Cash on hand</span><span class="warn-val">$8,900</span></div>
                 </div>
               </div>
             </div>
@@ -90,25 +95,31 @@
               <div class="side">
                 <div class="logo">PartnerOS</div>
                 <a>Dashboard</a><a class="on">Invoices</a><a>Customers</a><a>Reports</a>
+                <div class="user"><span class="av">ND</span>Northside Dental</div>
               </div>
               <div class="main">
                 <div class="kbanner">
                   <span class="kpill">Powered by Kanmon</span>
-                  <div class="amt" style="margin-top:.3rem">$14,400 available against 2 invoices</div>
-                  <p>Funds in as little as 24 hours, typically within two days. Soft credit pull only.</p>
-                  <span class="mock-cta">See your offer</span>
+                  <div class="amt" style="margin-top:.3rem">$14,400 available today</div>
+                  <p>An 80% advance on 2 open invoices totaling $18,000. Funds in as little as 24 hours, typically within two days.</p>
+                  <div class="row2"><span class="mock-cta">See your offer</span><span class="mock-cta ghost">How it works</span></div>
+                  <p class="terms">Soft credit pull only. Checking does not affect their credit score.</p>
                 </div>
                 <table class="inv">
-                  <thead><tr><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+                  <thead><tr><th>Customer</th><th class="amt">Amount</th><th>Status</th></tr></thead>
                   <tbody>
-                    <tr><td>Harbor Goods</td><td>$12,400</td><td><span class="tag over">Overdue 32d</span></td></tr>
-                    <tr><td>Bright Path LLC</td><td>$5,600</td><td><span class="tag open">Open</span></td></tr>
+                    <tr><td>Harbor Goods<span class="inv-no">INV-2041 &middot; due 32d ago</span></td><td class="amt">$12,400</td><td><span class="tag over">Overdue 32d</span></td></tr>
+                    <tr><td>Bright Path LLC<span class="inv-no">INV-2044 &middot; due in 12d</span></td><td class="amt">$5,600</td><td><span class="tag open">Open</span></td></tr>
                   </tbody>
                 </table>
+                <div class="rows" style="margin-top:.5rem">
+                  <div class="r"><span>Next payroll</span><span>in 6 days</span></div>
+                  <div class="r"><span>Cash on hand</span><span>$8,900 <strong style="color:var(--ok)">+ $14,400 on the way</strong></span></div>
+                </div>
               </div>
             </div>
           </div>
-          <figcaption><span class="law">Anything orange is the Kanmon part; the navy surface belongs to the platform.</span></figcaption>
+          <figcaption><span class="law">Anything orange is the Kanmon part; everything navy is the platform’s own product.</span></figcaption>
         </figure>
 
       </div>
@@ -127,18 +138,19 @@
         <div class="fact"><b>SOC 2 Type I</b> security compliance</div>
       </div>
       <p class="sub" style="margin-top:1rem">Kanmon programs already run inside partner products: Cleo InvoicePay, Cin7 Capital, Avionté SmartFund, PingPong Financing, and Nuvei accounts receivable financing.</p>
+      <p style="margin-top:.9rem"><a class="link-arrow" href="#contact">See what a program looks like on your platform &rarr;</a></p>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
-      <h2>You own the surface. Kanmon runs the lending.</h2>
+      <h2>Your customers see your product. Kanmon does the lending.</h2>
       <p class="sub">Your customers never leave your product. Everything regulated happens on Kanmon's side of the line.</p>
       <div class="split" style="margin-top:1.1rem">
         <div class="panel you">
           <h3>Your platform</h3>
           <ul>
-            <li>The in-product surface and the moment</li>
+            <li>The screens your customers see</li>
             <li>Your brand in front</li>
             <li>The customer relationship</li>
           </ul>
@@ -146,7 +158,7 @@
         <div class="panel kan">
           <h3>Kanmon</h3>
           <ul>
-            <li>KYC, KYB, and AML checks</li>
+            <li>Identity and compliance checks (KYC, KYB, AML)</li>
             <li>Underwriting and the soft credit pull</li>
             <li>Capital and all credit risk</li>
             <li>Servicing, collections, and the credit agreement</li>
@@ -179,25 +191,56 @@
 
   <section class="section alt">
     <div class="wrap">
-      <h2>Built for the software SMBs already run on.</h2>
-      <p class="sub">Sidebar hues below are concept choices, not partner brands.</p>
+      <h2>Built for the software small businesses already run on.</h2>
       <div class="cards" style="margin-top:1rem">
         <div class="card">
-          <div class="vert-strip"><div class="s"></div><div class="m"><div class="k"></div></div></div>
           <h3>Professional services software</h3><p>Invoicing, projects, and the receivables that lag them.</p>
         </div>
-        <div class="card hue-practice">
-          <div class="vert-strip"><div class="s"></div><div class="m"><div class="k"></div></div></div>
+        <div class="card">
           <h3>Practice management software</h3><p>Clinics and firms with steady demand and lumpy cash.</p>
         </div>
-        <div class="card hue-supply">
-          <div class="vert-strip"><div class="s"></div><div class="m"><div class="k"></div></div></div>
+        <div class="card">
           <h3>Digital supply chain platforms</h3><p>EDI, logistics, and inventory that moves before money does.</p>
         </div>
-        <div class="card hue-industry">
-          <div class="vert-strip"><div class="s"></div><div class="m"><div class="k"></div></div></div>
-          <h3>Industry business management</h3><p>Vertical systems of record where work and cash both live.</p>
+        <div class="card">
+          <h3>Industry business management</h3><p>The software that runs the whole business, where work and cash both live.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="faq">
+    <div class="wrap">
+      <h2>Get the answers you need.</h2>
+      <div class="faq" style="margin-top:1rem">
+        <details>
+          <summary>What products can we offer our customers?</summary>
+          <p>Term loans, lines of credit, invoice financing, and accounts payable financing. Programs typically start with the product that matches your customers' most common cash gap and expand from there.</p>
+        </details>
+        <details>
+          <summary>Who provides the capital?</summary>
+          <p>Kanmon does. Kanmon is the lender of record: it provides the capital, holds the credit agreement, and assumes all credit risk. Your platform never lends its own money.</p>
+        </details>
+        <details>
+          <summary>Is Kanmon a licensed lender?</summary>
+          <p>Yes. Kanmon is a licensed commercial lender, including California DFPI Finance Lenders Law License #60DBO-144925.</p>
+        </details>
+        <details>
+          <summary>Do we need embedded payments first?</summary>
+          <p>No. Payment data helps underwriting, but it is not required. Platforms without embedded payments run Kanmon programs today.</p>
+        </details>
+        <details>
+          <summary>How fast do customers get funded?</summary>
+          <p>Most businesses apply in under 10 minutes. Funds arrive in as little as 24 hours, typically within two days.</p>
+        </details>
+        <details>
+          <summary>Will applying affect our customers' credit scores?</summary>
+          <p>No. Kanmon uses a soft credit pull for eligibility, which does not affect credit scores.</p>
+        </details>
+        <details>
+          <summary>How do we get started?</summary>
+          <p><a class="link-arrow" href="#contact">Talk to Kanmon</a>, scope the program, and implement in about one week. Most programs are live within a month.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -205,8 +248,8 @@
   <section class="cta-section" id="contact">
     <div class="wrap">
       <h2>Put capital in the moment your customers need it.</h2>
-      <p>Talk through what an embedded lending program looks like on your platform.</p>
-      <p style="margin-top:1rem"><a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a></p>
+      <p>Bring how your customers get paid. Leave with what a program on your platform would look like.</p>
+      <p style="margin-top:1.1rem"><a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a> <a class="btn-ghost" href="products.html">Explore the products</a></p>
     </div>
   </section>
 
@@ -214,11 +257,62 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>Kanmon is a licensed lender. California DFPI Finance Lenders Law License #60DBO-144925.</p>
-    <p>This is a concept redesign by Anthony Carter, built as a portfolio piece. It is not affiliated with or endorsed by Kanmon.</p>
-    <p><a href="https://kanmon.com" rel="noopener">The real kanmon.com</a> · <a href="https://ant2624.github.io/kanmon-case/">The case study behind this</a></p>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="../assets/kanmon-logo.png" alt="Kanmon" class="foot-logo">
+        <p>Embedded lending infrastructure. Capital for your customers, inside your product.</p>
+        <div class="social">
+          <a href="https://twitter.com/KanmonHQ" rel="noopener" aria-label="Kanmon on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.2h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.2h7.59l5.24 6.93L18.9 1.2zm-1.29 19.5h2.04L6.49 3.29H4.3l13.31 17.41z"/></svg></a>
+          <a href="https://www.linkedin.com/company/kanmon" rel="noopener" aria-label="Kanmon on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.1h4.56V23H.22V8.1zM8.34 8.1h4.37v2.03h.06c.61-1.15 2.1-2.37 4.32-2.37 4.62 0 5.47 3.04 5.47 7v8.24h-4.55v-7.3c0-1.74-.03-3.98-2.43-3.98-2.43 0-2.8 1.9-2.8 3.86V23H8.34V8.1z"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>Site</h4>
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="platforms.html">For platforms</a>
+        <a href="developers.html">Developers</a>
+        <a href="about.html">About</a>
+        <a href="index.html#faq">FAQs</a>
+      </div>
+      <div class="foot-col">
+        <h4>Kanmon</h4>
+        <a href="https://kanmon.com" rel="noopener">The real kanmon.com</a>
+        <a href="https://kanmon.dev" rel="noopener">Documentation</a>
+        <a href="https://kanmon.com/contact-us" rel="noopener">Contact</a>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <p>Kanmon is a licensed lender. California DFPI Finance Lenders Law License #60DBO-144925.</p>
+      <p>Concept redesign by Anthony Carter, built as a portfolio piece. Not affiliated with or endorsed by Kanmon. <a href="https://ant2624.github.io/kanmon-case/">The case study behind this</a></p>
+    </div>
   </div>
 </footer>
 
+<input type="checkbox" id="chat-toggle" aria-label="Toggle chat">
+<label class="chat-launch" for="chat-toggle" aria-hidden="true">
+  <svg class="ic-open" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>
+  <svg class="ic-close" viewBox="0 0 24 24"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.4 1.41 6.29 6.3-6.3 6.29 1.42 1.42 6.29-6.3 6.3 6.3 1.41-1.42-6.29-6.29 6.29-6.3z"/></svg>
+</label>
+<div class="chat-panel" role="dialog" aria-label="Chat with Kanmon (concept)">
+  <div class="chat-head">
+    <div class="brand-row"><span class="k-av">K</span><div><b>Kanmon</b>
+    <span class="presence"><span class="dot-on"></span>We typically reply in a few minutes</span></div></div>
+  </div>
+  <div class="chat-body">
+    <div class="chat-msg"><span class="k-av">K</span>
+      <div class="bubble">Hi there. Exploring embedded lending for your platform? Happy to point you to the right place.</div>
+    </div>
+    <p class="chat-time">Kanmon &middot; just now</p>
+    <div class="chat-chips">
+      <a href="products.html">Which products fit my customers?</a>
+      <a href="index.html#faq">How does the lending side work?</a>
+      <a href="https://kanmon.com/contact-us" rel="noopener">Talk to the team</a>
+    </div>
+  </div>
+  <div class="chat-input"><span>Write a reply&hellip;</span>
+    <svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg>
+  </div>
+</div>
 </body>
 </html>
