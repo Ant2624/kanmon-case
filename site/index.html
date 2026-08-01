@@ -377,7 +377,16 @@
         var el=en.target;
         if(en.isIntersecting && en.intersectionRatio>=0.45){
           clearTimeout(dwell);
-          dwell=setTimeout(function(){ current=el.getAttribute('data-chat')||current; },1600);
+          dwell=setTimeout(function(){
+            var next=el.getAttribute('data-chat')||current;
+            if(next!==current){
+              current=next;
+              if(shown && !toggle.checked && !teaser.hidden){
+                txt.innerHTML='<span class="who">Kanmon team</span><span class="typing"><i></i><i></i><i></i></span>';
+                setTimeout(function(){ txt.innerHTML='<span class="who">Kanmon team</span>'+current; },700);
+              }
+            }
+          },1200);
           if(el.hasAttribute('data-chat-hot')){
             clearTimeout(hot);
             hot=setTimeout(tease,5000);
@@ -392,7 +401,6 @@
 
   function tease(){
     if(shown||toggle.checked) return;
-    try{ if(sessionStorage.getItem('kchat-teased')) return; sessionStorage.setItem('kchat-teased','1'); }catch(e){}
     shown=true;
     teaser.hidden=false;
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
@@ -400,7 +408,7 @@
       txt.innerHTML='<span class="who">Kanmon team</span>'+current;
     },1100);
   }
-  var t=setTimeout(tease,6000);
+  var t=setTimeout(tease,2500);
   function onScroll(){
     var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
     if(d>0.35){ tease(); removeEventListener('scroll',onScroll); }
