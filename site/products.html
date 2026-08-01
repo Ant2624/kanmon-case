@@ -434,22 +434,27 @@
     '\ud83d\udc40 Maya is reviewing a term sheet while you look around\u2026',
     '\ud83d\udcb8 Maya just funded an invoice. No rush.',
     '\u2615 Quick coffee refill. Underwriting fuel.',
-    '\ud83d\udccb Maya is tidying a credit file. Take your time.'];
+    '\ud83d\udccb Maya is tidying a credit file. Take your time.',
+    '\ud83e\udd39 Maya is juggling three term sheets. Literally.',
+    '\ud83e\uddee Maya is racing the underwriting model. It is winning.',
+    '\ud83c\udfaf Maya hit inbox zero. Again.'];
   var FINAL_IDLE='\ud83d\udc40 Still here whenever you are.';
   var idleTimer=null, idleCount=0, statusEl=null, idleOrder=null;
   function showIdle(){
     if(!toggle.checked||idleCount>=4) return;
     if(!idleOrder){ idleOrder=IDLE.slice().sort(function(){return Math.random()-0.5;}); }
     if(!statusEl){
-      statusEl=document.createElement('p');
-      statusEl.className='chat-status';
+      statusEl=document.createElement('div');
+      statusEl.className='chat-msg status';
+      statusEl.innerHTML='<span class="k-av">M</span><div class="bubble"></div>';
       body.appendChild(statusEl);
     }
     var msg=(idleCount===3)?FINAL_IDLE:idleOrder[idleCount];
-    statusEl.style.opacity='0';
+    var bub=statusEl.querySelector('.bubble');
+    bub.style.opacity='0';
     setTimeout(function(){
-      statusEl.textContent=msg;
-      statusEl.style.opacity='1';
+      bub.textContent=msg;
+      bub.style.opacity='1';
       body.scrollTop=body.scrollHeight;
     },280);
     idleCount++;

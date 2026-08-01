@@ -346,4 +346,6 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .chat-msg.user .bubble{background:var(--kanmon);color:#fff;border:0;border-radius:12px 12px 4px 12px}
 
 
-.chat-status{font-size:.7rem;color:var(--muted);font-style:italic;margin:.3rem 0 .5rem 2rem;transition:opacity .3s ease}
+.chat-msg.status .k-av{opacity:.65}
+.chat-msg.status .bubble{background:#fbfaf7;border:1px dashed var(--line);color:var(--muted);
+  font-style:italic;font-size:.76rem;transition:opacity .3s ease}
