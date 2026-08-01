@@ -304,7 +304,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 
 /* chat teaser + typing */
 .chat-teaser{position:fixed;right:20px;bottom:86px;z-index:59;display:flex;gap:.55rem;align-items:flex-start;
-  background:#fff;border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:.7rem .8rem;
+  background:#fff;border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:.7rem 1.9rem .7rem .8rem;
   max-width:280px;box-shadow:0 10px 34px rgba(17,17,17,.22);
   opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease;pointer-events:none}
 .chat-teaser.show{opacity:1;transform:none;pointer-events:auto}
@@ -312,7 +312,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
   display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.66rem;flex-shrink:0}
 .chat-teaser .txt{font-size:.8rem;line-height:1.45;color:#222;cursor:pointer}
 .chat-teaser .who{display:block;font-size:.62rem;color:var(--muted);margin-bottom:.15rem}
-.chat-teaser .x{position:absolute;top:4px;right:8px;border:0;background:none;color:#b3b0a6;font-size:.85rem;cursor:pointer;padding:2px}
+.chat-teaser .x{position:absolute;top:5px;right:7px;border:0;background:none;color:#b3b0a6;font-size:.8rem;line-height:1;cursor:pointer;padding:3px}
 .chat-teaser .x:hover{color:#111}
 .typing{display:inline-flex;gap:3px;align-items:center;height:10px}
 .typing i{width:5px;height:5px;border-radius:50%;background:#c9c4b8;animation:tp 1s infinite}
@@ -320,3 +320,12 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .typing i:nth-child(3){animation-delay:.3s}
 @keyframes tp{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-3px);opacity:1}}
 @media (prefers-reduced-motion:reduce){.typing i{animation:none}}
+
+/* embedded chat kickoffs */
+.chat-kickoff{display:inline-flex;align-items:center;gap:.45rem;border:1.5px solid var(--line);background:#fff;
+  color:#333;font-family:inherit;font-size:.84rem;font-weight:600;padding:.55rem .9rem;border-radius:99px;cursor:pointer;
+  transition:border-color .15s ease,box-shadow .15s ease}
+.chat-kickoff:hover{border-color:var(--kanmon);box-shadow:0 4px 14px rgba(255,107,0,.15)}
+.chat-kickoff svg{width:15px;height:15px;fill:var(--kanmon);flex-shrink:0}
+.chat-msg.user{justify-content:flex-end}
+.chat-msg.user .bubble{background:var(--kanmon);color:#fff;border:0;border-radius:12px 12px 4px 12px}

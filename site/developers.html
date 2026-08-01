@@ -93,6 +93,7 @@ KanmonConnect.start({ connectToken })
         <div class="card"><h3>Money</h3><p>Disbursement, servicing, collections, and compliance.</p></div>
       </div>
       <p class="sub" style="margin-top:.8rem">Your platform does not need embedded payments. Payment data helps underwriting but is not required.</p>
+      <p style="margin-top:.8rem"><button type="button" class="chat-kickoff" data-ask="What SDKs are available?" data-answer="A web SDK on npm (@kanmon/web-sdk) and a React Native SDK for mobile. Your backend adds one call for the connect token."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>What SDKs are available?</button></p>
     </div>
   </section>
 
@@ -100,6 +101,7 @@ KanmonConnect.start({ connectToken })
     <div class="wrap">
       <h2>Where the full docs live.</h2>
       <p class="sub">Complete API and SDK documentation is at <a href="https://kanmon.dev" rel="noopener">kanmon.dev</a>. Access comes with partnership; the docs are gated today. This page shows how the integration works.</p>
+      <p style="margin-top:.7rem"><button type="button" class="chat-kickoff" data-ask="How long does the integration take?" data-answer="About one week of implementation for most teams: install the web SDK, add one backend call for the connect token, and start the flow in your UI. Kanmon runs everything regulated server-side."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>How long does the integration take?</button></p>
     </div>
   </section>
 
@@ -192,42 +194,22 @@ KanmonConnect.start({ connectToken })
       'Welcome. If you are wondering what this would look like on your platform, just ask.',
       'Hi. Questions about how embedded financing works? I am right here.'],
     'products':[
-      'Not sure which product fits your customers? Tell me how they get paid and I can point you.',
-      'Looking for the right fit? Each product maps to a different cash gap. Happy to help you match one.',
-      'Hi. If you tell me what your customers sell, I can suggest where financing fits.'],
+      'Hi. Happy to help you match a product to your customers.',
+      'Welcome. Questions about any of these products? Just ask.'],
     'platforms':[
-      'Questions about the economics? I can walk through how partners earn.',
-      'Hi. Want to talk through what a partner program earns? Happy to help.'],
+      'Hi. Want to talk through what a partner program earns? Happy to help.',
+      'Welcome. Questions about the partner side? I am right here.'],
     'developers':[
-      'Want to scope the integration? It is lighter than most teams expect.',
-      'Hi. Engineering questions about the SDK or token flow? Ask away.'],
-    'about':[
-      'Any questions about how Kanmon works? I am right here.'],
+      'Hi. Engineering questions? Ask away.',
+      'Welcome. Happy to talk through the integration.'],
+    'about':['Any questions about how Kanmon works? I am right here.'],
     'case-studies':[
-      'Curious how these partners launched? Happy to walk through any of them.',
-      'Hi. Want the story behind one of these programs? Just ask.']
+      'Hi. Want the story behind one of these programs? Just ask.',
+      'Curious how these partners launched? Happy to walk through any of them.']
   };
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
   var current=pick(DEFAULTS[page]||DEFAULTS['index']);
-  var shown=false, dwell=null, hot=null, swaps=0, lastMsgAt=0;
-
-  if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        var el=en.target;
-        if(en.isIntersecting && en.intersectionRatio>=0.45){
-          clearTimeout(dwell);
-          dwell=setTimeout(function(){
-            var next=el.getAttribute('data-chat');
-            if(!next||next===current) return;
-            if(!shown){ current=next; }
-          },1400);
-          if(el.hasAttribute('data-chat-hot')){ clearTimeout(hot); hot=setTimeout(tease,5000); }
-        } else if(el.hasAttribute('data-chat-hot')){ clearTimeout(hot); }
-      });
-    },{threshold:[0.45]});
-    document.querySelectorAll('[data-chat]').forEach(function(el){ io.observe(el); });
-  }
+  var shown=false;
 
   function tease(){
     if(shown||toggle.checked) return;
@@ -236,25 +218,39 @@ KanmonConnect.start({ connectToken })
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
     setTimeout(function(){
       txt.innerHTML='<span class="who">Kanmon team</span>'+current;
-      lastMsgAt=Date.now();
     },1100);
   }
   var t=setTimeout(tease,2500);
-  function onScroll(){
-    var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
-    if(d>0.35){ tease(); removeEventListener('scroll',onScroll); }
-  }
-  addEventListener('scroll',onScroll,{passive:true});
-  document.getElementById('chat-teaser-x').addEventListener('click',function(e){
-    e.stopPropagation(); teaser.classList.remove('show');
-    setTimeout(function(){teaser.hidden=true;},250);
-  });
-  txt.addEventListener('click',function(){
-    teaser.classList.remove('show'); teaser.hidden=true;
-    toggle.checked=true; clearTimeout(t);
-  });
-  toggle.addEventListener('change',function(){
-    if(toggle.checked){ teaser.classList.remove('show'); teaser.hidden=true; clearTimeout(t); }
+  function hideTeaser(){ teaser.classList.remove('show'); setTimeout(function(){teaser.hidden=true;},250); }
+  document.getElementById('chat-teaser-x').addEventListener('click',function(e){ e.stopPropagation(); hideTeaser(); });
+  txt.addEventListener('click',function(){ hideTeaser(); toggle.checked=true; clearTimeout(t); });
+  toggle.addEventListener('change',function(){ if(toggle.checked){ hideTeaser(); clearTimeout(t); } });
+
+  // embedded kickoffs: question goes into the thread as sent, staff responds
+  var body=document.querySelector('.chat-body');
+  function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+  document.querySelectorAll('.chat-kickoff').forEach(function(b){
+    b.addEventListener('click',function(){
+      clearTimeout(t); hideTeaser(); toggle.checked=true;
+      var q=b.getAttribute('data-ask'), a=b.getAttribute('data-answer');
+      var chips=body.querySelector('.chat-chips');
+      if(chips) chips.style.display='none';
+      var tm=body.querySelector('.chat-time');
+      if(tm) tm.style.display='none';
+      var u=document.createElement('div');
+      u.className='chat-msg user';
+      u.innerHTML='<div class="bubble">'+esc(q)+'</div>';
+      body.appendChild(u);
+      var typing=document.createElement('div');
+      typing.className='chat-msg';
+      typing.innerHTML='<span class="k-av">K</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+      body.appendChild(typing);
+      body.scrollTop=body.scrollHeight;
+      setTimeout(function(){
+        typing.querySelector('.bubble').innerHTML=esc(a);
+        body.scrollTop=body.scrollHeight;
+      },1900);
+    });
   });
 })();
 </script>
