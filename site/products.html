@@ -326,7 +326,7 @@
 
 <input type="checkbox" id="chat-toggle" aria-label="Toggle chat">
 <label class="chat-launch" for="chat-toggle" aria-hidden="true">
-  <span class="mini-av">M</span><span class="mini-snip" id="chat-mini-snippet"></span><span class="mini-open">Open</span>
+  <span class="mini-av">M</span><span class="mini-snip" id="chat-mini-snippet"></span><span class="mini-cycle" role="button" aria-label="Another status"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5m2-3v5h-5M20 12a8 8 0 0 1-14 5m-2 3v-5h5"/></svg></span><span class="mini-open">Open</span>
   <svg class="ic-open" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>
   <svg class="ic-close" viewBox="0 0 24 24"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.4 1.41 6.29 6.3-6.3 6.29 1.42 1.42 6.29-6.3 6.3 6.3 1.41-1.42-6.29-6.29 6.29-6.3z"/></svg>
 </label>
@@ -425,7 +425,7 @@
   addEventListener('scroll',onScrollTease,{passive:true});
   document.getElementById('chat-teaser-x').addEventListener('click',function(e){ e.stopPropagation(); hideTeaser(); });
   function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; syncLaunch(); startIdle(); }
-  function closePanel(){ toggle.checked=false; syncLaunch(); clearTimeout(idleTimer); }
+  function closePanel(){ toggle.checked=false; syncLaunch(); if(launch.classList.contains('bar')){ startIdle(); } else { clearTimeout(idleTimer); } }
   txt.addEventListener('click',openPanel);
   toggle.addEventListener('change',function(){ if(toggle.checked){ openPanel(); } else { closePanel(); } });
 
@@ -441,7 +441,7 @@
   var FINAL_IDLE='\ud83d\udc40 Still here whenever you are.';
   var idleTimer=null, idleCount=0, statusEl=null, idleOrder=null;
   function showIdle(){
-    if(!toggle.checked||idleCount>=4) return;
+    if(!(toggle.checked||launch.classList.contains('bar'))||idleCount>=4) return;
     if(!idleOrder){ idleOrder=IDLE.slice().sort(function(){return Math.random()-0.5;}); }
     if(!statusEl){
       statusEl=document.createElement('div');
@@ -457,6 +457,10 @@
       bub.style.opacity='1';
       body.scrollTop=body.scrollHeight;
     },280);
+    if(launch.classList.contains('bar')){
+      snip.style.opacity='0';
+      setTimeout(function(){ snip.textContent=msg; snip.style.opacity='1'; },250);
+    }
     idleCount++;
     idleTimer=setTimeout(showIdle,13000);
   }
@@ -495,6 +499,17 @@
     if(!matchMedia('(max-width:760px)').matches) return;
     if(toggle.checked && Math.abs(window.scrollY-anchorY)>80) closePanel();
   },{passive:true});
+
+  var cyc=launch.querySelector('.mini-cycle');
+  if(cyc){
+    var cycleIdx=0;
+    cyc.addEventListener('click',function(e){
+      e.preventDefault(); e.stopPropagation();
+      var msg=IDLE[cycleIdx%IDLE.length]; cycleIdx++;
+      snip.style.opacity='0';
+      setTimeout(function(){ snip.textContent=msg; snip.style.opacity='1'; },220);
+    });
+  }
 })();
 </script>
 </body>
