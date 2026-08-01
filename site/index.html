@@ -334,14 +334,14 @@
 </label>
 <div class="chat-panel" role="dialog" aria-label="Chat with Kanmon (concept)">
   <div class="chat-head">
-    <div class="brand-row"><span class="k-av">K</span><div><b>Kanmon</b>
-    <span class="presence"><span class="dot-on"></span>We typically reply in a few minutes</span></div></div>
+    <div class="brand-row"><span class="k-av">M</span><div><b>Maya</b>
+    <span class="presence"><span class="dot-on"></span>Partnerships at Kanmon &middot; replies in a few minutes</span></div></div>
   </div>
   <div class="chat-body">
-    <div class="chat-msg"><span class="k-av">K</span>
+    <div class="chat-msg"><span class="k-av">M</span>
       <div class="bubble">Hi there. Exploring embedded lending for your platform? Happy to point you to the right place.</div>
     </div>
-    <p class="chat-time">Kanmon &middot; just now</p>
+    <p class="chat-time">Maya &middot; just now</p>
     <div class="chat-chips">
       <a href="products.html">Which products fit my customers?</a>
       <a href="index.html#faq">How does the lending side work?</a>
@@ -352,9 +352,12 @@
     <svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg>
   </div>
 </div>
+<div class="chat-mini" id="chat-mini" hidden>
+  <span class="k-av">M</span><span class="snippet" id="chat-mini-snippet">Maya &middot; Kanmon</span><span class="expand">Open</span>
+</div>
 <div class="chat-teaser" id="chat-teaser" hidden>
   <span class="k-av">K</span>
-  <div class="txt" id="chat-teaser-txt"><span class="who">Kanmon team</span><span class="typing"><i></i><i></i><i></i></span></div>
+  <div class="txt" id="chat-teaser-txt"><span class="who">Maya &middot; Kanmon</span><span class="typing"><i></i><i></i><i></i></span></div>
   <button class="x" id="chat-teaser-x" aria-label="Dismiss">&times;</button>
 </div>
 <script>
@@ -362,7 +365,12 @@
   var toggle=document.getElementById('chat-toggle');
   var teaser=document.getElementById('chat-teaser');
   var txt=document.getElementById('chat-teaser-txt');
-  if(!toggle||!teaser||!txt) return;
+  var panel=document.querySelector('.chat-panel');
+  var body=document.querySelector('.chat-body');
+  var mini=document.getElementById('chat-mini');
+  var snip=document.getElementById('chat-mini-snippet');
+  var launch=document.querySelector('.chat-launch');
+  if(!toggle||!teaser||!txt||!panel||!body) return;
 
   var page=(location.pathname.split('/').pop()||'index.html').replace('.html','')||'index';
   var DEFAULTS={
@@ -386,49 +394,117 @@
   };
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
   var current=pick(DEFAULTS[page]||DEFAULTS['index']);
-  var shown=false;
+  var shown=false, minimized=false;
+  var WHO='<span class="who">Maya \u00b7 Kanmon</span>';
 
+  function hideTeaser(){ teaser.classList.remove('show'); setTimeout(function(){teaser.hidden=true;},250); }
   function tease(){
-    if(shown||toggle.checked) return;
+    if(shown||toggle.checked||minimized||(mini&&!mini.hidden)) return;
     shown=true;
     teaser.hidden=false;
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
-    setTimeout(function(){
-      txt.innerHTML='<span class="who">Kanmon team</span>'+current;
-    },1100);
+    setTimeout(function(){ txt.innerHTML=WHO+current; },1100);
   }
   var t=setTimeout(tease,2500);
-  function hideTeaser(){ teaser.classList.remove('show'); setTimeout(function(){teaser.hidden=true;},250); }
+  function onScrollTease(){
+    var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
+    if(d>0.35){ tease(); removeEventListener('scroll',onScrollTease); }
+  }
+  addEventListener('scroll',onScrollTease,{passive:true});
   document.getElementById('chat-teaser-x').addEventListener('click',function(e){ e.stopPropagation(); hideTeaser(); });
-  txt.addEventListener('click',function(){ hideTeaser(); toggle.checked=true; clearTimeout(t); });
-  toggle.addEventListener('change',function(){ if(toggle.checked){ hideTeaser(); clearTimeout(t); } });
+  txt.addEventListener('click',function(){ hideTeaser(); toggle.checked=true; clearTimeout(t); startIdle(); });
+  toggle.addEventListener('change',function(){
+    if(toggle.checked){ hideTeaser(); clearTimeout(t); startIdle(); }
+    else if(minimized){ expand(); }
+  });
 
-  // embedded kickoffs: question goes into the thread as sent, staff responds
-  var body=document.querySelector('.chat-body');
+  /* idle easter egg: Maya keeps working while you decide */
+  var IDLE=[
+    'Maya is reviewing a term sheet\u2026',
+    'Maya stepped away to fund an invoice\u2026',
+    'Maya is double-checking a credit limit\u2026',
+    'Maya is refilling her coffee. Underwriting fuel\u2026'];
+  var idleTimer=null, idleCount=0, statusEl=null;
+  function showIdle(){
+    if(!toggle.checked||idleCount>=3) return;
+    if(!statusEl){
+      statusEl=document.createElement('p');
+      statusEl.className='chat-status';
+      body.appendChild(statusEl);
+    }
+    var s=IDLE[idleCount%IDLE.length];
+    statusEl.textContent=s;
+    if(minimized&&snip) snip.textContent=s;
+    body.scrollTop=body.scrollHeight;
+    idleCount++;
+    idleTimer=setTimeout(showIdle,14000);
+  }
+  function startIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(showIdle,12000); }
+  function activity(){ idleCount=0; clearTimeout(idleTimer); if(statusEl){ statusEl.remove(); statusEl=null; } if(toggle.checked) startIdle(); }
+
+  /* embedded kickoffs: question sent, Maya responds */
   function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
   document.querySelectorAll('.chat-kickoff').forEach(function(b){
     b.addEventListener('click',function(){
-      clearTimeout(t); hideTeaser(); toggle.checked=true;
+      clearTimeout(t); hideTeaser();
+      if(minimized) expand();
+      toggle.checked=true;
+      activity();
       var q=b.getAttribute('data-ask'), a=b.getAttribute('data-answer');
-      var chips=body.querySelector('.chat-chips');
-      if(chips) chips.style.display='none';
-      var tm=body.querySelector('.chat-time');
-      if(tm) tm.style.display='none';
+      var chips=body.querySelector('.chat-chips'); if(chips) chips.style.display='none';
+      var tm=body.querySelector('.chat-time'); if(tm) tm.style.display='none';
       var u=document.createElement('div');
       u.className='chat-msg user';
       u.innerHTML='<div class="bubble">'+esc(q)+'</div>';
       body.appendChild(u);
       var typing=document.createElement('div');
       typing.className='chat-msg';
-      typing.innerHTML='<span class="k-av">K</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+      typing.innerHTML='<span class="k-av">M</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
       body.appendChild(typing);
       body.scrollTop=body.scrollHeight;
       setTimeout(function(){
         typing.querySelector('.bubble').innerHTML=esc(a);
         body.scrollTop=body.scrollHeight;
+        if(minimized&&snip) snip.textContent=a;
+        startIdle();
       },1900);
     });
   });
+
+  /* mobile: scrolling docks the open panel to a live mini bar */
+  function lastSnippet(){
+    var bubbles=body.querySelectorAll('.chat-msg .bubble');
+    var last=bubbles[bubbles.length-1];
+    if(!last) return 'Maya \u00b7 Kanmon';
+    if(last.querySelector('.typing')) return 'Maya is typing\u2026';
+    return last.textContent;
+  }
+  function minimize(){
+    if(minimized||!toggle.checked||!mini) return;
+    minimized=true;
+    hideTeaser();
+    panel.classList.add('pmin');
+    if(launch) launch.style.display='none';
+    snip.textContent=lastSnippet();
+    mini.hidden=false;
+  }
+  function expand(){
+    if(!mini) return;
+    minimized=false;
+    mini.hidden=true;
+    panel.classList.remove('pmin');
+    if(launch) launch.style.display='';
+    body.scrollTop=body.scrollHeight;
+  }
+  if(mini){
+    mini.addEventListener('click',function(){ expand(); toggle.checked=true; });
+    var anchorY=window.scrollY;
+    toggle.addEventListener('change',function(){ if(toggle.checked) anchorY=window.scrollY; });
+    addEventListener('scroll',function(){
+      if(!matchMedia('(max-width:760px)').matches) return;
+      if(toggle.checked && !minimized && Math.abs(window.scrollY-anchorY)>80) minimize();
+    },{passive:true});
+  }
 })();
 </script>
 </body>

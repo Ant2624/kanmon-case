@@ -329,3 +329,15 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .chat-kickoff svg{width:15px;height:15px;fill:var(--kanmon);flex-shrink:0}
 .chat-msg.user{justify-content:flex-end}
 .chat-msg.user .bubble{background:var(--kanmon);color:#fff;border:0;border-radius:12px 12px 4px 12px}
+
+/* minimized chat dock (mobile scroll state) */
+.chat-mini{position:fixed;right:16px;bottom:16px;z-index:61;display:flex;align-items:center;gap:.55rem;
+  width:calc(100vw - 32px);max-width:340px;background:#fff;border:1px solid var(--line);border-radius:99px;
+  padding:.5rem .9rem .5rem .55rem;box-shadow:0 8px 28px rgba(17,17,17,.25);cursor:pointer}
+.chat-mini .k-av{width:28px;height:28px;border-radius:50%;background:var(--kanmon);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.7rem;flex-shrink:0}
+.chat-mini .snippet{flex:1;font-size:.78rem;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-mini .expand{color:var(--kanmon-deep);font-weight:700;font-size:.72rem;flex-shrink:0}
+.chat-panel.pmin{opacity:0 !important;pointer-events:none !important}
+
+.chat-status{font-size:.7rem;color:var(--muted);font-style:italic;margin:.3rem 0 .5rem 2rem}
