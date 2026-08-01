@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Kanmon concept redesign · Developers</title>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<div class="concept-banner">Concept redesign by Anthony Carter. Not the official Kanmon site. The real site is at <a href="https://kanmon.com" rel="noopener">kanmon.com</a>.</div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-logo" href="index.html"><img src="../assets/kanmon-logo.png" alt="Kanmon (concept redesign)"></a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="platforms.html">For platforms</a>
+      <a href="developers.html" class="on">Developers</a>
+      <a href="about.html">About</a>
+    </nav>
+    <a class="btn-cta" href="#contact">Contact</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="section alt">
+    <div class="wrap hero-center">
+      <p class="eyebrow">Developers</p>
+      <h1>Integrate lending<br>without becoming a lender.</h1>
+      <p class="lead">A web SDK in your frontend, one token from your backend, and Kanmon runs everything regulated.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Four steps.</h2>
+      <div class="steps-cards" style="margin-top:1rem">
+        <div class="step-card"><h3>Install the SDK</h3><p>Add @kanmon/web-sdk from npm. A React Native SDK is available for mobile.</p></div>
+        <div class="step-card"><h3>Request a Connect Token</h3><p>Your backend asks Kanmon's API for a token for the signed-in business.</p></div>
+        <div class="step-card"><h3>Start the SDK</h3><p>Launch with the token. Kanmon renders the application and offer flow inside your UI.</p></div>
+        <div class="step-card"><h3>Kanmon runs the rest</h3><p>Identity checks, underwriting, funding, servicing, and collections happen server-side.</p></div>
+      </div>
+      <p class="sub" style="margin-top:.8rem">Source: npm @kanmon/web-sdk, GitHub Kanmon/sdk, kanmon.dev.</p>
+    </div>
+  </section>
+
+  <section class="band maroon">
+    <div class="wrap">
+      <div class="grid2">
+        <div>
+          <h2>The shape of the integration.</h2>
+          <p class="sub">Everything your customers see stays inside your product. The regulated machinery never touches your stack.</p>
+        </div>
+        <figure>
+          <div class="window codewin">
+            <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">terminal · your-app</div></div>
+            <pre><span class="c"># frontend</span>
+npm install @kanmon/web-sdk
+
+<span class="c"># backend: one call per signed-in business</span>
+<span class="o">POST</span> /api/platform/v2/connect-tokens
+
+<span class="c"># frontend: hand the token to the SDK</span>
+KanmonConnect.start({ connectToken })
+<span class="c"># Kanmon renders the flow inside your UI</span></pre>
+          </div>
+          <figcaption>Illustrative shape, not copy-paste code. The real API is documented at kanmon.dev.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>What Kanmon runs server-side.</h2>
+      <div class="cards" style="margin-top:1rem">
+        <div class="card"><h3>Identity</h3><p>KYC, KYB, and AML checks, with a soft credit pull only.</p></div>
+        <div class="card"><h3>Credit</h3><p>Underwriting, capital, and all credit risk.</p></div>
+        <div class="card"><h3>Money</h3><p>Disbursement, servicing, collections, and compliance.</p></div>
+      </div>
+      <p class="sub" style="margin-top:.8rem">Your platform does not need embedded payments. Payment data helps underwriting but is not required. Source: kanmon.com FAQ.</p>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2>Where the full docs live.</h2>
+      <p class="sub">Complete API and SDK documentation is at <a href="https://kanmon.dev" rel="noopener">kanmon.dev</a>. Access comes with partnership; the docs are gated today. This page is the public shape of the integration.</p>
+    </div>
+  </section>
+
+  <section class="cta-section" id="contact">
+    <div class="wrap">
+      <h2>Scope the integration with Kanmon's team.</h2>
+      <p>Implement in about one week. Live within a month. Source: kanmon.com FAQ.</p>
+      <p style="margin-top:1rem"><a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a></p>
+      <p class="cta-note">This is a concept page. The button goes to the real Kanmon contact page.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Kanmon is a licensed lender. California DFPI Finance Lenders Law License #60DBO-144925.</p>
+    <p>This is a concept redesign by Anthony Carter, built as a portfolio piece. It is not affiliated with or endorsed by Kanmon.</p>
+    <p><a href="https://kanmon.com" rel="noopener">The real kanmon.com</a> · <a href="https://ant2624.github.io/kanmon-case/">The case study behind this</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
