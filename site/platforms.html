@@ -193,16 +193,30 @@
 
   var page=(location.pathname.split('/').pop()||'index.html').replace('.html','')||'index';
   var DEFAULTS={
-    'index':'Curious what this would look like on your platform? Happy to walk you through it.',
-    'products':'Not sure which product fits your customers? Tell me how they get paid and I can point you.',
-    'platforms':'Questions about the economics? I can walk through how partners earn.',
-    'developers':'Want to scope the integration? It is lighter than most teams expect.',
-    'about':'Any questions about how Kanmon works? I am right here.'
+    'index':[
+      'Hi there. Exploring embedded lending for your platform? Happy to help.',
+      'Welcome. If you are wondering what this would look like on your platform, just ask.',
+      'Hi. Questions about how embedded financing works? I am right here.'],
+    'products':[
+      'Not sure which product fits your customers? Tell me how they get paid and I can point you.',
+      'Looking for the right fit? Each product maps to a different cash gap. Happy to help you match one.',
+      'Hi. If you tell me what your customers sell, I can suggest where financing fits.'],
+    'platforms':[
+      'Questions about the economics? I can walk through how partners earn.',
+      'Hi. Want to talk through what a partner program earns? Happy to help.'],
+    'developers':[
+      'Want to scope the integration? It is lighter than most teams expect.',
+      'Hi. Engineering questions about the SDK or token flow? Ask away.'],
+    'about':[
+      'Any questions about how Kanmon works? I am right here.'],
+    'case-studies':[
+      'Curious how these partners launched? Happy to walk through any of them.',
+      'Hi. Want the story behind one of these programs? Just ask.']
   };
-  var current=DEFAULTS[page]||DEFAULTS['index'];
-  var shown=false, dwell=null, hot=null;
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  var current=pick(DEFAULTS[page]||DEFAULTS['index']);
+  var shown=false, dwell=null, hot=null, swaps=0, lastMsgAt=0;
 
-  // watch what the visitor is actually reading; sections declare their own opener
   if('IntersectionObserver' in window){
     var io=new IntersectionObserver(function(entries){
       entries.forEach(function(en){
@@ -210,22 +224,12 @@
         if(en.isIntersecting && en.intersectionRatio>=0.45){
           clearTimeout(dwell);
           dwell=setTimeout(function(){
-            var next=el.getAttribute('data-chat')||current;
-            if(next!==current){
-              current=next;
-              if(shown && !toggle.checked && !teaser.hidden){
-                txt.innerHTML='<span class="who">Kanmon team</span><span class="typing"><i></i><i></i><i></i></span>';
-                setTimeout(function(){ txt.innerHTML='<span class="who">Kanmon team</span>'+current; },700);
-              }
-            }
-          },1200);
-          if(el.hasAttribute('data-chat-hot')){
-            clearTimeout(hot);
-            hot=setTimeout(tease,5000);
-          }
-        } else if(el.hasAttribute('data-chat-hot')){
-          clearTimeout(hot);
-        }
+            var next=el.getAttribute('data-chat');
+            if(!next||next===current) return;
+            if(!shown){ current=next; }
+          },1400);
+          if(el.hasAttribute('data-chat-hot')){ clearTimeout(hot); hot=setTimeout(tease,5000); }
+        } else if(el.hasAttribute('data-chat-hot')){ clearTimeout(hot); }
       });
     },{threshold:[0.45]});
     document.querySelectorAll('[data-chat]').forEach(function(el){ io.observe(el); });
@@ -238,6 +242,7 @@
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
     setTimeout(function(){
       txt.innerHTML='<span class="who">Kanmon team</span>'+current;
+      lastMsgAt=Date.now();
     },1100);
   }
   var t=setTimeout(tease,2500);
