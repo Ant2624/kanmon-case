@@ -133,13 +133,15 @@
 
 <input type="checkbox" id="chat-toggle" aria-label="Toggle chat">
 <label class="chat-launch" for="chat-toggle" aria-hidden="true">
+  <span class="mini-av">M</span><span class="mini-snip" id="chat-mini-snippet"></span><span class="mini-open">Open</span>
   <svg class="ic-open" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>
   <svg class="ic-close" viewBox="0 0 24 24"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.4 1.41 6.29 6.3-6.3 6.29 1.42 1.42 6.29-6.3 6.3 6.3 1.41-1.42-6.29-6.29 6.29-6.3z"/></svg>
 </label>
 <div class="chat-panel" role="dialog" aria-label="Chat with Kanmon (concept)">
   <div class="chat-head">
     <div class="brand-row"><span class="k-av">M</span><div><b>Maya</b>
-    <span class="presence"><span class="dot-on"></span>Partnerships at Kanmon &middot; replies in a few minutes</span></div></div>
+    <span class="role">Partnerships at Kanmon</span>
+    <span class="presence"><span class="dot-on"></span>Replies in a few minutes</span></div></div>
   </div>
   <div class="chat-body">
     <div class="chat-msg"><span class="k-av">M</span>
@@ -156,11 +158,8 @@
     <svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg>
   </div>
 </div>
-<div class="chat-mini" id="chat-mini" hidden>
-  <span class="k-av">M</span><span class="snippet" id="chat-mini-snippet">Maya &middot; Kanmon</span><span class="expand">Open</span>
-</div>
 <div class="chat-teaser" id="chat-teaser" hidden>
-  <span class="k-av">K</span>
+  <span class="k-av">M</span>
   <div class="txt" id="chat-teaser-txt"><span class="who">Maya &middot; Kanmon</span><span class="typing"><i></i><i></i><i></i></span></div>
   <button class="x" id="chat-teaser-x" aria-label="Dismiss">&times;</button>
 </div>
@@ -171,10 +170,9 @@
   var txt=document.getElementById('chat-teaser-txt');
   var panel=document.querySelector('.chat-panel');
   var body=document.querySelector('.chat-body');
-  var mini=document.getElementById('chat-mini');
-  var snip=document.getElementById('chat-mini-snippet');
   var launch=document.querySelector('.chat-launch');
-  if(!toggle||!teaser||!txt||!panel||!body) return;
+  var snip=document.getElementById('chat-mini-snippet');
+  if(!toggle||!teaser||!txt||!panel||!body||!launch) return;
 
   var page=(location.pathname.split('/').pop()||'index.html').replace('.html','')||'index';
   var DEFAULTS={
@@ -198,16 +196,31 @@
   };
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
   var current=pick(DEFAULTS[page]||DEFAULTS['index']);
-  var shown=false, minimized=false;
-  var WHO='<span class="who">Maya \u00b7 Kanmon</span>';
+  var shown=false, hasHistory=false, anchorY=0;
+
+  function lastText(){
+    var bubbles=body.querySelectorAll('.chat-msg .bubble');
+    var last=bubbles[bubbles.length-1];
+    if(!last) return 'Maya \u00b7 Kanmon';
+    if(last.querySelector('.typing')) return 'Maya is typing\u2026';
+    return last.textContent;
+  }
+  function syncLaunch(){
+    if(!toggle.checked && hasHistory){
+      launch.classList.add('bar');
+      snip.textContent=lastText();
+    } else {
+      launch.classList.remove('bar');
+    }
+  }
 
   function hideTeaser(){ teaser.classList.remove('show'); setTimeout(function(){teaser.hidden=true;},250); }
   function tease(){
-    if(shown||toggle.checked||minimized||(mini&&!mini.hidden)) return;
+    if(shown||toggle.checked||hasHistory) return;
     shown=true;
     teaser.hidden=false;
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
-    setTimeout(function(){ txt.innerHTML=WHO+current; },1100);
+    setTimeout(function(){ txt.innerHTML='<span class="who">Maya \u00b7 Kanmon</span>'+current; },1100);
   }
   var t=setTimeout(tease,2500);
   function onScrollTease(){
@@ -216,11 +229,10 @@
   }
   addEventListener('scroll',onScrollTease,{passive:true});
   document.getElementById('chat-teaser-x').addEventListener('click',function(e){ e.stopPropagation(); hideTeaser(); });
-  txt.addEventListener('click',function(){ hideTeaser(); toggle.checked=true; clearTimeout(t); startIdle(); });
-  toggle.addEventListener('change',function(){
-    if(toggle.checked){ hideTeaser(); clearTimeout(t); startIdle(); }
-    else if(minimized){ expand(); }
-  });
+  function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; syncLaunch(); startIdle(); }
+  function closePanel(){ toggle.checked=false; syncLaunch(); clearTimeout(idleTimer); }
+  txt.addEventListener('click',openPanel);
+  toggle.addEventListener('change',function(){ if(toggle.checked){ openPanel(); } else { closePanel(); } });
 
   /* idle easter egg: Maya keeps working while you decide */
   var IDLE=[
@@ -236,24 +248,20 @@
       statusEl.className='chat-status';
       body.appendChild(statusEl);
     }
-    var s=IDLE[idleCount%IDLE.length];
-    statusEl.textContent=s;
-    if(minimized&&snip) snip.textContent=s;
+    statusEl.textContent=IDLE[idleCount%IDLE.length];
     body.scrollTop=body.scrollHeight;
     idleCount++;
     idleTimer=setTimeout(showIdle,14000);
   }
   function startIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(showIdle,12000); }
-  function activity(){ idleCount=0; clearTimeout(idleTimer); if(statusEl){ statusEl.remove(); statusEl=null; } if(toggle.checked) startIdle(); }
 
   /* embedded kickoffs: question sent, Maya responds */
   function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
   document.querySelectorAll('.chat-kickoff').forEach(function(b){
     b.addEventListener('click',function(){
-      clearTimeout(t); hideTeaser();
-      if(minimized) expand();
-      toggle.checked=true;
-      activity();
+      openPanel();
+      hasHistory=true;
+      idleCount=0; if(statusEl){ statusEl.remove(); statusEl=null; }
       var q=b.getAttribute('data-ask'), a=b.getAttribute('data-answer');
       var chips=body.querySelector('.chat-chips'); if(chips) chips.style.display='none';
       var tm=body.querySelector('.chat-time'); if(tm) tm.style.display='none';
@@ -269,46 +277,17 @@
       setTimeout(function(){
         typing.querySelector('.bubble').innerHTML=esc(a);
         body.scrollTop=body.scrollHeight;
-        if(minimized&&snip) snip.textContent=a;
+        syncLaunch();
         startIdle();
       },1900);
     });
   });
 
-  /* mobile: scrolling docks the open panel to a live mini bar */
-  function lastSnippet(){
-    var bubbles=body.querySelectorAll('.chat-msg .bubble');
-    var last=bubbles[bubbles.length-1];
-    if(!last) return 'Maya \u00b7 Kanmon';
-    if(last.querySelector('.typing')) return 'Maya is typing\u2026';
-    return last.textContent;
-  }
-  function minimize(){
-    if(minimized||!toggle.checked||!mini) return;
-    minimized=true;
-    hideTeaser();
-    panel.classList.add('pmin');
-    if(launch) launch.style.display='none';
-    snip.textContent=lastSnippet();
-    mini.hidden=false;
-  }
-  function expand(){
-    if(!mini) return;
-    minimized=false;
-    mini.hidden=true;
-    panel.classList.remove('pmin');
-    if(launch) launch.style.display='';
-    body.scrollTop=body.scrollHeight;
-  }
-  if(mini){
-    mini.addEventListener('click',function(){ expand(); toggle.checked=true; });
-    var anchorY=window.scrollY;
-    toggle.addEventListener('change',function(){ if(toggle.checked) anchorY=window.scrollY; });
-    addEventListener('scroll',function(){
-      if(!matchMedia('(max-width:760px)').matches) return;
-      if(toggle.checked && !minimized && Math.abs(window.scrollY-anchorY)>80) minimize();
-    },{passive:true});
-  }
+  /* mobile: scrolling away with the panel open closes it to the snippet bar */
+  addEventListener('scroll',function(){
+    if(!matchMedia('(max-width:760px)').matches) return;
+    if(toggle.checked && Math.abs(window.scrollY-anchorY)>80) closePanel();
+  },{passive:true});
 })();
 </script>
 </body>
