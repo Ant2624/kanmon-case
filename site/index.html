@@ -20,12 +20,15 @@
 <header class="site-header">
   <div class="wrap">
     <a class="site-logo" href="index.html"><img src="../assets/kanmon-logo.png" alt="Kanmon (concept redesign)"></a>
+    <input type="checkbox" id="nav-toggle" class="nav-check" aria-label="Toggle navigation">
+    <label class="nav-burger" for="nav-toggle"><span></span><span></span><span></span></label>
     <nav class="site-nav" aria-label="Site">
       <a href="index.html" class="on">Home</a>
       <a href="products.html">Products</a>
       <a href="platforms.html">For platforms</a>
       <a href="developers.html">Developers</a>
       <a href="about.html">About</a>
+      <a href="case-studies.html">Case studies</a>
       <a href="index.html#faq">FAQs</a>
     </nav>
     <a class="btn-cta" href="#contact">Contact</a>
@@ -69,8 +72,8 @@
         </figure>
       </div>
       <div class="logo-bar">
-        <span class="lbl">Runs inside partner products</span>
-        <span>Cleo InvoicePay</span><span>Cin7 Capital</span><span>Avionté SmartFund</span><span>PingPong Financing</span><span>Nuvei A/R</span>
+        <span class="lbl">Runs inside partner products &middot; <a class="link-arrow" href="case-studies.html" style="font-size:.72rem">see the case studies &rarr;</a></span>
+        <a href="case-studies.html#cleo">Cleo InvoicePay</a><a href="case-studies.html#cin7">Cin7 Capital</a><a href="case-studies.html#avionte">Avionté SmartFund</a><a href="case-studies.html#pingpong">PingPong Financing</a><a href="case-studies.html#nuvei">Nuvei A/R</a>
       </div>
     </div>
   </section>
@@ -302,7 +305,8 @@
         <a href="platforms.html">For platforms</a>
         <a href="developers.html">Developers</a>
         <a href="about.html">About</a>
-        <a href="index.html#faq">FAQs</a>
+        <a href="case-studies.html">Case studies</a>
+      <a href="index.html#faq">FAQs</a>
       </div>
       <div class="foot-col">
         <h4>Kanmon</h4>
@@ -376,7 +380,7 @@
           dwell=setTimeout(function(){ current=el.getAttribute('data-chat')||current; },1600);
           if(el.hasAttribute('data-chat-hot')){
             clearTimeout(hot);
-            hot=setTimeout(tease,7500);
+            hot=setTimeout(tease,5000);
           }
         } else if(el.hasAttribute('data-chat-hot')){
           clearTimeout(hot);
@@ -396,10 +400,10 @@
       txt.innerHTML='<span class="who">Kanmon team</span>'+current;
     },1100);
   }
-  var t=setTimeout(tease,16000);
+  var t=setTimeout(tease,6000);
   function onScroll(){
     var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
-    if(d>0.55){ tease(); removeEventListener('scroll',onScroll); }
+    if(d>0.35){ tease(); removeEventListener('scroll',onScroll); }
   }
   addEventListener('scroll',onScroll,{passive:true});
   document.getElementById('chat-teaser-x').addEventListener('click',function(e){
