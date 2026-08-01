@@ -432,13 +432,13 @@
 
   /* idle easter egg: Maya keeps working while you decide */
   var IDLE=[
-    'Maya is reviewing a term sheet\u2026',
-    'Maya stepped away to fund an invoice\u2026',
-    'Maya is double-checking a credit limit\u2026',
-    'Maya is refilling her coffee. Underwriting fuel\u2026'];
+    '\ud83d\udc40 Take your time. Maya is reviewing a term sheet meanwhile\u2026',
+    'Maya stepped away to fund an invoice. Back in a blink \ud83d\udcb8',
+    '\u2615 Coffee refill. Underwriting fuel.',
+    '\ud83d\udc40 Still here whenever you are.'];
   var idleTimer=null, idleCount=0, statusEl=null;
   function showIdle(){
-    if(!toggle.checked||idleCount>=3) return;
+    if(!toggle.checked||idleCount>=4) return;
     if(!statusEl){
       statusEl=document.createElement('p');
       statusEl.className='chat-status';
