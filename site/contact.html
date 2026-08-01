@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Kanmon concept redesign · Developers</title>
-<meta name="description" content="The public shape of a Kanmon integration: web SDK, connect token, and everything regulated handled server-side.">
+<meta name="description" content="Talk to Kanmon about an embedded lending program for your platform.">
+<title>Kanmon concept redesign · Contact</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,6 @@
 <link rel="stylesheet" href="site.css">
 </head>
 <body>
-
 <div class="concept-banner">Concept redesign by Anthony Carter. Not the official Kanmon site. The real site is at <a href="https://kanmon.com" rel="noopener">kanmon.com</a>.</div>
 
 <header class="site-header">
@@ -26,7 +25,7 @@
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="platforms.html">For platforms</a>
-      <a href="developers.html" class="on">Developers</a>
+      <a href="developers.html">Developers</a>
       <a href="about.html">About</a>
       <a href="case-studies.html">Case studies</a>
       <a href="index.html#faq">FAQs</a>
@@ -39,77 +38,46 @@
 
   <section class="section alt">
     <div class="wrap hero-center">
-      <p class="eyebrow">Developers</p>
-      <h1>Integrate lending<br>without becoming a lender.</h1>
-      <p class="lead">A web SDK in your frontend, one token from your backend, and Kanmon runs everything regulated.</p>
+      <p class="eyebrow">Contact</p>
+      <h1>Talk to Kanmon.</h1>
+      <p class="lead">Bring how your customers get paid. Leave with what a program on your platform would look like.</p>
     </div>
   </section>
 
   <section class="section">
-    <div class="wrap">
-      <h2>Four steps.</h2>
-      <div class="steps-cards" style="margin-top:1rem">
-        <div class="step-card"><h3>Install the SDK</h3><p>Add @kanmon/web-sdk from npm. A React Native SDK is available for mobile.</p></div>
-        <div class="step-card"><h3>Request a Connect Token</h3><p>Your backend asks Kanmon's API for a token for the signed-in business.</p></div>
-        <div class="step-card"><h3>Start the SDK</h3><p>Launch with the token. Kanmon renders the application and offer flow inside your UI.</p></div>
-        <div class="step-card"><h3>Kanmon runs the rest</h3><p>Identity checks, underwriting, funding, and repayment all happen on Kanmon’s side.</p></div>
-      </div>
-      <p class="sub" style="margin-top:.8rem"></p>
-    </div>
-  </section>
-
-  <section class="band dark" data-chat="Engineering questions? The SDK and token flow are simpler than they look.">
     <div class="wrap">
       <div class="grid2">
         <div>
-          <h2>The shape of the integration.</h2>
-          <p class="sub">Everything your customers see stays inside your product. The regulated machinery never touches your stack.</p>
-        </div>
-        <figure>
-          <div class="window codewin">
-            <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">terminal · your-app</div></div>
-            <pre><span class="c"># frontend</span>
-npm install @kanmon/web-sdk
-
-<span class="c"># backend: one call per signed-in business</span>
-<span class="o">POST</span> /v1/connect-tokens
-
-<span class="c"># frontend: hand the token to the SDK</span>
-KanmonConnect.start({ connectToken })
-<span class="c"># Kanmon renders the flow inside your UI</span></pre>
+          <h2>What to expect.</h2>
+          <div class="steps-cards" style="margin-top:1rem;grid-template-columns:1fr">
+            <div class="step-card"><h3>A short conversation</h3><p>Your platform, your customers, and the cash gaps they hit. No deck needed.</p></div>
+            <div class="step-card"><h3>A scoped program</h3><p>Which products fit, how the offer appears in your product, and what you earn.</p></div>
+            <div class="step-card"><h3>A fast launch</h3><p>Implement in about one week. Most programs are live within a month.</p></div>
           </div>
-          <figcaption>Simplified for illustration. The full API reference lives at kanmon.dev.</figcaption>
-        </figure>
+        </div>
+        <div>
+          <h2>Two ways to start.</h2>
+          <div class="card" style="margin-top:1rem;border-top:4px solid var(--kanmon)">
+            <h3>Reach the real team</h3>
+            <p style="margin-bottom:.8rem">The button below goes to the actual Kanmon contact page, where the real conversations happen.</p>
+            <a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a>
+          </div>
+          <div class="card" style="margin-top:.8rem">
+            <h3>Or ask Maya first</h3>
+            <p style="margin-bottom:.8rem">Questions before a call? The chat in the corner routes to the right answers.</p>
+            <label class="btn-cta" for="chat-toggle" style="cursor:pointer;background:#fff;color:var(--kanmon-deep) !important;border:1.5px solid var(--kanmon)">Open the chat</label>
+          </div>
+          <p class="sub" style="margin-top:.8rem;font-size:.8rem">This concept page collects nothing. No forms, no tracking.</p>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <h2>What Kanmon runs server-side.</h2>
-      <div class="cards" style="margin-top:1rem">
-        <div class="card"><h3>Identity</h3><p>Identity and compliance checks (KYC, KYB, AML), with a soft credit pull only.</p></div>
-        <div class="card"><h3>Credit</h3><p>Underwriting, capital, and all credit risk.</p></div>
-        <div class="card"><h3>Money</h3><p>Disbursement, servicing, collections, and compliance.</p></div>
-      </div>
-      <p class="sub" style="margin-top:.8rem">Your platform does not need embedded payments. Payment data helps underwriting but is not required.</p>
-      <p style="margin-top:.8rem"><button type="button" class="chat-kickoff" data-ask="What SDKs are available?" data-answer="A web SDK on npm (@kanmon/web-sdk) and a React Native SDK for mobile. Your backend adds one call for the connect token."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>What SDKs are available?</button></p>
-    </div>
-  </section>
-
-  <section class="section alt">
-    <div class="wrap">
-      <h2>Where the full docs live.</h2>
-      <p class="sub">Complete API and SDK documentation is at <a href="https://kanmon.dev" rel="noopener">kanmon.dev</a>. Access comes with partnership; the docs are gated today. This page shows how the integration works.</p>
-      <p style="margin-top:.7rem"><button type="button" class="chat-kickoff" data-ask="How long does the integration take?" data-answer="About one week of implementation for most teams: install the web SDK, add one backend call for the connect token, and start the flow in your UI. Kanmon runs everything regulated server-side."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>How long does the integration take?</button></p>
     </div>
   </section>
 
   <section class="cta-section" id="contact">
     <div class="wrap">
-      <h2>Scope the integration with Kanmon's team.</h2>
-      <p>Implement in about one week. Live within a month.</p>
-      <p style="margin-top:1rem"><a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a></p>
+      <h2>Put capital in the moment your customers need it.</h2>
+      <p>The team scopes every program with you, from first call to launch.</p>
+      <p style="margin-top:1.1rem"><a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a> <a class="btn-ghost" href="case-studies.html">See live programs</a></p>
     </div>
   </section>
 
