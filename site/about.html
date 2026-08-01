@@ -239,22 +239,29 @@
 
   /* idle easter egg: Maya keeps working while you decide */
   var IDLE=[
-    '\ud83d\udc40 Take your time. Maya is reviewing a term sheet meanwhile\u2026',
-    'Maya stepped away to fund an invoice. Back in a blink \ud83d\udcb8',
-    '\u2615 Coffee refill. Underwriting fuel.',
-    '\ud83d\udc40 Still here whenever you are.'];
-  var idleTimer=null, idleCount=0, statusEl=null;
+    '\ud83d\udc40 Maya is reviewing a term sheet while you look around\u2026',
+    '\ud83d\udcb8 Maya just funded an invoice. No rush.',
+    '\u2615 Quick coffee refill. Underwriting fuel.',
+    '\ud83d\udccb Maya is tidying a credit file. Take your time.'];
+  var FINAL_IDLE='\ud83d\udc40 Still here whenever you are.';
+  var idleTimer=null, idleCount=0, statusEl=null, idleOrder=null;
   function showIdle(){
     if(!toggle.checked||idleCount>=4) return;
+    if(!idleOrder){ idleOrder=IDLE.slice().sort(function(){return Math.random()-0.5;}); }
     if(!statusEl){
       statusEl=document.createElement('p');
       statusEl.className='chat-status';
       body.appendChild(statusEl);
     }
-    statusEl.textContent=IDLE[idleCount%IDLE.length];
-    body.scrollTop=body.scrollHeight;
+    var msg=(idleCount===3)?FINAL_IDLE:idleOrder[idleCount];
+    statusEl.style.opacity='0';
+    setTimeout(function(){
+      statusEl.textContent=msg;
+      statusEl.style.opacity='1';
+      body.scrollTop=body.scrollHeight;
+    },280);
     idleCount++;
-    idleTimer=setTimeout(showIdle,14000);
+    idleTimer=setTimeout(showIdle,13000);
   }
   function startIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(showIdle,12000); }
 
