@@ -210,7 +210,11 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .codewin pre .o{color:#ffb27a}
 
 
-.link-arrow{font-weight:700;color:var(--kanmon-deep);text-decoration:none}
+.link-arrow{font-weight:700;color:var(--kanmon-deep);text-decoration:none;display:inline-flex;align-items:center;gap:.35rem}
+.link-arrow .ai{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s ease;flex-shrink:0}
+.link-arrow:hover .ai{transform:translateX(3px)}
+.link-arrow .ai-down{transform:rotate(90deg)}
+.link-arrow:hover .ai-down{transform:rotate(90deg) translateX(3px)}
 .link-arrow:hover{text-decoration:underline}
 .btn-ghost{display:inline-block;border:1px solid rgba(244,240,230,.45);color:var(--cream) !important;
   padding:.82rem 1.6rem;font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;
