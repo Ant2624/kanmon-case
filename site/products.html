@@ -42,7 +42,7 @@
     </div>
   </section>
 
-  <section class="section alt" id="invoice">
+  <section class="section alt" id="invoice" data-chat="Invoice financing questions? Happy to help." data-chat-hot>
     <div class="wrap">
       <div class="grid2">
         <div>
@@ -78,7 +78,7 @@
     </div>
   </section>
 
-  <section class="section" id="ap">
+  <section class="section" id="ap" data-chat="Questions about paying supplier bills over time? Happy to help." data-chat-hot>
     <div class="wrap">
       <div class="grid2">
         <div>
@@ -114,7 +114,7 @@
     </div>
   </section>
 
-  <section class="section alt" id="term">
+  <section class="section alt" id="term" data-chat="Term loan questions? Happy to help." data-chat-hot>
     <div class="wrap">
       <div class="grid2">
         <div>
@@ -148,7 +148,7 @@
     </div>
   </section>
 
-  <section class="section" id="loc">
+  <section class="section" id="loc" data-chat="Line of credit questions? Happy to explain how limits grow." data-chat-hot>
     <div class="wrap">
       <div class="grid2">
         <div>
@@ -251,5 +251,77 @@
     <svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg>
   </div>
 </div>
+<div class="chat-teaser" id="chat-teaser" hidden>
+  <span class="k-av">K</span>
+  <div class="txt" id="chat-teaser-txt"><span class="who">Kanmon team</span><span class="typing"><i></i><i></i><i></i></span></div>
+  <button class="x" id="chat-teaser-x" aria-label="Dismiss">&times;</button>
+</div>
+<script>
+(function(){
+  var toggle=document.getElementById('chat-toggle');
+  var teaser=document.getElementById('chat-teaser');
+  var txt=document.getElementById('chat-teaser-txt');
+  if(!toggle||!teaser||!txt) return;
+
+  var page=(location.pathname.split('/').pop()||'index.html').replace('.html','')||'index';
+  var DEFAULTS={
+    'index':'Curious what this would look like on your platform? Happy to walk you through it.',
+    'products':'Not sure which product fits your customers? Tell me how they get paid and I can point you.',
+    'platforms':'Questions about the economics? I can walk through how partners earn.',
+    'developers':'Want to scope the integration? It is lighter than most teams expect.',
+    'about':'Any questions about how Kanmon works? I am right here.'
+  };
+  var current=DEFAULTS[page]||DEFAULTS['index'];
+  var shown=false, dwell=null, hot=null;
+
+  // watch what the visitor is actually reading; sections declare their own opener
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        var el=en.target;
+        if(en.isIntersecting && en.intersectionRatio>=0.45){
+          clearTimeout(dwell);
+          dwell=setTimeout(function(){ current=el.getAttribute('data-chat')||current; },1600);
+          if(el.hasAttribute('data-chat-hot')){
+            clearTimeout(hot);
+            hot=setTimeout(tease,7500);
+          }
+        } else if(el.hasAttribute('data-chat-hot')){
+          clearTimeout(hot);
+        }
+      });
+    },{threshold:[0.45]});
+    document.querySelectorAll('[data-chat]').forEach(function(el){ io.observe(el); });
+  }
+
+  function tease(){
+    if(shown||toggle.checked) return;
+    try{ if(sessionStorage.getItem('kchat-teased')) return; sessionStorage.setItem('kchat-teased','1'); }catch(e){}
+    shown=true;
+    teaser.hidden=false;
+    requestAnimationFrame(function(){ teaser.classList.add('show'); });
+    setTimeout(function(){
+      txt.innerHTML='<span class="who">Kanmon team</span>'+current;
+    },1100);
+  }
+  var t=setTimeout(tease,16000);
+  function onScroll(){
+    var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
+    if(d>0.55){ tease(); removeEventListener('scroll',onScroll); }
+  }
+  addEventListener('scroll',onScroll,{passive:true});
+  document.getElementById('chat-teaser-x').addEventListener('click',function(e){
+    e.stopPropagation(); teaser.classList.remove('show');
+    setTimeout(function(){teaser.hidden=true;},250);
+  });
+  txt.addEventListener('click',function(){
+    teaser.classList.remove('show'); teaser.hidden=true;
+    toggle.checked=true; clearTimeout(t);
+  });
+  toggle.addEventListener('change',function(){
+    if(toggle.checked){ teaser.classList.remove('show'); teaser.hidden=true; clearTimeout(t); }
+  });
+})();
+</script>
 </body>
 </html>

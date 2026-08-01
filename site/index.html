@@ -35,22 +35,53 @@
 <main>
 
   <section class="section alt">
-    <div class="wrap hero-center">
-      <p class="eyebrow">Embedded lending infrastructure</p>
-      <h1>Your customer just hit a cash gap.<br>What does your platform do next?</h1>
-      <p class="lead">Kanmon puts a real financing offer inside your product at the moment your customers need it. You earn revenue on every dollar financed. Kanmon carries the risk.</p>
-      <p style="margin-top:1.1rem"><a class="btn-cta" href="#contact">Talk to Kanmon</a></p>
-      <p style="margin-top:.7rem"><a class="link-arrow" href="#moment">Or see the moment first &darr;</a></p>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Embedded lending infrastructure</p>
+          <h1>Your customer just hit a cash gap. What does your platform do next?</h1>
+          <p class="lead">Kanmon puts a real financing offer inside your product at the moment your customers need it. You earn revenue on every dollar financed. Kanmon carries the risk.</p>
+          <p style="margin-top:1.2rem"><a class="btn-cta" href="#contact">Talk to Kanmon</a>&nbsp; <a class="link-arrow" href="#moment">See the moment &darr;</a></p>
+        </div>
+        <figure>
+          <div class="window">
+            <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">app.partneros.com/invoices</div></div>
+            <div class="app">
+              <div class="side">
+                <div class="logo">PartnerOS</div>
+                <a>Dashboard</a><a class="on">Invoices</a><a>Customers</a>
+                <div class="user"><span class="av">ND</span>Northside Dental</div>
+              </div>
+              <div class="main">
+                <div class="kbanner">
+                  <span class="kpill">Powered by Kanmon</span>
+                  <div class="amt" style="margin-top:.3rem">$14,400 available today</div>
+                  <p>An 80% advance on 2 open invoices. Funds in as little as 24 hours.</p>
+                  <div class="row2"><span class="mock-cta">See your offer</span></div>
+                </div>
+                <div class="rows">
+                  <div class="r"><span>Harbor Goods &middot; INV-2041</span><span>$12,400 overdue</span></div>
+                  <div class="r"><span>Next payroll</span><span>in 6 days</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+      <div class="logo-bar">
+        <span class="lbl">Runs inside partner products</span>
+        <span>Cleo InvoicePay</span><span>Cin7 Capital</span><span>Avionté SmartFund</span><span>PingPong Financing</span><span>Nuvei A/R</span>
+      </div>
     </div>
   </section>
 
-  <section class="section" id="moment">
+  <section class="section" id="moment" data-chat="Happy to talk through what a program like this looks like on a platform.">
     <div class="wrap">
       <h2>Meet Northside Dental, a customer on your platform.</h2>
       <p class="sub">They invoiced $18,000 this month. Their buyers pay in 60 days. Payroll leaves in six. They will not go hunting for your financing page. They will go to a bank, or a broker, or nowhere. In 2025, only 41 percent of small business loan applicants received all the financing they sought, and 44 percent of firms with funding needs did not apply at all, expecting a denial.</p>
     </div>
   </section>
-  <section class="band stone">
+  <section class="band stone" data-chat="Happy to talk through what a program like this looks like on a platform.">
     <div class="wrap">
       <div class="grid2">
 
@@ -119,7 +150,6 @@
               </div>
             </div>
           </div>
-          <figcaption><span class="law">Anything orange is the Kanmon part; everything navy is the platform’s own product.</span></figcaption>
         </figure>
 
       </div>
@@ -128,7 +158,7 @@
     </div>
   </section>
 
-  <section class="section alt">
+  <section class="section alt" data-chat="Want the numbers behind these? I can walk you through them.">
     <div class="wrap">
       <h2>Why platforms do this.</h2>
       <div class="facts" style="margin-top:1rem">
@@ -137,7 +167,6 @@
         <div class="fact"><b>Licensed lender</b> CA DFPI license #60DBO-144925</div>
         <div class="fact"><b>SOC 2 Type I</b> security compliance</div>
       </div>
-      <p class="sub" style="margin-top:1rem">Kanmon programs already run inside partner products: Cleo InvoicePay, Cin7 Capital, Avionté SmartFund, PingPong Financing, and Nuvei accounts receivable financing.</p>
       <p style="margin-top:.9rem"><a class="link-arrow" href="#contact">See what a program looks like on your platform &rarr;</a></p>
     </div>
   </section>
@@ -209,7 +238,7 @@
     </div>
   </section>
 
-  <section class="section alt" id="faq">
+  <section class="section alt" id="faq" data-chat="Anything the FAQ does not cover? Ask me directly.">
     <div class="wrap">
       <h2>Get the answers you need.</h2>
       <div class="faq" style="margin-top:1rem">
@@ -314,5 +343,77 @@
     <svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg>
   </div>
 </div>
+<div class="chat-teaser" id="chat-teaser" hidden>
+  <span class="k-av">K</span>
+  <div class="txt" id="chat-teaser-txt"><span class="who">Kanmon team</span><span class="typing"><i></i><i></i><i></i></span></div>
+  <button class="x" id="chat-teaser-x" aria-label="Dismiss">&times;</button>
+</div>
+<script>
+(function(){
+  var toggle=document.getElementById('chat-toggle');
+  var teaser=document.getElementById('chat-teaser');
+  var txt=document.getElementById('chat-teaser-txt');
+  if(!toggle||!teaser||!txt) return;
+
+  var page=(location.pathname.split('/').pop()||'index.html').replace('.html','')||'index';
+  var DEFAULTS={
+    'index':'Curious what this would look like on your platform? Happy to walk you through it.',
+    'products':'Not sure which product fits your customers? Tell me how they get paid and I can point you.',
+    'platforms':'Questions about the economics? I can walk through how partners earn.',
+    'developers':'Want to scope the integration? It is lighter than most teams expect.',
+    'about':'Any questions about how Kanmon works? I am right here.'
+  };
+  var current=DEFAULTS[page]||DEFAULTS['index'];
+  var shown=false, dwell=null, hot=null;
+
+  // watch what the visitor is actually reading; sections declare their own opener
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        var el=en.target;
+        if(en.isIntersecting && en.intersectionRatio>=0.45){
+          clearTimeout(dwell);
+          dwell=setTimeout(function(){ current=el.getAttribute('data-chat')||current; },1600);
+          if(el.hasAttribute('data-chat-hot')){
+            clearTimeout(hot);
+            hot=setTimeout(tease,7500);
+          }
+        } else if(el.hasAttribute('data-chat-hot')){
+          clearTimeout(hot);
+        }
+      });
+    },{threshold:[0.45]});
+    document.querySelectorAll('[data-chat]').forEach(function(el){ io.observe(el); });
+  }
+
+  function tease(){
+    if(shown||toggle.checked) return;
+    try{ if(sessionStorage.getItem('kchat-teased')) return; sessionStorage.setItem('kchat-teased','1'); }catch(e){}
+    shown=true;
+    teaser.hidden=false;
+    requestAnimationFrame(function(){ teaser.classList.add('show'); });
+    setTimeout(function(){
+      txt.innerHTML='<span class="who">Kanmon team</span>'+current;
+    },1100);
+  }
+  var t=setTimeout(tease,16000);
+  function onScroll(){
+    var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
+    if(d>0.55){ tease(); removeEventListener('scroll',onScroll); }
+  }
+  addEventListener('scroll',onScroll,{passive:true});
+  document.getElementById('chat-teaser-x').addEventListener('click',function(e){
+    e.stopPropagation(); teaser.classList.remove('show');
+    setTimeout(function(){teaser.hidden=true;},250);
+  });
+  txt.addEventListener('click',function(){
+    teaser.classList.remove('show'); teaser.hidden=true;
+    toggle.checked=true; clearTimeout(t);
+  });
+  toggle.addEventListener('change',function(){
+    if(toggle.checked){ teaser.classList.remove('show'); teaser.hidden=true; clearTimeout(t); }
+  });
+})();
+</script>
 </body>
 </html>

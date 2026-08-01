@@ -59,6 +59,12 @@ h2{font-size:clamp(1.5rem,3.4vw,2.3rem);font-weight:700;letter-spacing:-.02em;li
 .lead{font-size:clamp(1.02rem,1.6vw,1.15rem);font-weight:500;color:#1f1f1c;max-width:46rem;line-height:1.6}
 .sub{color:var(--muted);font-size:.95rem;max-width:44rem;line-height:1.65}
 .hero-center{text-align:center}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:2.4rem;align-items:center}
+.hero-grid .window{box-shadow:0 3px 8px rgba(17,17,17,.08),0 26px 60px rgba(17,17,17,.2)}
+.logo-bar{display:flex;flex-wrap:wrap;gap:.4rem 1.6rem;align-items:center;margin-top:2rem;
+  font-size:.8rem;font-weight:700;color:#8a8780;letter-spacing:.01em}
+.logo-bar .lbl{font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:#a8a49a;width:100%}
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}}
 .hero-center .lead,.hero-center .sub{margin-left:auto;margin-right:auto}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;align-items:start}
 .band .grid2{align-items:stretch}
@@ -110,7 +116,7 @@ table.own td.who-kan{color:var(--kanmon-deep);font-weight:700}
 .srcline{display:block;font-size:.72rem;color:var(--muted);margin-top:.4rem}
 .band .srcline{color:inherit;opacity:.7}
 figure{margin:0}
-.mock-label{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+.mock-label{display:inline-block;align-self:flex-start;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
   padding:.3rem .75rem;margin-bottom:.6rem}
 .mock-label.without{background:#d8d3c4;color:#5b5b57}
 .mock-label.with{background:var(--kanmon);color:#fff}
@@ -278,3 +284,22 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .chat-input span{flex:1;font-size:.82rem;color:#a8a49a}
 .chat-input svg{width:18px;height:18px;fill:#c9c4b8}
 @media (max-width:480px){.chat-panel{bottom:82px;right:16px}}
+
+/* chat teaser + typing */
+.chat-teaser{position:fixed;right:20px;bottom:86px;z-index:59;display:flex;gap:.55rem;align-items:flex-start;
+  background:#fff;border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:.7rem .8rem;
+  max-width:280px;box-shadow:0 10px 34px rgba(17,17,17,.22);
+  opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease;pointer-events:none}
+.chat-teaser.show{opacity:1;transform:none;pointer-events:auto}
+.chat-teaser .k-av{width:26px;height:26px;border-radius:50%;background:var(--kanmon);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.66rem;flex-shrink:0}
+.chat-teaser .txt{font-size:.8rem;line-height:1.45;color:#222;cursor:pointer}
+.chat-teaser .who{display:block;font-size:.62rem;color:var(--muted);margin-bottom:.15rem}
+.chat-teaser .x{position:absolute;top:4px;right:8px;border:0;background:none;color:#b3b0a6;font-size:.85rem;cursor:pointer;padding:2px}
+.chat-teaser .x:hover{color:#111}
+.typing{display:inline-flex;gap:3px;align-items:center;height:10px}
+.typing i{width:5px;height:5px;border-radius:50%;background:#c9c4b8;animation:tp 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}
+.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-3px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.typing i{animation:none}}
