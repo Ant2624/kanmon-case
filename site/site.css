@@ -301,6 +301,16 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .contact-aside .proof-list b{display:block;font-size:.9rem;margin-bottom:.15rem}
 .contact-aside .proof-list span{font-size:.8rem;color:var(--muted);line-height:1.45}
 .hp-field{position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden}
+.agent-live-card{background:#fff;border:1px solid var(--line);border-top:4px solid var(--kanmon);
+  padding:1rem 1.1rem;margin:1.1rem 0 1rem}
+.agent-live-row{display:flex;gap:.7rem;align-items:center}
+.agent-live-card .k-av{width:40px;height:40px;border-radius:50%;background:var(--kanmon);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0}
+.agent-live-card b{display:block;font-size:1rem}
+.agent-live-role{display:block;font-size:.78rem;color:var(--muted);margin-top:.1rem}
+.agent-live-presence{display:flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--ok);font-weight:600;margin-top:.25rem}
+.agent-live-presence .dot-on{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block}
+.agent-live-blurb{margin:.7rem 0 0;font-size:.88rem;color:#333;line-height:1.5}
 
 /* ---------- CTA + footer ---------- */
 .cta-section{background:linear-gradient(115deg,#0d0d0d 0 30%,var(--charcoal) 30%);color:var(--cream);padding:clamp(3rem,7vw,4.2rem) 0;scroll-margin-top:64px}

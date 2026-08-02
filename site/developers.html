@@ -107,7 +107,7 @@ KanmonConnect.start({ connectToken })
         <div class="card"><h3>Money</h3><p>Disbursement, servicing, collections, and compliance.</p></div>
       </div>
       <p class="sub" style="margin-top:.8rem">Your platform does not need embedded payments. Payment data helps underwriting but is not required.</p>
-      <p style="margin-top:.8rem"><button type="button" class="chat-kickoff" data-ask="What SDKs are available?" data-answer="A web SDK on npm (@kanmon/web-sdk) and a React Native SDK for mobile. Your backend adds one call for the connect token."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>What SDKs are available?<span class="ask-cue">Ask Maya</span></button></p>
+      <p style="margin-top:.8rem"><button type="button" class="chat-kickoff" data-ask="What SDKs are available?" data-answer="A web SDK on npm (@kanmon/web-sdk) and a React Native SDK for mobile. Your backend adds one call for the connect token."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>What SDKs are available?<span class="ask-cue" data-agent="askCue">Ask Maya</span></button></p>
     </div>
   </section>
 
@@ -115,7 +115,7 @@ KanmonConnect.start({ connectToken })
     <div class="wrap">
       <h2>Where the full docs live.</h2>
       <p class="sub">Complete API and SDK documentation is at <a href="https://kanmon.dev" rel="noopener">kanmon.dev</a>. Access comes with partnership; the docs are gated today. This page shows how the integration works.</p>
-      <p style="margin-top:.7rem"><button type="button" class="chat-kickoff" data-ask="How long does the integration take?" data-answer="About one week of implementation for most teams: install the web SDK, add one backend call for the connect token, and start the flow in your UI. Kanmon runs everything regulated server-side."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>How long does the integration take?<span class="ask-cue">Ask Maya</span></button></p>
+      <p style="margin-top:.7rem"><button type="button" class="chat-kickoff" data-ask="How long does the integration take?" data-answer="About one week of implementation for most teams: install the web SDK, add one backend call for the connect token, and start the flow in your UI. Kanmon runs everything regulated server-side."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>How long does the integration take?<span class="ask-cue" data-agent="askCue">Ask Maya</span></button></p>
     </div>
   </section>
 
@@ -171,21 +171,21 @@ KanmonConnect.start({ connectToken })
 
 <input type="checkbox" id="chat-toggle" aria-label="Toggle chat">
 <label class="chat-launch" for="chat-toggle" aria-hidden="true">
-  <span class="mini-av">M</span><span class="mini-snip" id="chat-mini-snippet"></span><span class="mini-cycle" role="button" aria-label="Another status"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5m2-3v5h-5M20 12a8 8 0 0 1-14 5m-2 3v-5h5"/></svg></span><span class="mini-open">Open</span>
+  <span class="mini-av" data-agent="initial">M</span><span class="mini-snip" id="chat-mini-snippet"></span><span class="mini-cycle" role="button" aria-label="Another status"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5m2-3v5h-5M20 12a8 8 0 0 1-14 5m-2 3v-5h5"/></svg></span><span class="mini-open">Open</span>
   <svg class="ic-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>
 </label>
-<div class="chat-panel" role="dialog" aria-label="Chat with Kanmon (concept)">
+<div class="chat-panel" role="dialog" aria-label="Chat with partnerships (concept)">
   <div class="chat-head">
     <button type="button" class="chat-close" id="chat-close" aria-label="Close chat">&times;</button>
-    <div class="brand-row"><span class="k-av">M</span><div><b>Maya</b>
-    <span class="role">Partnerships at Kanmon</span>
-    <span class="presence"><span class="dot-on"></span>Replies in a few minutes</span></div></div>
+    <div class="brand-row"><span class="k-av" data-agent="initial">M</span><div><b data-agent="first">Maya</b>
+    <span class="role" data-agent="role">Partnerships at Kanmon</span>
+    <span class="presence"><span class="dot-on"></span><span data-agent="presence">Usually replies in a few minutes</span></span></div></div>
   </div>
   <div class="chat-body">
-    <div class="chat-msg"><span class="k-av">M</span>
+    <div class="chat-msg"><span class="k-av" data-agent="initial">M</span>
       <div class="bubble">Hi there. Exploring embedded lending for your platform? Happy to point you to the right place.</div>
     </div>
-    <p class="chat-time">Maya &middot; just now</p>
+    <p class="chat-time"><span data-agent="first">Maya</span> &middot; just now</p>
     <div class="chat-chips">
       <a href="products.html">Which products fit my customers?</a>
       <a href="index.html#faq">How does the lending side work?</a>
@@ -197,10 +197,11 @@ KanmonConnect.start({ connectToken })
   </div>
 </div>
 <div class="chat-teaser" id="chat-teaser" hidden>
-  <span class="k-av">M</span>
-  <div class="txt" id="chat-teaser-txt"><span class="who">Maya &middot; Kanmon</span><span class="typing"><i></i><i></i><i></i></span></div>
+  <span class="k-av" data-agent="initial">M</span>
+  <div class="txt" id="chat-teaser-txt"><span class="who" data-agent="who">Maya &middot; Kanmon</span><span class="typing"><i></i><i></i><i></i></span></div>
   <button class="x" id="chat-teaser-x" aria-label="Dismiss">&times;</button>
 </div>
+<script src="agent.js"></script>
 <script>
 (function(){
   var toggle=document.getElementById('chat-toggle');
@@ -256,8 +257,8 @@ KanmonConnect.start({ connectToken })
   function lastText(){
     var bubbles=body.querySelectorAll('.chat-msg .bubble');
     var last=bubbles[bubbles.length-1];
-    if(!last) return 'Maya \u00b7 Kanmon';
-    if(last.querySelector('.typing')) return 'Maya is typing\u2026';
+    if(!last) return (window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon';
+    if(last.querySelector('.typing')) return (window.KanmonAgent&&KanmonAgent.typing)||'Maya is typing\u2026';
     return last.textContent;
   }
   function syncLaunch(){
@@ -275,7 +276,7 @@ KanmonConnect.start({ connectToken })
     shown=true;
     teaser.hidden=false;
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
-    setTimeout(function(){ txt.innerHTML='<span class="who">Maya \u00b7 Kanmon</span>'+current; },1100);
+    setTimeout(function(){ var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon'; txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+current; },1100);
   }
   var t=setTimeout(tease,2500);
   function onScrollTease(){
@@ -292,16 +293,9 @@ KanmonConnect.start({ connectToken })
   if(closeBtn){ closeBtn.addEventListener('click',function(e){ e.preventDefault(); closePanel(); }); }
 
 
-  /* idle easter egg: Maya keeps working while you decide */
-  var IDLE=[
-    '\ud83d\udc40 Maya is reviewing a term sheet while you look around\u2026',
-    '\ud83d\udcb8 Maya just funded an invoice. No rush.',
-    '\u2615 Quick coffee refill. Underwriting fuel.',
-    '\ud83d\udccb Maya is tidying a credit file. Take your time.',
-    '\ud83e\udd39 Maya is juggling three term sheets. Literally.',
-    '\ud83e\uddee Maya is racing the underwriting model. It is winning.',
-    '\ud83c\udfaf Maya hit inbox zero. Again.'];
-  var FINAL_IDLE='\ud83d\udc40 Still here whenever you are.';
+  /* idle: on-shift partnerships lead keeps working while you decide */
+  var IDLE=(window.KanmonAgent&&KanmonAgent.idle)||[];
+  var FINAL_IDLE=(window.KanmonAgent&&KanmonAgent.finalIdle)||'\ud83d\udc40 Still here whenever you are.';
   var idleTimer=null, idleCount=0, statusEl=null, idleOrder=null;
   function showIdle(){
     if(!(toggle.checked||launch.classList.contains('bar'))||idleCount>=4) return;
@@ -309,7 +303,7 @@ KanmonConnect.start({ connectToken })
     if(!statusEl){
       statusEl=document.createElement('div');
       statusEl.className='chat-msg status';
-      statusEl.innerHTML='<span class="k-av">M</span><div class="bubble"></div>';
+      statusEl.innerHTML='<span class="k-av">'+((window.KanmonAgent&&KanmonAgent.initial)||'M')+'</span><div class="bubble"></div>';
       body.appendChild(statusEl);
     }
     var msg=(idleCount===3)?FINAL_IDLE:idleOrder[idleCount];
@@ -345,7 +339,7 @@ KanmonConnect.start({ connectToken })
       body.appendChild(u);
       var typing=document.createElement('div');
       typing.className='chat-msg';
-      typing.innerHTML='<span class="k-av">M</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+      typing.innerHTML='<span class="k-av">'+((window.KanmonAgent&&KanmonAgent.initial)||'M')+'</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
       body.appendChild(typing);
       body.scrollTop=body.scrollHeight;
       setTimeout(function(){
