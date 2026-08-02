@@ -625,3 +625,12 @@ a.card h3{color:var(--ink)}
 a.card:hover h3{color:var(--kanmon-deep)}
 .card-ico{stroke:#b9b2a4}
 a.card:hover .card-ico{stroke:var(--kanmon)}
+
+/* the outcome block: identical rows on both sides so only the states differ */
+.outcome{margin-top:.6rem;border-top:1px solid var(--line);padding-top:.5rem}
+.o-row{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.28rem 0}
+.o-label{font-size:.72rem;color:#6f6a60}
+.o-tag{font-size:.66rem;font-weight:700;padding:.2rem .5rem;white-space:nowrap;letter-spacing:.01em}
+.o-tag.bad{background:#f6e3dc;color:#9c4a24}
+.o-tag.good{background:#dcefe1;color:#2f6b42}
+.fig-hot .o-tag.good{box-shadow:0 0 0 1px #bcd9c2}
