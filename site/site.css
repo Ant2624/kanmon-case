@@ -638,3 +638,6 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 /* keep the compared panels the same height, captions included */
 .band .grid2 figure figcaption{min-height:2.6rem;display:flex;align-items:flex-start}
 @media (max-width:860px){.band .grid2 figure figcaption{min-height:0}}
+
+/* full legal disclosure: readable but clearly secondary */
+.foot-legal p:first-child{max-width:64rem;line-height:1.6;color:#7d7a71;font-size:.7rem}
