@@ -674,3 +674,6 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
   padding:.55rem .9rem;border-radius:99px;cursor:pointer;min-height:42px}
 .cw:hover{border-color:var(--kanmon);color:var(--kanmon-deep)}
 .cw[aria-pressed="true"]{border-color:var(--kanmon);background:var(--kanmon-soft);color:var(--kanmon-deep)}
+
+.ihint{display:block;font-size:.72rem;color:var(--kanmon-deep);margin:.5rem 0 0;font-weight:600}
+.ihint.gone{display:none}

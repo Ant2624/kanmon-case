@@ -424,6 +424,10 @@
     body.scrollTop=body.scrollHeight;
     syncLaunch(); saveChat();
   }
+  (function ihintInit(){
+    var h=document.getElementById('ihint');
+    if(h && readList().length) h.classList.add('gone');
+  })();
   document.querySelectorAll('.interest').forEach(function(b){
     var label=b.getAttribute('data-interest');
     if(readList().indexOf(label)>-1){ b.setAttribute('aria-pressed','true'); b.querySelector('.ilabel').textContent='On your list'; }
@@ -435,6 +439,7 @@
       b.setAttribute('aria-pressed', String(!on));
       b.querySelector('.ilabel').textContent = !on ? 'On your list' : 'Add to my list';
       if(!toggle.checked && !on){ toggle.checked=true; anchorY=window.scrollY; }
+      var h=document.getElementById('ihint'); if(h) h.classList.add('gone');
       noteInterest(label, !on);
       if(!on) startIdle();
     });

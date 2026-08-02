@@ -440,6 +440,10 @@
     body.scrollTop=body.scrollHeight;
     syncLaunch(); saveChat();
   }
+  (function ihintInit(){
+    var h=document.getElementById('ihint');
+    if(h && readList().length) h.classList.add('gone');
+  })();
   document.querySelectorAll('.interest').forEach(function(b){
     var label=b.getAttribute('data-interest');
     if(readList().indexOf(label)>-1){ b.setAttribute('aria-pressed','true'); b.querySelector('.ilabel').textContent='On your list'; }
@@ -451,6 +455,7 @@
       b.setAttribute('aria-pressed', String(!on));
       b.querySelector('.ilabel').textContent = !on ? 'On your list' : 'Add to my list';
       if(!toggle.checked && !on){ toggle.checked=true; anchorY=window.scrollY; }
+      var h=document.getElementById('ihint'); if(h) h.classList.add('gone');
       noteInterest(label, !on);
       if(!on) startIdle();
     });
@@ -770,21 +775,66 @@
     note.value='Interested in: '+list.join(', ')+'.';
   }
 
+  var noteEl=document.getElementById('c-note');
+  var noteLabel=document.querySelector('label[for="c-note"]');
+  var submitBtn=document.getElementById('contact-submit');
+  var kicker=document.getElementById('cc-kicker');
+
+  function setWay(way){
+    var who=(window.KanmonAgent&&KanmonAgent.first)||'your partnerships manager';
+    document.querySelectorAll('.cw').forEach(function(x){ x.setAttribute('aria-pressed', String(x.getAttribute('data-way')===way)); });
+    var pref=document.getElementById('c-pref');
+    if(pref) pref.value = way;
+    try{ sessionStorage.setItem('kanmon-way', way); }catch(e){}
+
+    if(way==='call'){
+      if(kicker) kicker.textContent='Set up a call with '+who;
+      if(noteLabel) noteLabel.innerHTML='When suits you? <span class="opt">(optional)</span>';
+      if(noteEl) noteEl.placeholder='e.g. Tuesday or Thursday afternoon, US Pacific.';
+      if(submitBtn) submitBtn.textContent='Request a call';
+    } else {
+      if(kicker) kicker.textContent='Send '+who+' the details';
+      if(noteLabel) noteLabel.innerHTML='What should '+who+' know? <span class="opt">(optional)</span>';
+      if(noteEl) noteEl.placeholder='e.g. Customers invoice on net-60 and need payroll cash in under a week.';
+      if(submitBtn) submitBtn.textContent='Message '+who;
+    }
+    var f=document.getElementById('contact-form');
+    if(f) f.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+
   document.querySelectorAll('.cw').forEach(function(b){
     b.addEventListener('click',function(){
       var way=b.getAttribute('data-way');
       if(way==='chat'){
-        var s=document.getElementById('switch-to-chat'); if(s){ s.click(); return; }
-        document.getElementById('chat-toggle').checked=true; return;
+        var s=document.getElementById('switch-to-chat');
+        if(s){ s.click(); } else { document.getElementById('chat-toggle').checked=true; }
+        return;
       }
-      document.querySelectorAll('.cw').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
-      b.setAttribute('aria-pressed','true');
-      var pref=document.getElementById('c-pref');
-      if(pref) pref.value = way==='call' ? 'Prefers a call' : 'Prefers email';
-      var f=document.getElementById('contact-form');
-      if(f) f.scrollIntoView({behavior:'smooth',block:'center'});
+      setWay(way);
     });
   });
+
+  // success copy matches the path they chose, and names what they flagged
+  var success=document.getElementById('contact-success');
+  if(success){
+    var obs=new MutationObserver(function(){
+      if(success.classList.contains('on') || getComputedStyle(success).display!=='none'){
+        var way='email'; try{ way=sessionStorage.getItem('kanmon-way')||'email'; }catch(e){}
+        var h=success.querySelector('h3'), p=success.querySelector('p');
+        var who=(window.KanmonAgent&&KanmonAgent.first)||'Your partnerships manager';
+        var picked=readList();
+        if(h) h.textContent = way==='call' ? who+' will send you times.' : who+' has your message.';
+        if(p){
+          p.textContent = (way==='call'
+            ? 'Expect a short email with a few slots, usually the same day. '
+            : 'Expect a scoped next step, usually the same day. ')
+            + (picked.length ? 'They already have your list: '+picked.join(', ')+'.' : '');
+        }
+        obs.disconnect();
+      }
+    });
+    obs.observe(success,{attributes:true,attributeFilter:['class','style']});
+  }
 })();
 </script>
 </body>

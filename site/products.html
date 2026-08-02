@@ -68,6 +68,7 @@
           <p class="sub"><strong>Fact:</strong> soft credit pull only. Applying does not affect your customers' credit scores.</p>
           <p style="margin-top:.7rem"><button type="button" class="chat-kickoff" data-ask="Which platforms fit invoice financing?" data-answer="Any platform whose customers wait on receivables: invoicing suites, EDI and supply chain tools, staffing software. If your customers issue invoices, this is usually the fastest product to launch."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>Which platforms fit invoice financing?<span class="ask-cue" data-agent="askCue">Ask Maya</span></button></p>
           <button type="button" class="interest" data-interest="Invoice financing" aria-pressed="false"><span class="box"></span><span class="ilabel">Add to my list</span></button>
+          <span class="ihint" id="ihint">Tick anything relevant. Your partnerships manager starts on it while you browse.</span>
         </div>
         <figure>
           <div class="window">
@@ -398,8 +399,8 @@
       'Welcome. If you are wondering what this would look like on your platform, just ask.',
       'Hi. Questions about how embedded financing works? I am right here.'],
     'products':[
-      'Hi. Happy to help you match a product to your customers.',
-      'Welcome. Questions about any of these products? Just ask.'],
+      'Hi. Tick anything you want me to look into and I will start on it while you browse.',
+      'Hi. Happy to help you match a product to your customers. Tick any that fit and I will dig in.'],
     'platforms':[
       'Hi. Want to talk through what a program on your platform earns? Happy to help.',
       'Welcome. Questions about how this works for you? I am right here.'],
@@ -561,6 +562,10 @@
     body.scrollTop=body.scrollHeight;
     syncLaunch(); saveChat();
   }
+  (function ihintInit(){
+    var h=document.getElementById('ihint');
+    if(h && readList().length) h.classList.add('gone');
+  })();
   document.querySelectorAll('.interest').forEach(function(b){
     var label=b.getAttribute('data-interest');
     if(readList().indexOf(label)>-1){ b.setAttribute('aria-pressed','true'); b.querySelector('.ilabel').textContent='On your list'; }
@@ -572,6 +577,7 @@
       b.setAttribute('aria-pressed', String(!on));
       b.querySelector('.ilabel').textContent = !on ? 'On your list' : 'Add to my list';
       if(!toggle.checked && !on){ toggle.checked=true; anchorY=window.scrollY; }
+      var h=document.getElementById('ihint'); if(h) h.classList.add('gone');
       noteInterest(label, !on);
       if(!on) startIdle();
     });
