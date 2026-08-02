@@ -373,7 +373,13 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 }
 
 /* ---------- chat widget ---------- */
-#chat-toggle{position:absolute;left:-9999px}
+/* Pin off-screen at the viewport origin. Absolute + left:-9999px left the
+   control at its footer DOM position vertically, so label focus scrolled there. */
+#chat-toggle{
+  position:fixed;top:0;left:0;width:1px;height:1px;margin:0;padding:0;border:0;
+  opacity:0;pointer-events:none;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);
+  white-space:nowrap
+}
 .chat-launch{position:fixed;right:20px;bottom:20px;z-index:60;width:54px;height:54px;border-radius:50%;
   background:var(--kanmon);display:flex;align-items:center;justify-content:center;cursor:pointer;
   box-shadow:0 6px 20px rgba(17,17,17,.28);transition:transform .15s ease,box-shadow .15s ease}

@@ -169,8 +169,46 @@
 
   publish(agent);
 
+  // Chat toggle stays in the footer DOM for #chat-toggle:checked ~ .chat-panel.
+  // Native label→checkbox focus scrolls that control into view. Toggle without focusing.
+  function restoreScroll(y) {
+    if (window.scrollY !== y) window.scrollTo(0, y);
+  }
+
+  function bindChatToggleScrollGuard() {
+    var toggle = document.getElementById('chat-toggle');
+    if (!toggle || toggle.__kanmonScrollGuard) return;
+    toggle.__kanmonScrollGuard = true;
+
+    document.addEventListener('click', function (e) {
+      var label = e.target.closest && e.target.closest('label[for="chat-toggle"]');
+      if (!label) return;
+      // Nested controls inside the FAB (e.g. status cycle) handle their own clicks.
+      if (e.target.closest && e.target.closest('.mini-cycle')) return;
+      e.preventDefault();
+      var y = window.scrollY;
+      toggle.checked = !toggle.checked;
+      try {
+        toggle.dispatchEvent(new Event('change', { bubbles: true }));
+      } catch (err) {
+        var ev = document.createEvent('Event');
+        ev.initEvent('change', true, false);
+        toggle.dispatchEvent(ev);
+      }
+      if (document.activeElement === toggle) toggle.blur();
+      restoreScroll(y);
+      requestAnimationFrame(function () { restoreScroll(y); });
+    }, true);
+
+    toggle.addEventListener('focus', function () {
+      var y = window.scrollY;
+      requestAnimationFrame(function () { restoreScroll(y); });
+    });
+  }
+
   function boot() {
     fill(document);
+    bindChatToggleScrollGuard();
     // Re-apply when chat/teaser injects new nodes with data-agent hooks.
     if (window.MutationObserver && !window.__kanmonAgentObs) {
       window.__kanmonAgentObs = new MutationObserver(function (mutations) {
