@@ -426,6 +426,37 @@
   var current=pick(DEFAULTS[page]||DEFAULTS['index']);
   var shown=false, hasHistory=false, anchorY=0;
 
+  /* the conversation follows the visitor across pages */
+  var STORE='kanmon-chat-v1';
+  function saveChat(){
+    try{
+      if(!hasHistory) return;
+      sessionStorage.setItem(STORE, JSON.stringify({
+        html: body.innerHTML,
+        open: !!toggle.checked
+      }));
+    }catch(e){}
+  }
+  function restoreChat(){
+    try{
+      var raw=sessionStorage.getItem(STORE);
+      if(!raw) return false;
+      var s=JSON.parse(raw);
+      if(!s||!s.html) return false;
+      body.innerHTML=s.html;
+      // a status line from the previous page is stale on arrival
+      var stale=body.querySelector('.chat-msg.status');
+      if(stale) stale.remove();
+      hasHistory=true;
+      if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(body);
+      if(s.open){ toggle.checked=true; anchorY=window.scrollY; }
+      syncLaunch();
+      body.scrollTop=body.scrollHeight;
+      if(s.open) startIdle();
+      return true;
+    }catch(e){ return false; }
+  }
+
   function lastText(){
     var bubbles=body.querySelectorAll('.chat-msg .bubble');
     var last=bubbles[bubbles.length-1];
@@ -450,15 +481,16 @@
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
     setTimeout(function(){ var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon'; txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+current; if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(teaser); },1100);
   }
-  var t=setTimeout(tease,2500);
+  var restored=restoreChat();
+  var t=restored?null:setTimeout(tease,2500);
   function onScrollTease(){
     var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
     if(d>0.35){ tease(); removeEventListener('scroll',onScrollTease); }
   }
-  addEventListener('scroll',onScrollTease,{passive:true});
+  if(!restored) addEventListener('scroll',onScrollTease,{passive:true});
   document.getElementById('chat-teaser-x').addEventListener('click',function(e){ e.stopPropagation(); hideTeaser(); });
-  function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; syncLaunch(); startIdle(); }
-  function closePanel(){ toggle.checked=false; syncLaunch(); if(launch.classList.contains('bar')){ startIdle(); } else { clearTimeout(idleTimer); } }
+  function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; syncLaunch(); startIdle(); saveChat(); }
+  function closePanel(){ toggle.checked=false; syncLaunch(); saveChat(); if(launch.classList.contains('bar')){ startIdle(); } else { clearTimeout(idleTimer); } }
   txt.addEventListener('click',openPanel);
   toggle.addEventListener('change',function(){ if(toggle.checked){ openPanel(); } else { closePanel(); } });
   var closeBtn=document.getElementById('chat-close');
@@ -519,6 +551,7 @@
         body.scrollTop=body.scrollHeight;
         syncLaunch();
         startIdle();
+        saveChat();
         if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(panel);
       },1900);
     });
