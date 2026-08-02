@@ -375,7 +375,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .site-footer{background:#111;color:#b3b0a6;font-size:.8rem;padding:2.4rem 0 2.2rem}
 .site-footer a{color:#b3b0a6;text-decoration:none}
 .site-footer a:hover{color:#ffb27a}
-.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2.2rem;align-items:start}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.4rem;align-items:start}
 .foot-brand p{margin:.8rem 0 0;max-width:20rem;line-height:1.55}
 .foot-logo{height:22px;width:auto;filter:invert(1)}
 .foot-col h4{margin:0 0 .7rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:#7d7a71;font-weight:700}
@@ -408,7 +408,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 @media (min-width:600px) and (max-width:860px){
   .cards,.facts,.steps-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
   .trust-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .foot-grid{grid-template-columns:1.4fr 1fr 1fr}
+  .foot-grid{grid-template-columns:1.4fr 1fr 1fr 1fr}
   .wrap{padding-left:2rem;padding-right:2rem}
   h1{font-size:clamp(2.1rem,5.4vw,2.9rem)}
   .lead{font-size:1.06rem}
