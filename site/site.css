@@ -453,12 +453,6 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
   align-items:center;justify-content:center;font-weight:800;font-size:.7rem;flex-shrink:0}
 .chat-launch.bar .mini-snip{display:block;flex:1;min-width:0;font-size:.78rem;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
 .chat-launch.bar .mini-open{display:block;color:var(--kanmon-deep);font-weight:700;font-size:.72rem;flex-shrink:0}
-.chat-launch .mini-cycle{display:none}
-.chat-launch.bar .mini-cycle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;
-  border-radius:50%;border:1px solid var(--line);flex-shrink:0;transition:border-color .15s ease,transform .25s ease}
-.chat-launch.bar .mini-cycle svg{width:12px;height:12px;fill:none;stroke:#8a8780;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.chat-launch.bar .mini-cycle:hover{border-color:var(--kanmon);transform:rotate(180deg)}
-.chat-launch.bar .mini-cycle:hover svg{stroke:var(--kanmon-deep)}
 .chat-launch.bar .mini-snip{transition:opacity .25s ease}
 .chat-launch .ic-close{display:none !important}
 #chat-toggle:checked ~ .chat-launch{opacity:0;pointer-events:none;transform:scale(.9)}
