@@ -669,10 +669,6 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 .connect-ways{border-top:1px solid var(--line);margin-top:1.1rem;padding-top:.9rem}
 .connect-ways h4{margin:0 0 .6rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
 .cw-row{display:flex;flex-wrap:wrap;gap:.5rem}
-.cw{font:inherit;font-size:.82rem;font-weight:600;border:1.5px solid var(--line);background:#fff;color:#55524b;
-  padding:.55rem .9rem;border-radius:99px;cursor:pointer;min-height:42px}
-.cw:hover{border-color:var(--kanmon);color:var(--kanmon-deep)}
-.cw[aria-pressed="true"]{border-color:var(--kanmon);background:var(--kanmon-soft);color:var(--kanmon-deep)}
 
 .ihint{display:block;font-size:.72rem;color:var(--kanmon-deep);margin:.5rem 0 0;font-weight:600}
 .ihint.gone{display:none}
@@ -713,5 +709,14 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 /* connect-ways sits above the form, so it needs room to breathe */
 .connect-ways{margin:0 0 1.5rem}
 .cw-row{gap:.55rem}
-.cw{flex:1 1 auto;justify-content:center;text-align:center}
-@media (min-width:600px){ .cw{flex:1 1 0;min-width:0} }
+@media (min-width:600px){  }
+
+/* the three ways: squared and confident, like the rest of the site */
+.cw{flex:1 1 0;min-width:0;font:inherit;font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  border:1.5px solid #cfc9ba;background:#fff;color:#3d3a34;border-radius:0;padding:.85rem .5rem;
+  cursor:pointer;min-height:46px;white-space:nowrap;text-align:center;
+  transition:background .15s ease,border-color .15s ease,color .15s ease}
+.cw:hover{border-color:var(--kanmon);background:var(--kanmon-soft);color:var(--kanmon-deep)}
+.cw[aria-pressed="true"]{background:var(--kanmon);border-color:var(--kanmon);color:#fff}
+.connect-ways h4{margin-bottom:.5rem}
+@media (max-width:420px){.cw{flex:1 1 100%;}}
