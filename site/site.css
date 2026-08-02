@@ -314,7 +314,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .contact-form .hint{font-size:.74rem;color:var(--muted);margin:0}
 .contact-form .err{font-size:.74rem;color:var(--danger);margin:0;display:none !important}
 .contact-form .field.has-error .err{display:block !important}
-.contact-form .btn-cta{width:100%;border:0;cursor:pointer;margin-top:.1rem;border-radius:10px}
+.contact-form .btn-cta{width:100%;border:0;cursor:pointer;margin-top:.1rem}
 .contact-form .btn-cta:disabled{opacity:.65;cursor:wait;transform:none;box-shadow:none}
 .form-micro{display:flex;flex-wrap:wrap;gap:.5rem .85rem;margin:.7rem 0 0;padding:0;list-style:none}
 .form-micro li{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.35rem}
