@@ -681,7 +681,7 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 .chat-input button svg{width:16px;height:16px;fill:#fff}
 .chat-input button:hover{background:var(--kanmon-deep)}
 .interest{min-height:44px}
-@media (max-width:520px){.interest{width:100%;justify-content:flex-start}}
+@media (max-width:520px){.interest{max-width:100%}}
 
 .contact-form .prefilled{background:var(--kanmon-soft);border-color:#f0c9a8}
 
