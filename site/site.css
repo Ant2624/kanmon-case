@@ -645,3 +645,32 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 .story-state.moving{border-left-color:var(--kanmon)}
 .story-state.moving .story-k{color:var(--kanmon-deep)}
 .story-state.moving p{color:var(--ink)}
+
+/* interest list: signal what matters while browsing */
+.interest{display:inline-flex;align-items:center;gap:.5rem;border:1.5px solid var(--line);background:#fff;
+  color:#55524b;font:inherit;font-size:.82rem;font-weight:600;padding:.5rem .9rem;border-radius:99px;
+  cursor:pointer;margin-top:1rem;transition:border-color .15s ease,background .15s ease,color .15s ease}
+.interest:hover{border-color:var(--kanmon);color:var(--kanmon-deep)}
+.interest .box{width:15px;height:15px;border:1.5px solid #c9c4b8;border-radius:3px;flex-shrink:0;position:relative}
+.interest[aria-pressed="true"]{border-color:var(--kanmon);background:var(--kanmon-soft);color:var(--kanmon-deep)}
+.interest[aria-pressed="true"] .box{background:var(--kanmon);border-color:var(--kanmon)}
+.interest[aria-pressed="true"] .box:after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+/* the list, carried into the conversation */
+.ilist{border:1px solid var(--line);background:#faf8f4;padding:.75rem .85rem;margin:.9rem 0 0}
+.ilist h4{margin:0 0 .5rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
+.ilist ul{list-style:none;margin:0;padding:0}
+.ilist li{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-size:.84rem;padding:.28rem 0;color:var(--ink)}
+.ilist li button{border:0;background:none;color:var(--muted);font:inherit;font-size:.74rem;cursor:pointer;text-decoration:underline}
+.ilist li button:hover{color:var(--kanmon-deep)}
+.ilist .empty{font-size:.82rem;color:var(--muted);margin:0}
+.chat-ilist{margin:.2rem 0 .8rem 2rem;font-size:.72rem;color:var(--kanmon-deep);font-weight:600}
+
+.connect-ways{border-top:1px solid var(--line);margin-top:1.1rem;padding-top:.9rem}
+.connect-ways h4{margin:0 0 .6rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
+.cw-row{display:flex;flex-wrap:wrap;gap:.5rem}
+.cw{font:inherit;font-size:.82rem;font-weight:600;border:1.5px solid var(--line);background:#fff;color:#55524b;
+  padding:.55rem .9rem;border-radius:99px;cursor:pointer;min-height:42px}
+.cw:hover{border-color:var(--kanmon);color:var(--kanmon-deep)}
+.cw[aria-pressed="true"]{border-color:var(--kanmon);background:var(--kanmon-soft);color:var(--kanmon-deep)}

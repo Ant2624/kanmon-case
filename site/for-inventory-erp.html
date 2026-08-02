@@ -335,6 +335,51 @@
   }
   function startIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(showIdle,12000); }
 
+  /* interest list: what they flag while browsing, carried to the rep */
+  var ILIST='kanmon-interest-v1';
+  function readList(){ try{ return JSON.parse(sessionStorage.getItem(ILIST))||[] }catch(e){ return [] } }
+  function writeList(a){ try{ sessionStorage.setItem(ILIST, JSON.stringify(a)); }catch(e){} }
+  function noteInterest(label, added){
+    if(!added){ writeList(readList()); saveChat(); return; }  // removals are silent
+    hasHistory=true;
+    idleCount=0; if(statusEl){ statusEl.remove(); statusEl=null; }
+    var chips=body.querySelector('.chat-chips'); if(chips) chips.style.display='none';
+    var tm=body.querySelector('.chat-time'); if(tm) tm.style.display='none';
+    var list=readList();
+    var line=document.createElement('p');
+    line.className='chat-ilist';
+    line.textContent=(added?'Added to your list: ':'Removed: ')+label;
+    body.appendChild(line);
+    if(added && list.length===1){
+      var typing=document.createElement('div');
+      typing.className='chat-msg';
+      typing.innerHTML='<span class="k-av">'+((window.KanmonAgent&&KanmonAgent.initial)||'M')+'</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+      body.appendChild(typing);
+      setTimeout(function(){
+        typing.querySelector('.bubble').textContent='Got it, I will start looking at that. Keep browsing and add anything else. What is your platform called?';
+        body.scrollTop=body.scrollHeight; syncLaunch(); saveChat();
+      },1200);
+    }
+    body.scrollTop=body.scrollHeight;
+    syncLaunch(); saveChat();
+  }
+  document.querySelectorAll('.interest').forEach(function(b){
+    var label=b.getAttribute('data-interest');
+    if(readList().indexOf(label)>-1){ b.setAttribute('aria-pressed','true'); b.querySelector('.ilabel').textContent='On your list'; }
+    b.addEventListener('click',function(){
+      var list=readList(), on=list.indexOf(label)>-1;
+      if(on){ list=list.filter(function(x){return x!==label}); }
+      else { list.push(label); }
+      writeList(list);
+      b.setAttribute('aria-pressed', String(!on));
+      b.querySelector('.ilabel').textContent = !on ? 'On your list' : 'Add to my list';
+      if(!toggle.checked && !on){ toggle.checked=true; anchorY=window.scrollY; }
+      noteInterest(label, !on);
+      if(!on) startIdle();
+    });
+  });
+
+
 
   /* chips: ask, travel to the page, and pick the conversation back up there */
   var PENDING='kanmon-chat-follow';

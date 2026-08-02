@@ -84,10 +84,24 @@
             </div>
           </div>
 
+          <div class="ilist" id="contact-ilist" hidden>
+            <h4>What you flagged while browsing</h4>
+            <ul id="contact-ilist-items"></ul>
+          </div>
+
           <div class="inline-chat" id="inline-chat" hidden>
             <div class="ic-thread" id="ic-thread" role="log" aria-live="polite"></div>
             <div class="ic-reply" id="ic-reply"></div>
             <p class="ic-switch"><button type="button" class="linkish" id="ic-back">Use the form instead</button></p>
+          </div>
+
+          <div class="connect-ways" id="connect-ways">
+            <h4>However you want to do this</h4>
+            <div class="cw-row">
+              <button type="button" class="cw" data-way="email">Send me an email</button>
+              <button type="button" class="cw" data-way="call">Schedule a call</button>
+              <button type="button" class="cw" data-way="chat">Keep chatting</button>
+            </div>
           </div>
 
           <form class="contact-form" id="contact-form" novalidate>
@@ -139,6 +153,7 @@
               <p class="hint">One sentence is enough. Or skip and continue in chat.</p>
             </div>
             <div class="hp-field" aria-hidden="true">
+              <input type="hidden" id="c-pref" name="pref" value="">
               <label for="c-company-url">Company website</label>
               <input id="c-company-url" name="company_url" type="text" tabindex="-1" autocomplete="off">
             </div>
@@ -396,6 +411,51 @@
     idleTimer=setTimeout(showIdle,13000);
   }
   function startIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(showIdle,12000); }
+
+  /* interest list: what they flag while browsing, carried to the rep */
+  var ILIST='kanmon-interest-v1';
+  function readList(){ try{ return JSON.parse(sessionStorage.getItem(ILIST))||[] }catch(e){ return [] } }
+  function writeList(a){ try{ sessionStorage.setItem(ILIST, JSON.stringify(a)); }catch(e){} }
+  function noteInterest(label, added){
+    if(!added){ writeList(readList()); saveChat(); return; }  // removals are silent
+    hasHistory=true;
+    idleCount=0; if(statusEl){ statusEl.remove(); statusEl=null; }
+    var chips=body.querySelector('.chat-chips'); if(chips) chips.style.display='none';
+    var tm=body.querySelector('.chat-time'); if(tm) tm.style.display='none';
+    var list=readList();
+    var line=document.createElement('p');
+    line.className='chat-ilist';
+    line.textContent=(added?'Added to your list: ':'Removed: ')+label;
+    body.appendChild(line);
+    if(added && list.length===1){
+      var typing=document.createElement('div');
+      typing.className='chat-msg';
+      typing.innerHTML='<span class="k-av">'+((window.KanmonAgent&&KanmonAgent.initial)||'M')+'</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+      body.appendChild(typing);
+      setTimeout(function(){
+        typing.querySelector('.bubble').textContent='Got it, I will start looking at that. Keep browsing and add anything else. What is your platform called?';
+        body.scrollTop=body.scrollHeight; syncLaunch(); saveChat();
+      },1200);
+    }
+    body.scrollTop=body.scrollHeight;
+    syncLaunch(); saveChat();
+  }
+  document.querySelectorAll('.interest').forEach(function(b){
+    var label=b.getAttribute('data-interest');
+    if(readList().indexOf(label)>-1){ b.setAttribute('aria-pressed','true'); b.querySelector('.ilabel').textContent='On your list'; }
+    b.addEventListener('click',function(){
+      var list=readList(), on=list.indexOf(label)>-1;
+      if(on){ list=list.filter(function(x){return x!==label}); }
+      else { list.push(label); }
+      writeList(list);
+      b.setAttribute('aria-pressed', String(!on));
+      b.querySelector('.ilabel').textContent = !on ? 'On your list' : 'Add to my list';
+      if(!toggle.checked && !on){ toggle.checked=true; anchorY=window.scrollY; }
+      noteInterest(label, !on);
+      if(!on) startIdle();
+    });
+  });
+
 
 
   /* chips: ask, travel to the page, and pick the conversation back up there */
@@ -676,6 +736,53 @@
       if(t) t.checked=false;
       start();
       card.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  var ILIST='kanmon-interest-v1';
+  function readList(){ try{ return JSON.parse(sessionStorage.getItem(ILIST))||[] }catch(e){ return [] } }
+  function writeList(a){ try{ sessionStorage.setItem(ILIST, JSON.stringify(a)); }catch(e){} }
+  var box=document.getElementById('contact-ilist');
+  var ul=document.getElementById('contact-ilist-items');
+  function render(){
+    var list=readList();
+    if(!box||!ul) return;
+    if(!list.length){ box.hidden=true; return; }
+    box.hidden=false;
+    ul.innerHTML=list.map(function(x){
+      return '<li><span>'+x.replace(/[&<>]/g,'')+'</span><button type="button" data-drop="'+x.replace(/"/g,'')+'">remove</button></li>';
+    }).join('');
+    ul.querySelectorAll('button[data-drop]').forEach(function(b){
+      b.addEventListener('click',function(){
+        writeList(readList().filter(function(x){ return x!==b.getAttribute('data-drop'); }));
+        render();
+      });
+    });
+  }
+  render();
+
+  var note=document.getElementById('c-note');
+  var list=readList();
+  if(note && list.length && !note.value){
+    note.value='Interested in: '+list.join(', ')+'.';
+  }
+
+  document.querySelectorAll('.cw').forEach(function(b){
+    b.addEventListener('click',function(){
+      var way=b.getAttribute('data-way');
+      if(way==='chat'){
+        var s=document.getElementById('switch-to-chat'); if(s){ s.click(); return; }
+        document.getElementById('chat-toggle').checked=true; return;
+      }
+      document.querySelectorAll('.cw').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+      b.setAttribute('aria-pressed','true');
+      var pref=document.getElementById('c-pref');
+      if(pref) pref.value = way==='call' ? 'Prefers a call' : 'Prefers email';
+      var f=document.getElementById('contact-form');
+      if(f) f.scrollIntoView({behavior:'smooth',block:'center'});
     });
   });
 })();
