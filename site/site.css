@@ -208,7 +208,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .url{flex:1;background:#fff;border:1px solid var(--line);border-radius:7px;font-size:.66rem;color:var(--muted);
   padding:.2rem .6rem;text-align:center;font-family:var(--mono)}
 .app{display:flex;min-height:240px}
-.side{width:148px;background:var(--partner);color:#fff;padding:.75rem .6rem;flex-shrink:0;display:flex;flex-direction:column}
+.side{width:118px;background:var(--partner);color:#fff;padding:.75rem .6rem;flex-shrink:0;display:flex;flex-direction:column}
 .side .user{margin-top:auto;display:flex;gap:.45rem;align-items:center;font-size:.6rem;color:#c7d5e6;padding:.45rem .4rem 0;border-top:1px solid rgba(255,255,255,.12)}
 .side .user .av{width:20px;height:20px;border-radius:50%;background:#ffb27a;color:#4a2a00;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.56rem;flex-shrink:0}
 .side .logo{font-weight:700;font-size:.8rem;margin-bottom:.8rem}
