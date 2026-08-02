@@ -4,14 +4,77 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Kanmon concept redesign · Home</title>
-<meta name="description" content="Concept redesign of kanmon.com: embedded lending that meets platforms in the moment their customers need capital.">
+<title>Kanmon · Embedded lending for software platforms (concept)</title>
+<meta name="description" content="Kanmon is a licensed lender software platforms embed in their product. Capital at the cash-gap moment. You earn revenue share. Kanmon carries the risk.">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- seo-scaffold -->
+<link rel="canonical" href="https://ant2624.github.io/kanmon-case/site/index.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kanmon concept redesign">
+<meta property="og:title" content="Kanmon · Embedded lending for software platforms (concept)">
+<meta property="og:description" content="Kanmon is a licensed lender software platforms embed in their product. Capital at the cash-gap moment. You earn revenue share. Kanmon carries the risk.">
+<meta property="og:url" content="https://ant2624.github.io/kanmon-case/site/index.html">
+<meta property="og:image" content="https://ant2624.github.io/kanmon-case/assets/kanmon-logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kanmon · Embedded lending for software platforms (concept)">
+<meta name="twitter:description" content="Kanmon is a licensed lender software platforms embed in their product. Capital at the cash-gap moment. You earn revenue share. Kanmon carries the risk.">
+<meta name="twitter:image" content="https://ant2624.github.io/kanmon-case/assets/kanmon-logo.png">
+<!-- /seo-scaffold -->
 <link rel="stylesheet" href="site.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What products can we offer our customers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Term loans, lines of credit, invoice financing, and accounts payable financing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who provides the capital?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kanmon is the lender of record: it provides the capital, holds the credit agreement, and assumes all credit risk."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Kanmon a licensed lender?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Kanmon is a licensed commercial lender, including California DFPI Finance Lenders Law License #60DBO-144925."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do we need embedded payments first?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Payment data helps underwriting, but it is not required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will applying affect our customers' credit scores?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Kanmon uses a soft credit pull for eligibility, which does not affect credit scores."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -19,7 +82,7 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="site-logo" href="index.html"><img src="../assets/kanmon-logo.png" alt="Kanmon (concept redesign)"></a>
+    <a class="site-logo" href="index.html"><img src="../assets/kanmon-logo.png" alt="Kanmon logo (concept redesign)"></a>
     <input type="checkbox" id="nav-toggle" class="nav-check" aria-label="Toggle navigation">
     <label class="nav-burger" for="nav-toggle"><span></span><span></span><span></span></label>
     <nav class="site-nav" aria-label="Site">
@@ -41,12 +104,23 @@
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">Embedded lending infrastructure</p>
-          <h1>Your customer just hit a cash gap. What does your platform do next?</h1>
-          <p class="lead">Kanmon puts a real financing offer inside your product at the moment your customers need it. You earn revenue on every dollar financed. Kanmon carries the risk.</p>
+          <p class="eyebrow">Financing inside your software</p>
+          <h1>Capital for your customers, without becoming a lender.</h1>
+          <p class="lead">Kanmon is a licensed commercial lender that software platforms embed in their product. Your brand stays in front. Kanmon underwrites, funds, and carries the credit risk.</p>
+          <div class="problem-solution">
+            <div class="ps problem">
+              <h3>Your problem</h3>
+              <p>Customers hit cash gaps inside your product, then leave for a bank, a broker, or nowhere. You earn nothing from the moment that matters most.</p>
+            </div>
+            <div class="ps solution">
+              <h3>Our solution</h3>
+              <p>A real financing offer at that moment. You earn revenue share on every dollar financed. Kanmon is the lender of record.</p>
+            </div>
+          </div>
           <p style="margin-top:1.2rem"><a class="btn-cta" href="#contact">Talk to Kanmon</a>&nbsp; <a class="link-arrow" href="#moment">See the moment <svg class="ai ai-down" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
         </div>
         <figure>
+          <span class="mock-label demo">Demo UI</span>
           <div class="window">
             <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">app.partneros.com/invoices</div></div>
             <div class="app">
@@ -60,7 +134,7 @@
                   <span class="kpill">Powered by Kanmon</span>
                   <div class="amt" style="margin-top:.3rem">$14,400 available today</div>
                   <p>Against 2 open invoices totaling $18,000. Funds in as little as 24 hours.</p>
-                  <div class="row2"><span class="mock-cta">See your offer</span></div>
+                  <div class="row2"><span class="mock-cta" aria-hidden="true">See your offer</span></div>
                 </div>
                 <div class="rows">
                   <div class="r"><span>Harbor Goods &middot; INV-2041</span><span>$12,400 overdue</span></div>
@@ -69,7 +143,14 @@
               </div>
             </div>
           </div>
+          <figcaption>Concept mock. Orange marks the Kanmon offer inside a partner product.</figcaption>
         </figure>
+      </div>
+      <div class="trust-strip" id="trust">
+        <div class="t"><b>Licensed lender of record</b><span>CA DFPI #60DBO-144925. Your platform never lends its own money.</span></div>
+        <div class="t"><b>SOC 2 Type I</b><span>Independently audited security controls for the lending stack.</span></div>
+        <div class="t"><b>KYC, KYB, AML</b><span>Identity and compliance checks run on Kanmon's side.</span></div>
+        <div class="t"><b>Soft pull only</b><span>Eligibility checks do not affect customer credit scores.</span></div>
       </div>
       <div class="logo-bar">
         <span class="lbl">Runs inside partner products &middot; <a class="link-arrow" href="case-studies.html" style="font-size:.72rem">see the case studies <svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></span>
@@ -80,6 +161,7 @@
 
   <section class="section" id="moment" data-chat="Happy to talk through what a program like this looks like on a platform.">
     <div class="wrap">
+      <p class="eyebrow">The moment that proves it</p>
       <h2>Meet Northside Dental, a customer on your platform.</h2>
       <p class="sub">They invoiced $18,000 this month. Their buyers pay in 60 days. Payroll leaves in six. They will not go hunting for your financing page. They will go to a bank, or a broker, or nowhere. In 2025, only 41 percent of small business loan applicants received all the financing they sought, and 44 percent of firms with funding needs did not apply at all, expecting a denial.</p>
     </div>
@@ -136,7 +218,7 @@
                   <span class="kpill">Powered by Kanmon</span>
                   <div class="amt" style="margin-top:.3rem">$14,400 available today</div>
                   <p>Against 2 open invoices totaling $18,000. Funds in as little as 24 hours, typically within two days.</p>
-                  <div class="row2"><span class="mock-cta">See your offer</span><span class="mock-cta ghost">How it works</span></div>
+                  <div class="row2"><span class="mock-cta" aria-hidden="true">See your offer</span><span class="mock-cta ghost">How it works</span></div>
                   <p class="terms">Soft credit pull only. Checking does not affect their credit score.</p>
                 </div>
                 <table class="inv">
@@ -158,7 +240,7 @@
       </div>
       <h2 style="margin-top:1.8rem">Same screen. One difference: the capital is already there.</h2>
       <p class="sub">A real offer, sized to their business, inside the software they already use. No new login, no bank branch, no broker. Your platform becomes the answer instead of the place they left to find one.</p>
-      <p style="margin-top:.8rem"><button type="button" class="chat-kickoff" data-ask="How fast could this be live on my platform?" data-answer="Implementation takes about one week, and most programs are live within a month. The team scopes it with you."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>How fast could this be live on my platform?</button></p>
+      <p style="margin-top:.8rem"><button type="button" class="chat-kickoff" data-ask="How fast could this be live on my platform?" data-answer="Implementation takes about one week, and most programs are live within a month. The team scopes it with you."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>How fast could this be live on my platform?<span class="ask-cue">Ask Maya</span></button></p>
     </div>
   </section>
 
@@ -171,7 +253,7 @@
         <div class="fact"><b>Licensed lender</b> CA DFPI license #60DBO-144925</div>
         <div class="fact"><b>SOC 2 Type I</b> security compliance</div>
       </div>
-      <p style="margin-top:.9rem"><button type="button" class="chat-kickoff" data-ask="What would a program earn on my platform?" data-answer="Partners earn a revenue share on every dollar financed, and Kanmon cites 2 to 5x revenue per customer once financing is in place. The specific rate gets scoped in a conversation with the team."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>What would a program earn on my platform?</button></p>
+      <p style="margin-top:.9rem"><button type="button" class="chat-kickoff" data-ask="What would a program earn on my platform?" data-answer="Partners earn a revenue share on every dollar financed, and Kanmon cites 2 to 5x revenue per customer once financing is in place. The specific rate gets scoped in a conversation with the team."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>What would a program earn on my platform?<span class="ask-cue">Ask Maya</span></button></p>
     </div>
   </section>
 
@@ -199,14 +281,14 @@
         </div>
       </div>
       <p class="sub" style="margin-top:.7rem">Kanmon provides the capital and assumes all credit risk.</p>
-      <p style="margin-top:.8rem"><button type="button" class="chat-kickoff" data-ask="Who handles compliance and collections?" data-answer="Kanmon does. Identity and compliance checks, underwriting, servicing, and collections all run on the Kanmon side, as the licensed lender of record. Your platform owns the screens and the customer relationship."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>Who handles compliance and collections?</button></p>
+      <p style="margin-top:.8rem"><button type="button" class="chat-kickoff" data-ask="Who handles compliance and collections?" data-answer="Kanmon does. Identity and compliance checks, underwriting, servicing, and collections all run on the Kanmon side, as the licensed lender of record. Your platform owns the screens and the customer relationship."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>Who handles compliance and collections?<span class="ask-cue">Ask Maya</span></button></p>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
       <h2>Four products, matched to four moments.</h2>
-      <p style="margin:.6rem 0 .2rem"><button type="button" class="chat-kickoff" data-ask="Which product fits my customers?" data-answer="Tell me how your customers get paid. Waiting on invoices points to invoice financing, supplier bills point to AP financing, one-time purchases to term loans, and recurring gaps to a line of credit."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>Which product fits my customers?</button></p>
+      <p style="margin:.6rem 0 .2rem"><button type="button" class="chat-kickoff" data-ask="Which product fits my customers?" data-answer="Tell me how your customers get paid. Waiting on invoices points to invoice financing, supplier bills point to AP financing, one-time purchases to term loans, and recurring gaps to a line of credit."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>Which product fits my customers?<span class="ask-cue">Ask Maya</span></button></p>
       <div class="cards" style="margin-top:1rem">
         <a class="card" href="products.html#invoice" style="text-decoration:none">
           <h3>An invoice is stuck in net-60</h3><p>Invoice financing</p>
@@ -227,20 +309,20 @@
   <section class="section alt">
     <div class="wrap">
       <h2>Built for the software small businesses already run on.</h2>
-      <p style="margin:.6rem 0 .2rem"><button type="button" class="chat-kickoff" data-ask="My vertical is not listed. Does it still fit?" data-answer="Probably. If your customers hit cash gaps inside your software, a program likely fits. The verticals here are where Kanmon runs today, not a boundary."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>My vertical is not listed. Does it still fit?</button></p>
+      <p style="margin:.6rem 0 .2rem"><button type="button" class="chat-kickoff" data-ask="My vertical is not listed. Does it still fit?" data-answer="Probably. If your customers hit cash gaps inside your software, a program likely fits. The verticals here are where Kanmon runs today, not a boundary."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>My vertical is not listed. Does it still fit?<span class="ask-cue">Ask Maya</span></button></p>
       <div class="cards" style="margin-top:1rem">
-        <div class="card">
-          <h3>Professional services software</h3><p>Invoicing, projects, and the receivables that lag them.</p>
-        </div>
-        <div class="card">
-          <h3>Practice management software</h3><p>Clinics and firms with steady demand and lumpy cash.</p>
-        </div>
-        <div class="card">
-          <h3>Digital supply chain platforms</h3><p>EDI, logistics, and inventory that moves before money does.</p>
-        </div>
-        <div class="card">
-          <h3>Industry business management</h3><p>The software that runs the whole business, where work and cash both live.</p>
-        </div>
+        <a class="card" href="for-invoicing-edi.html" style="text-decoration:none">
+          <h3>Invoicing, EDI, and supply-chain AR</h3><p>Unpaid invoices vs payroll. Capital on the invoice itself.</p>
+        </a>
+        <a class="card" href="for-inventory-erp.html" style="text-decoration:none">
+          <h3>Inventory, ERP, and commerce ops</h3><p>Restock and pay suppliers before payouts land.</p>
+        </a>
+        <a class="card" href="for-staffing.html" style="text-decoration:none">
+          <h3>Staffing and workforce platforms</h3><p>Weekly payroll vs clients who pay in 30 to 60 days.</p>
+        </a>
+        <a class="card" href="for-payments.html" style="text-decoration:none">
+          <h3>Payments and merchant platforms</h3><p>Settlement lag and A/R gaps inside the processor flow.</p>
+        </a>
       </div>
     </div>
   </section>
@@ -277,7 +359,7 @@
           <summary>How do we get started?</summary>
           <p><a class="link-arrow" href="#contact">Talk to Kanmon</a>, scope the program, and implement in about one week. Most programs are live within a month.</p>
         </details>
-        <p style="margin-top:1rem"><button type="button" class="chat-kickoff" data-ask="Do customers leave our product to apply?" data-answer="No. The application and offer flow render inside your product. Your customers never get handed off to a bank site."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>Do customers leave our product to apply?</button></p>
+        <p style="margin-top:1rem"><button type="button" class="chat-kickoff" data-ask="Do customers leave our product to apply?" data-answer="No. The application and offer flow render inside your product. Your customers never get handed off to a bank site."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>Do customers leave our product to apply?<span class="ask-cue">Ask Maya</span></button></p>
       </div>
     </div>
   </section>
@@ -296,14 +378,14 @@
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
-        <img src="../assets/kanmon-logo.png" alt="Kanmon" class="foot-logo">
+        <img src="../assets/kanmon-logo.png" alt="Kanmon logo" class="foot-logo">
         <p>Embedded lending infrastructure. Capital for your customers, inside your product.</p>
         <div class="social">
           <a href="https://twitter.com/KanmonHQ" rel="noopener" aria-label="Kanmon on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.2h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.2h7.59l5.24 6.93L18.9 1.2zm-1.29 19.5h2.04L6.49 3.29H4.3l13.31 17.41z"/></svg></a>
           <a href="https://www.linkedin.com/company/kanmon" rel="noopener" aria-label="Kanmon on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.1h4.56V23H.22V8.1zM8.34 8.1h4.37v2.03h.06c.61-1.15 2.1-2.37 4.32-2.37 4.62 0 5.47 3.04 5.47 7v8.24h-4.55v-7.3c0-1.74-.03-3.98-2.43-3.98-2.43 0-2.8 1.9-2.8 3.86V23H8.34V8.1z"/></svg></a>
         </div>
       </div>
-      <div class="foot-col">
+            <div class="foot-col">
         <h4>Site</h4>
         <a href="index.html">Home</a>
         <a href="products.html">Products</a>
@@ -311,14 +393,18 @@
         <a href="developers.html">Developers</a>
         <a href="about.html">About</a>
         <a href="case-studies.html">Case studies</a>
-      <a href="index.html#faq">FAQs</a>
+        <a href="index.html#faq">FAQs</a>
+        <a href="vs-competitors.html">Vs competitors</a>
         <a href="contact.html">Contact</a>
       </div>
       <div class="foot-col">
-        <h4>Kanmon</h4>
+        <h4>Partner types</h4>
+        <a href="for-invoicing-edi.html">Invoicing &amp; EDI</a>
+        <a href="for-inventory-erp.html">Inventory &amp; ERP</a>
+        <a href="for-staffing.html">Staffing</a>
+        <a href="for-payments.html">Payments</a>
         <a href="https://kanmon.com" rel="noopener">The real kanmon.com</a>
         <a href="https://kanmon.dev" rel="noopener">Documentation</a>
-        <a href="https://kanmon.com/contact-us" rel="noopener">Contact</a>
       </div>
     </div>
     <div class="foot-legal">
@@ -331,11 +417,11 @@
 <input type="checkbox" id="chat-toggle" aria-label="Toggle chat">
 <label class="chat-launch" for="chat-toggle" aria-hidden="true">
   <span class="mini-av">M</span><span class="mini-snip" id="chat-mini-snippet"></span><span class="mini-cycle" role="button" aria-label="Another status"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5m2-3v5h-5M20 12a8 8 0 0 1-14 5m-2 3v-5h5"/></svg></span><span class="mini-open">Open</span>
-  <svg class="ic-open" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>
-  <svg class="ic-close" viewBox="0 0 24 24"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.4 1.41 6.29 6.3-6.3 6.29 1.42 1.42 6.29-6.3 6.3 6.3 1.41-1.42-6.29-6.29 6.29-6.3z"/></svg>
+  <svg class="ic-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>
 </label>
 <div class="chat-panel" role="dialog" aria-label="Chat with Kanmon (concept)">
   <div class="chat-head">
+    <button type="button" class="chat-close" id="chat-close" aria-label="Close chat">&times;</button>
     <div class="brand-row"><span class="k-av">M</span><div><b>Maya</b>
     <span class="role">Partnerships at Kanmon</span>
     <span class="presence"><span class="dot-on"></span>Replies in a few minutes</span></div></div>
@@ -391,7 +477,22 @@
       'Hi. Deciding whether to reach out? Happy to answer anything first.'],
     'case-studies':[
       'Hi. Want the story behind one of these programs? Just ask.',
-      'Curious how these partners launched? Happy to walk through any of them.']
+      'Curious how these partners launched? Happy to walk through any of them.'],
+    'for-invoicing-edi':[
+      'Hi. Running an invoicing or EDI platform? Happy to map the Cleo-style path.',
+      'Welcome. Questions about putting financing on the invoice? Ask away.'],
+    'for-inventory-erp':[
+      'Hi. Inventory or ERP questions? Happy to talk through AP and working capital.',
+      'Welcome. Curious how Cin7 or PingPong launched? I can walk through it.'],
+    'for-staffing':[
+      'Hi. Staffing platforms are a strong fit. Ask me about the Avionté path.',
+      'Welcome. Payroll vs net terms is the classic gap. Happy to help.'],
+    'for-payments':[
+      'Hi. Payments or merchant platform? Happy to talk A/R financing.',
+      'Welcome. Questions about settlement lag and capital in-flow? Ask away.'],
+    'vs-competitors':[
+      'Hi. Comparing options? I can help you read the trade-offs.',
+      'Welcome. Curious how Kanmon differs from a marketplace or broker model? Ask.']
   };
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
   var current=pick(DEFAULTS[page]||DEFAULTS['index']);
@@ -432,6 +533,9 @@
   function closePanel(){ toggle.checked=false; syncLaunch(); if(launch.classList.contains('bar')){ startIdle(); } else { clearTimeout(idleTimer); } }
   txt.addEventListener('click',openPanel);
   toggle.addEventListener('change',function(){ if(toggle.checked){ openPanel(); } else { closePanel(); } });
+  var closeBtn=document.getElementById('chat-close');
+  if(closeBtn){ closeBtn.addEventListener('click',function(e){ e.preventDefault(); closePanel(); }); }
+
 
   /* idle easter egg: Maya keeps working while you decide */
   var IDLE=[

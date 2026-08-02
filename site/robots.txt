@@ -1,0 +1,8 @@
+# Concept redesign portfolio site.
+# Pages currently set meta robots to noindex,nofollow.
+# Flip page meta robots when you want indexing; sitemap is ready.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://ant2624.github.io/kanmon-case/site/sitemap.xml
