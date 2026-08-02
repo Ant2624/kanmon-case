@@ -28,7 +28,7 @@
       initial: 'P',
       role: 'Your partnerships manager',
       presence: 'Usually replies in a few minutes',
-      blurb: 'I am your partnerships manager for this conversation. I map cash-gap moments to the right Kanmon products.'
+      blurb: 'I am your partnerships manager for this conversation. I map cash gaps to the right Kanmon products.'
     },
     {
       id: 'sam',
