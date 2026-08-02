@@ -634,3 +634,7 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 .o-tag.bad{background:#f6e3dc;color:#9c4a24}
 .o-tag.good{background:#dcefe1;color:#2f6b42}
 .fig-hot .o-tag.good{box-shadow:0 0 0 1px #bcd9c2}
+
+/* keep the compared panels the same height, captions included */
+.band .grid2 figure figcaption{min-height:2.6rem;display:flex;align-items:flex-start}
+@media (max-width:860px){.band .grid2 figure figcaption{min-height:0}}
