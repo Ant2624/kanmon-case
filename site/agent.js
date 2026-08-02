@@ -46,7 +46,7 @@
       initial: 'A',
       role: 'Your partnerships manager',
       presence: 'Usually replies in a few minutes',
-      blurb: 'I am your partnerships manager for this conversation. I partner with platforms on economics, launch, and fit.'
+      blurb: 'I am your partnerships manager for this conversation. I partner with platforms on revenue share, launch, and fit.'
     }
   ];
 
