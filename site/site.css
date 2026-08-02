@@ -733,3 +733,9 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
   padding:.55rem .4rem;min-height:40px;cursor:pointer;white-space:nowrap;
   transition:background .15s ease,color .15s ease}
 .ca:hover{background:var(--kanmon);color:#fff}
+
+/* FAQ: a way forward without scrolling past every answer */
+.faq-ask{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem;margin:.9rem 0 0}
+.faq-ask .chat-kickoff{margin-top:0}
+.faq-close{margin:1.1rem 0 0;font-size:.9rem;color:var(--muted)}
+#faq{scroll-margin-top:72px}
