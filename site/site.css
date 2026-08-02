@@ -284,7 +284,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .agent-live-presence .dot-on{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0}
 .agent-live-blurb{margin:.85rem 0 0;font-size:.9rem;color:#333;line-height:1.55}
 .agent-live-meta{margin:.55rem 0 0;font-size:.74rem;color:var(--muted);line-height:1.45}
-.agent-live-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.95rem}
+.agent-live-actions{margin-top:.95rem}
 .agent-live-actions .btn-cta{padding:.65rem 1.1rem;font-size:.75rem}
 .proof-list{margin:0;padding:0;list-style:none;display:grid;gap:.7rem}
 .proof-list li{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem}
