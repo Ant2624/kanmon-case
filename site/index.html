@@ -103,8 +103,15 @@
       <div class="hero-grid">
         <div>
           <p class="eyebrow">For B2B software platforms</p>
-          <h1>Turn cash gaps into your revenue.</h1>
-          <p class="lead">A branded offer in your product when customers wait on invoices, payroll, inventory, or settlement. You earn revenue share. Kanmon carries the risk.</p>
+          <h1 id="hero-h1">Turn cash gaps into your revenue.</h1>
+          <p class="lead" id="hero-lead">A branded offer in your product when customers wait on invoices, payroll, inventory, or settlement. You earn revenue share. Kanmon carries the risk.</p>
+          <p class="hero-swap">
+            <button type="button" id="hero-swap-btn" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4"/></svg>
+              <span id="hero-swap-label">See the current headline</span>
+            </button>
+            <span class="hero-swap-note" id="hero-swap-note" hidden>This is what kanmon.com says today</span>
+          </p>
           <p class="hero-actions"><a class="btn-cta" href="contact.html">Get a program fit review</a> <a class="link-arrow" href="#example">See the example <svg class="ai ai-down" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
           <ul class="hero-proof" id="trust">
             <li>Licensed lender of record</li>
@@ -905,6 +912,34 @@
     if(Date.now()-openedAt<1200) { anchorY=window.scrollY; return; }
     if(toggle.checked && Math.abs(window.scrollY-anchorY)>80) closePanel();
   },{passive:true});
+})();
+</script>
+<script>
+(function(){
+  var btn=document.getElementById('hero-swap-btn');
+  var h1=document.getElementById('hero-h1');
+  var lead=document.getElementById('hero-lead');
+  var label=document.getElementById('hero-swap-label');
+  var note=document.getElementById('hero-swap-note');
+  if(!btn||!h1||!lead) return;
+  var NEWV={h:h1.textContent, l:lead.textContent, label:'See the current headline'};
+  var OLDV={h:'Embedded lending to take your business further',
+            l:'Unlock new revenue potential while connecting your customers to the transparent and tailored financing options they need.',
+            label:'Back to the redesign'};
+  var showingOriginal=false;
+  function paint(v){
+    h1.style.opacity='0'; lead.style.opacity='0';
+    setTimeout(function(){
+      h1.textContent=v.h; lead.textContent=v.l; label.textContent=v.label;
+      h1.style.opacity='1'; lead.style.opacity='1';
+    },160);
+  }
+  btn.addEventListener('click',function(){
+    showingOriginal=!showingOriginal;
+    btn.setAttribute('aria-pressed',String(showingOriginal));
+    note.hidden=!showingOriginal;
+    paint(showingOriginal?OLDV:NEWV);
+  });
 })();
 </script>
 </body>

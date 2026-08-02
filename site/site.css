@@ -739,3 +739,14 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 .faq-ask .chat-kickoff{margin-top:0}
 .faq-close{margin:1.1rem 0 0;font-size:.9rem;color:var(--muted)}
 #faq{scroll-margin-top:72px}
+
+/* hero headline comparison */
+.hero-swap{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:.2rem 0 1rem}
+#hero-swap-btn{display:inline-flex;align-items:center;gap:.42rem;font:inherit;font-size:.76rem;font-weight:600;
+  color:var(--muted);background:none;border:1px solid var(--line);border-radius:99px;
+  padding:.34rem .7rem;cursor:pointer;transition:border-color .15s ease,color .15s ease}
+#hero-swap-btn:hover{border-color:var(--kanmon);color:var(--kanmon-deep)}
+#hero-swap-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#hero-swap-btn[aria-pressed="true"]{border-color:var(--kanmon);color:var(--kanmon-deep);background:var(--kanmon-soft)}
+.hero-swap-note{font-size:.72rem;color:var(--muted);font-style:italic}
+#hero-h1,#hero-lead{transition:opacity .16s ease}
