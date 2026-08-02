@@ -32,7 +32,7 @@ h1,h2,h3,h4,.lead,.sub,.btn-cta,.link-arrow,.card p,.fact b{overflow-wrap:anywhe
 .site-logo{flex-shrink:0}
 .site-logo img{height:28px;width:auto;display:block}
 .site-nav{display:flex;gap:.15rem;flex-wrap:wrap;margin-left:auto}
-.site-nav a{color:#111;text-decoration:none;font-size:.9rem;font-weight:500;padding:.45rem .7rem;
+.site-nav a{color:#111;text-decoration:none;font-size:.9rem;font-weight:500;padding:.45rem .7rem;white-space:nowrap;
   background:linear-gradient(var(--kanmon),var(--kanmon)) left bottom / 0% 3px no-repeat;
   transition:background-size .25s ease,color .15s ease}
 .site-nav a:hover{color:var(--kanmon-deep);background-size:100% 3px}
@@ -55,8 +55,12 @@ button.btn-cta,label.btn-cta{border:0}
 .nav-burger{display:none;margin-left:auto;cursor:pointer;padding:.5rem;flex-direction:column;gap:4px;
   min-width:44px;min-height:44px;align-items:center;justify-content:center;flex-shrink:0}
 .nav-burger span{display:block;width:22px;height:2.5px;background:#111;transition:transform .2s ease,opacity .2s ease}
-@media (min-width:861px){.site-header .wrap{flex-wrap:nowrap}.site-nav{flex-wrap:nowrap}}
-@media (max-width:860px){
+@media (min-width:1025px){.site-header .wrap{flex-wrap:nowrap}.site-nav{flex-wrap:nowrap}}
+@media (min-width:1025px) and (max-width:1200px){
+  .site-nav a{font-size:.84rem;padding:.45rem .5rem}
+  .site-header .btn-cta{padding:.7rem 1rem;font-size:.74rem}
+}
+@media (max-width:1024px){
   .nav-burger{display:flex}
   .site-nav{display:none;width:100%;flex-direction:column;gap:0;border-top:1px solid var(--line);margin-top:.6rem;padding-top:.35rem;padding-bottom:.25rem}
   .site-nav a{display:flex;align-items:center;min-height:44px;padding:.7rem .35rem;font-size:1rem;background:none}
