@@ -206,42 +206,23 @@
     });
   }
 
-  // On phones, lock page scroll while the panel is open so open/close does not jump.
-  function bindChatBodyScrollLock() {
-    var toggle = document.getElementById('chat-toggle');
-    if (!toggle || toggle.__kanmonBodyLock) return;
-    toggle.__kanmonBodyLock = true;
-    var lockY = 0;
-    function isMobile() {
-      return window.matchMedia('(max-width:760px)').matches;
-    }
-    function lock() {
-      if (!isMobile() || document.documentElement.classList.contains('chat-open')) return;
-      lockY = window.scrollY;
-      document.documentElement.classList.add('chat-open');
-      document.body.style.top = '-' + lockY + 'px';
-    }
-    function unlock() {
-      if (!document.documentElement.classList.contains('chat-open')) return;
-      document.documentElement.classList.remove('chat-open');
+  // The panel is a bottom sheet, not a modal, so the page keeps scrolling behind it.
+  // Older builds pinned the body and could strand it fixed; clear that on load.
+  function clearLegacyScrollLock() {
+    var el = document.documentElement;
+    if (el.classList.contains('chat-open')) el.classList.remove('chat-open');
+    if (document.body && document.body.style.top) {
+      var y = Math.abs(parseInt(document.body.style.top, 10)) || 0;
       document.body.style.top = '';
-      window.scrollTo(0, lockY);
+      document.body.style.position = '';
+      if (y) window.scrollTo(0, y);
     }
-    toggle.addEventListener('change', function () {
-      if (toggle.checked) lock();
-      else unlock();
-    });
-    window.addEventListener('resize', function () {
-      if (!toggle.checked) return;
-      if (isMobile()) lock();
-      else unlock();
-    });
   }
 
   function boot() {
     fill(document);
     bindChatToggleScrollGuard();
-    bindChatBodyScrollLock();
+    clearLegacyScrollLock();
     // Re-apply when chat/teaser injects new nodes with data-agent hooks.
     if (window.MutationObserver && !window.__kanmonAgentObs) {
       window.__kanmonAgentObs = new MutationObserver(function (mutations) {

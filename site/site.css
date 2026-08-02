@@ -476,7 +476,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
   display:flex;align-items:center;justify-content:center;padding:0;transition:background .15s ease}
 .chat-close:hover{background:rgba(255,255,255,.32)}
 .chat-close:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.chat-body{padding:1rem;background:#faf8f4;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.chat-body{overscroll-behavior:contain;padding:1rem;background:#faf8f4;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .chat-msg{display:flex;gap:.5rem;align-items:flex-end;margin-bottom:.8rem}
 .chat-msg .k-av{width:24px;height:24px;border-radius:50%;background:var(--kanmon);color:#fff;
   display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.62rem;flex-shrink:0}
@@ -515,8 +515,6 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 }
 
 /* Prevent page scroll jump while chat is open on small screens (class set in agent.js) */
-html.chat-open,html.chat-open body{overflow:hidden;overscroll-behavior:none}
-html.chat-open body{position:fixed;left:0;right:0;width:100%}
 
 /* chat teaser + typing */
 .chat-teaser{position:fixed;z-index:59;display:flex;gap:.55rem;align-items:flex-start;
