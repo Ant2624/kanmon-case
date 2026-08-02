@@ -311,6 +311,12 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .agent-live-presence{display:flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--ok);font-weight:600;margin-top:.25rem}
 .agent-live-presence .dot-on{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block}
 .agent-live-blurb{margin:.7rem 0 0;font-size:.88rem;color:#333;line-height:1.5}
+.agent-live-meta{margin:.55rem 0 0;font-size:.75rem;color:var(--muted);line-height:1.45}
+.contact-card-agent{display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
+.contact-card-agent .k-av{width:44px;height:44px;border-radius:50%;background:var(--kanmon);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05rem;flex-shrink:0}
+.contact-card-kicker{margin:0 0 .15rem;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--kanmon-deep)}
+.contact-card-agent h2{margin:0 0 .35rem;font-size:1.35rem}
 
 /* ---------- CTA + footer ---------- */
 .cta-section{background:linear-gradient(115deg,#0d0d0d 0 30%,var(--charcoal) 30%);color:var(--cream);padding:clamp(3rem,7vw,4.2rem) 0;scroll-margin-top:64px}

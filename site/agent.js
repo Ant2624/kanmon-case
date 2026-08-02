@@ -6,45 +6,45 @@
       first: 'Maya',
       name: 'Maya Chen',
       initial: 'M',
-      role: 'Partnerships at Kanmon',
+      role: 'Your partnerships manager',
       presence: 'Usually replies in a few minutes',
-      blurb: 'I help platform teams scope embedded lending programs.'
+      blurb: 'I am your partnerships manager for this conversation. Tell me how your customers get paid and I will scope the program.'
     },
     {
       id: 'jordan',
       first: 'Jordan',
       name: 'Jordan Blake',
       initial: 'J',
-      role: 'Partnerships at Kanmon',
+      role: 'Your partnerships manager',
       presence: 'Usually replies in a few minutes',
-      blurb: 'I work with product and BD leads on partner launches.'
+      blurb: 'I am your partnerships manager for this conversation. I work with product and BD leads on partner launches.'
     },
     {
       id: 'priya',
       first: 'Priya',
       name: 'Priya Shah',
       initial: 'P',
-      role: 'Partnerships at Kanmon',
+      role: 'Your partnerships manager',
       presence: 'Usually replies in a few minutes',
-      blurb: 'I map cash-gap moments to the right Kanmon products.'
+      blurb: 'I am your partnerships manager for this conversation. I map cash-gap moments to the right Kanmon products.'
     },
     {
       id: 'sam',
       first: 'Sam',
       name: 'Sam Okonkwo',
       initial: 'S',
-      role: 'Partnerships at Kanmon',
+      role: 'Your partnerships manager',
       presence: 'Usually replies in a few minutes',
-      blurb: 'I help teams go from first conversation to a live program.'
+      blurb: 'I am your partnerships manager for this conversation. I help teams go from first chat to a live program.'
     },
     {
       id: 'alex',
       first: 'Alex',
       name: 'Alex Rivera',
       initial: 'A',
-      role: 'Partnerships at Kanmon',
+      role: 'Your partnerships manager',
       presence: 'Usually replies in a few minutes',
-      blurb: 'I partner with platforms on economics, launch, and fit.'
+      blurb: 'I am your partnerships manager for this conversation. I partner with platforms on economics, launch, and fit.'
     }
   ];
 
@@ -98,6 +98,8 @@
     who: agent.first + ' \u00b7 Kanmon',
     typing: agent.first + ' is typing\u2026',
     askCue: 'Ask ' + agent.first,
+    messageCue: 'Message ' + agent.first,
+    reachCue: 'Reach ' + agent.first,
     refresh: function () {
       try { sessionStorage.removeItem(KEY); } catch (e) {}
       var next = ROSTER[Math.floor(Math.random() * ROSTER.length)];
