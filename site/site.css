@@ -93,12 +93,17 @@ h2{font-size:clamp(1.5rem,3.4vw,2.3rem);font-weight:700;letter-spacing:-.02em;li
 .hero-proof{display:flex;flex-wrap:wrap;gap:.35rem .85rem;margin:1.15rem 0 0;padding:0;list-style:none;max-width:34rem}
 .hero-proof li{font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.01em}
 .hero-proof li:not(:last-child)::after{content:"·";margin-left:.85rem;color:#c4bfb4;font-weight:700}
-.trust-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:0}
+.trust-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.5rem}
 .trust-strip .t{background:#fff;border:1px solid var(--line);padding:1.05rem 1.15rem}
 .trust-strip .t b{display:block;font-size:.84rem;font-weight:700;margin-bottom:.25rem}
 .trust-strip .t span{display:block;font-size:.8rem;color:var(--muted);line-height:1.5}
+@media (max-width:900px){
+  .trust-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media (max-width:860px){
   .intro-grid{grid-template-columns:1fr}
+}
+@media (max-width:520px){
   .trust-strip{grid-template-columns:1fr}
 }
 .hero-center{text-align:center}
