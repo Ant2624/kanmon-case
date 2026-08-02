@@ -147,6 +147,18 @@
                 <p class="err" role="alert">Pick the closest platform type.</p>
               </div>
             </div>
+            <div class="call-block" id="call-block" hidden>
+              <div class="field" data-field="phone">
+                <label for="c-phone">Phone <span class="opt">(for the call)</span></label>
+                <input id="c-phone" name="phone" type="tel" autocomplete="tel" placeholder="(555) 012-3456">
+              </div>
+              <div class="field">
+                <label>Pick a time that suits</label>
+                <div class="slots" id="c-slots"></div>
+                <p class="slot-note" id="c-slot-note">Times are in your local timezone. Alex confirms by email.</p>
+              </div>
+            </div>
+
             <div class="field" data-field="note">
               <label for="c-note">What should <span data-agent="first">Maya</span> know? <span class="opt">(optional)</span></label>
               <textarea id="c-note" name="note" maxlength="500" placeholder="e.g. Customers invoice on net-60 and need payroll cash in under a week."></textarea>
@@ -154,6 +166,7 @@
             </div>
             <div class="hp-field" aria-hidden="true">
               <input type="hidden" id="c-pref" name="pref" value="">
+              <input type="hidden" id="c-slot" name="slot" value="">
               <label for="c-company-url">Company website</label>
               <input id="c-company-url" name="company_url" type="text" tabindex="-1" autocomplete="off">
             </div>
@@ -686,18 +699,43 @@
   function esc(s){ var e=document.createElement('div'); e.textContent=s; return e.innerHTML; }
   var answers={};
 
-  var STEPS=[
-    {key:'company', ask:function(){return 'Hi, '+first()+' here. What platform are you with?';},
-     type:'text', placeholder:'PartnerOS'},
-    {key:'type', ask:function(){return 'Got it. What kind of platform is it?';},
-     type:'chips', options:['Invoicing or AP','Vertical SaaS','Marketplace','Payments or PSP','Something else']},
-    {key:'email', ask:function(){return 'Perfect. Best work email for you?';},
+  var PROF='kanmon-profile-v1', ILIST='kanmon-interest-v1';
+  function readProf(){ try{ return JSON.parse(sessionStorage.getItem(PROF))||{} }catch(e){ return {} } }
+  function writeProf(p){ try{ sessionStorage.setItem(PROF, JSON.stringify(p)); }catch(e){} }
+  function readList(){ try{ return JSON.parse(sessionStorage.getItem(ILIST))||[] }catch(e){ return [] } }
+
+  var S_COMPANY={key:'company', ask:function(){return 'What platform are you with?';},
+     type:'text', placeholder:'PartnerOS'};
+  var S_TYPE={key:'type', ask:function(){return 'What kind of platform is it?';},
+     type:'chips', options:['Invoicing or AP','Vertical SaaS','Marketplace','Payments or PSP','Something else']};
+  var S_EMAIL={key:'email', ask:function(){return 'Best work email for you?';},
      type:'text', placeholder:'you@yourplatform.com', validate:function(v){return /.+@.+\..+/.test(v);},
-     error:'That does not look like an email. Mind trying again?'},
-    {key:'note', ask:function(){return 'Last one. Anything I should know before we talk?';},
-     type:'text', placeholder:'Customers invoice net-60 and need payroll cash fast', optional:true}
-  ];
-  var step=0;
+     error:'That does not look like an email. Mind trying again?'};
+  var S_NOTE={key:'note', ask:function(){return 'Anything else I should know before we talk?';},
+     type:'text', placeholder:'Customers invoice net-60 and need payroll cash fast', optional:true};
+
+  var STEPS=[], step=0;
+  function buildSteps(){
+    var p=readProf();
+    STEPS=[];
+    if(!p.company) STEPS.push(S_COMPANY);
+    STEPS.push(S_TYPE);
+    if(!p.email) STEPS.push(S_EMAIL);
+    STEPS.push(S_NOTE);
+    answers={};
+    if(p.company) answers.company=p.company;
+    if(p.email) answers.email=p.email;
+    step=0;
+  }
+  function opener(){
+    var p=readProf(), list=readList(), bits=[];
+    if(p.company) bits.push(p.company);
+    if(list.length) bits.push(list.join(' and '));
+    if(bits.length){
+      return 'Picking up where we left off. I have '+bits.join(', with ')+'. Just a couple more things.';
+    }
+    return 'Hi, '+first()+' here. Happy to take this here instead.';
+  }
 
   function bubble(who,text){
     var el=document.createElement('div');
@@ -765,6 +803,9 @@
   function submit(val){
     var s=STEPS[step];
     answers[s.key]=val;
+    if(s.key==='company'||s.key==='email'){
+      var p=readProf(); p[s.key]=val; writeProf(p);
+    }
     bubble('user',val);
     reply.innerHTML='';
     step++;
@@ -787,8 +828,12 @@
     card.classList.add('is-chat');
     if(kicker) kicker.textContent='Chatting with '+first();
     if(lead) lead.textContent='Four quick questions, same as the form.';
-    thread.innerHTML=''; reply.innerHTML=''; step=0; answers={};
-    agentSay(STEPS[0].ask(),renderReply);
+    thread.innerHTML=''; reply.innerHTML='';
+    buildSteps();
+    agentSay(opener(), function(){
+      if(step<STEPS.length){ agentSay(STEPS[step].ask(), renderReply); }
+      else { finish(); }
+    });
   }
   function stop(){
     ic.hidden=true; form.hidden=false;
@@ -797,6 +842,8 @@
     if(lead) lead.innerHTML='Four fields. No pitch deck. Or <button type="button" class="linkish" id="switch-to-chat">answer them in chat</button> instead.';
     wireSwitch();
   }
+  window.KanmonInlineChat=start;
+  window.KanmonInlineChatStop=stop;
   if(back) back.addEventListener('click',stop);
   function wireSwitch(){
     var s=document.getElementById('switch-to-chat');
@@ -839,6 +886,7 @@
     });
   }
   render();
+  document.addEventListener('click',function(){ setTimeout(render,50); });
 
   var note=document.getElementById('c-note');
   var list=readList();
@@ -868,19 +916,64 @@
   var submitBtn=document.getElementById('contact-submit');
   var kicker=document.getElementById('cc-kicker');
 
+
+  function buildSlots(){
+    var host=document.getElementById('c-slots');
+    if(!host||host.dataset.built) return;
+    var days=[], d0=new Date(), added=0, i=1;
+    while(added<3 && i<10){
+      var dd=new Date(d0.getTime()+i*86400000);
+      if(dd.getDay()!==0 && dd.getDay()!==6){ days.push(dd); added++; }
+      i++;
+    }
+    var times=['9:30 AM','1:00 PM','3:30 PM'];
+    var html='';
+    days.forEach(function(dd){
+      var label=dd.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+      html+='<div class="slot-day"><span class="slot-date">'+label+'</span><div class="slot-times">';
+      times.forEach(function(t){
+        html+='<button type="button" class="slot" data-slot="'+label+' at '+t+'">'+t+'</button>';
+      });
+      html+='</div></div>';
+    });
+    host.innerHTML=html;
+    host.dataset.built='1';
+    host.querySelectorAll('.slot').forEach(function(b){
+      b.addEventListener('click',function(){
+        host.querySelectorAll('.slot').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+        b.setAttribute('aria-pressed','true');
+        var s=document.getElementById('c-slot'); if(s) s.value=b.getAttribute('data-slot');
+        var note=document.getElementById('c-slot-note');
+        if(note) note.textContent='Requesting '+b.getAttribute('data-slot')+'. Alex will confirm by email.';
+      });
+    });
+    // carry a phone already given in chat
+    try{
+      var p=JSON.parse(sessionStorage.getItem('kanmon-profile-v1'))||{};
+      var ph=document.getElementById('c-phone');
+      if(ph && p.phone && !ph.value){ ph.value=p.phone; ph.classList.add('prefilled'); }
+    }catch(e){}
+  }
+
   function setWay(way){
     var who=(window.KanmonAgent&&KanmonAgent.first)||'your partnerships manager';
+    // coming back from chat, bring the form back
+    var ic=document.getElementById('inline-chat');
+    if(ic && !ic.hidden && window.KanmonInlineChatStop) window.KanmonInlineChatStop();
     document.querySelectorAll('.cw').forEach(function(x){ x.setAttribute('aria-pressed', String(x.getAttribute('data-way')===way)); });
     var pref=document.getElementById('c-pref');
     if(pref) pref.value = way;
     try{ sessionStorage.setItem('kanmon-way', way); }catch(e){}
 
+    var callBlock=document.getElementById('call-block');
     if(way==='call'){
       if(kicker) kicker.textContent='Set up a call with '+who;
-      if(noteLabel) noteLabel.innerHTML='When suits you? <span class="opt">(optional)</span>';
-      if(noteEl) noteEl.placeholder='e.g. Tuesday or Thursday afternoon, US Pacific.';
-      if(submitBtn) submitBtn.textContent='Request a call';
+      if(noteLabel) noteLabel.innerHTML='Anything to cover? <span class="opt">(optional)</span>';
+      if(noteEl) noteEl.placeholder='e.g. Revenue share and what the first 30 days look like.';
+      if(submitBtn) submitBtn.textContent='Request this time';
+      if(callBlock){ callBlock.hidden=false; buildSlots(); }
     } else {
+      if(callBlock) callBlock.hidden=true;
       if(kicker) kicker.textContent='Send '+who+' the details';
       if(noteLabel) noteLabel.innerHTML='What should '+who+' know? <span class="opt">(optional)</span>';
       if(noteEl) noteEl.placeholder='e.g. Customers invoice on net-60 and need payroll cash in under a week.';
@@ -894,8 +987,7 @@
     b.addEventListener('click',function(){
       var way=b.getAttribute('data-way');
       if(way==='chat'){
-        var s=document.getElementById('switch-to-chat');
-        if(s){ s.click(); } else { document.getElementById('chat-toggle').checked=true; }
+        if(window.KanmonInlineChat) window.KanmonInlineChat();
         return;
       }
       setWay(way);
@@ -911,10 +1003,13 @@
         var h=success.querySelector('h3'), p=success.querySelector('p');
         var who=(window.KanmonAgent&&KanmonAgent.first)||'Your partnerships manager';
         var picked=readList();
-        if(h) h.textContent = way==='call' ? who+' will send you times.' : who+' has your message.';
+        var slotVal=(document.getElementById('c-slot')||{}).value;
+        if(h) h.textContent = way==='call'
+          ? (slotVal ? who+' will confirm '+slotVal+'.' : who+' will send you times.')
+          : who+' has your message.';
         if(p){
           p.textContent = (way==='call'
-            ? 'Expect a short email with a few slots, usually the same day. '
+            ? (slotVal ? 'You will get a calendar invite once confirmed, usually the same day. ' : 'Expect a short email with a few slots, usually the same day. ')
             : 'Expect a scoped next step, usually the same day. ')
             + (picked.length ? 'They already have your list: '+picked.join(', ')+'.' : '');
         }

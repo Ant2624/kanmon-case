@@ -363,7 +363,6 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 .contact-success-actions{margin:1.1rem 0 0}
 .contact-success-actions .btn-cta{display:inline-block;width:auto;cursor:pointer}
 .contact-success-link{margin:1rem 0 0}
-.hp-field{position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden}
 .contact-next{padding:clamp(2rem,5vw,3rem) 0}
 .contact-next .steps-cards{margin-top:1rem}
 
@@ -691,3 +690,28 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 @media (max-width:520px){.interest{width:100%;justify-content:flex-start}}
 
 .contact-form .prefilled{background:var(--kanmon-soft);border-color:#f0c9a8}
+
+/* scheduling a call */
+.call-block{border-top:1px solid var(--line);margin-top:.9rem;padding-top:.9rem}
+.slots{display:flex;flex-direction:column;gap:.6rem;margin-top:.3rem}
+.slot-day{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.slot-date{font-size:.78rem;font-weight:700;color:#55524b;min-width:6.6rem}
+.slot-times{display:flex;gap:.4rem;flex-wrap:wrap}
+.slot{font:inherit;font-size:.8rem;font-weight:600;border:1.5px solid var(--line);background:#fff;color:#55524b;
+  padding:.45rem .75rem;border-radius:99px;cursor:pointer;min-height:40px}
+.slot:hover{border-color:var(--kanmon);color:var(--kanmon-deep)}
+.slot[aria-pressed="true"]{border-color:var(--kanmon);background:var(--kanmon);color:#fff}
+.slot-note{margin:.5rem 0 0;font-size:.74rem;color:var(--muted)}
+@media (max-width:520px){.slot-date{min-width:0;width:100%}}
+
+.hp-field{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.contact-form .field{margin-bottom:1rem}
+.call-block{margin:.2rem 0 1rem}
+.call-block .field{margin-bottom:.9rem}
+.contact-form .hint{margin:.35rem 0 0}
+
+/* connect-ways sits above the form, so it needs room to breathe */
+.connect-ways{margin:0 0 1.5rem}
+.cw-row{gap:.55rem}
+.cw{flex:1 1 auto;justify-content:center;text-align:center}
+@media (min-width:600px){ .cw{flex:1 1 0;min-width:0} }
