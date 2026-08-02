@@ -99,6 +99,12 @@
             </div>
           </div>
 
+          <div class="inline-chat" id="inline-chat" hidden>
+            <div class="ic-thread" id="ic-thread" role="log" aria-live="polite"></div>
+            <div class="ic-reply" id="ic-reply"></div>
+            <p class="ic-switch"><button type="button" class="linkish" id="ic-back">Use the form instead</button></p>
+          </div>
+
           <form class="contact-form" id="contact-form" novalidate>
             <div class="field-row">
               <div class="field" data-field="name">
@@ -486,5 +492,146 @@
 })();
 </script>
 
+<script>
+(function(){
+  var card=document.getElementById('contact-card');
+  var form=document.getElementById('contact-form');
+  var ic=document.getElementById('inline-chat');
+  var thread=document.getElementById('ic-thread');
+  var reply=document.getElementById('ic-reply');
+  var back=document.getElementById('ic-back');
+  var kicker=card?card.querySelector('.contact-card-kicker'):null;
+  var lead=card?card.querySelector('.form-lead'):null;
+  if(!card||!form||!ic) return;
+
+  function first(){ return (window.KanmonAgent&&KanmonAgent.first)||'Maya'; }
+  function initial(){ return (window.KanmonAgent&&KanmonAgent.initial)||'M'; }
+  function esc(s){ var e=document.createElement('div'); e.textContent=s; return e.innerHTML; }
+  var answers={};
+
+  var STEPS=[
+    {key:'company', ask:function(){return 'Hi, '+first()+' here. What platform are you with?';},
+     type:'text', placeholder:'PartnerOS'},
+    {key:'type', ask:function(){return 'Got it. What kind of platform is it?';},
+     type:'chips', options:['Invoicing or AP','Vertical SaaS','Marketplace','Payments or PSP','Something else']},
+    {key:'email', ask:function(){return 'Perfect. Best work email for you?';},
+     type:'text', placeholder:'you@yourplatform.com', validate:function(v){return /.+@.+\..+/.test(v);},
+     error:'That does not look like an email. Mind trying again?'},
+    {key:'note', ask:function(){return 'Last one. Anything I should know before we talk?';},
+     type:'text', placeholder:'Customers invoice net-60 and need payroll cash fast', optional:true}
+  ];
+  var step=0;
+
+  function bubble(who,text){
+    var el=document.createElement('div');
+    el.className='chat-msg'+(who==='user'?' user':'');
+    el.innerHTML=(who==='user'?'':'<span class="k-av">'+esc(initial())+'</span>')+'<div class="bubble">'+esc(text)+'</div>';
+    thread.appendChild(el);
+    thread.scrollTop=thread.scrollHeight;
+    return el;
+  }
+  function typing(){
+    var el=document.createElement('div');
+    el.className='chat-msg';
+    el.innerHTML='<span class="k-av">'+esc(initial())+'</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+    thread.appendChild(el); thread.scrollTop=thread.scrollHeight; return el;
+  }
+  function agentSay(text,after){
+    var t=typing();
+    setTimeout(function(){
+      t.querySelector('.bubble').textContent=text;
+      thread.scrollTop=thread.scrollHeight;
+      if(after) after();
+    },850);
+  }
+
+  function renderReply(){
+    reply.innerHTML='';
+    if(step>=STEPS.length){ finish(); return; }
+    var s=STEPS[step];
+    if(s.type==='chips'){
+      var wrap=document.createElement('div'); wrap.className='ic-chips';
+      s.options.forEach(function(o){
+        var b=document.createElement('button');
+        b.type='button'; b.className='ic-chip'; b.textContent=o;
+        b.addEventListener('click',function(){ submit(o); });
+        wrap.appendChild(b);
+      });
+      reply.appendChild(wrap);
+    } else {
+      var row=document.createElement('div'); row.className='ic-input-row';
+      var inp=document.createElement('input');
+      inp.type='text'; inp.className='ic-input'; inp.placeholder=s.placeholder||'';
+      inp.setAttribute('aria-label',s.key);
+      var send=document.createElement('button');
+      send.type='button'; send.className='ic-send'; send.setAttribute('aria-label','Send');
+      send.innerHTML='<svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg>';
+      function go(){
+        var v=inp.value.trim();
+        if(!v){ if(s.optional){ submit('Nothing for now'); } return; }
+        if(s.validate&&!s.validate(v)){ agentSay(s.error||'Mind trying that again?'); inp.value=''; inp.focus(); return; }
+        submit(v);
+      }
+      send.addEventListener('click',go);
+      inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } });
+      row.appendChild(inp); row.appendChild(send);
+      reply.appendChild(row);
+      if(s.optional){
+        var skip=document.createElement('button');
+        skip.type='button'; skip.className='ic-skip'; skip.textContent='Skip';
+        skip.addEventListener('click',function(){ submit('Nothing for now'); });
+        reply.appendChild(skip);
+      }
+      setTimeout(function(){ inp.focus(); },60);
+    }
+  }
+  function submit(val){
+    var s=STEPS[step];
+    answers[s.key]=val;
+    bubble('user',val);
+    reply.innerHTML='';
+    step++;
+    if(step<STEPS.length){ agentSay(STEPS[step].ask(),renderReply); }
+    else { finish(); }
+  }
+  function finish(){
+    reply.innerHTML='';
+    agentSay('Thanks, that is everything I need. '+(answers.company||'Your platform')+', '+(answers.type||'a platform')+'. I will come back to '+(answers.email||'you')+' within one business day with what a program on your platform would look like.',function(){
+      var done=document.createElement('p');
+      done.className='ic-done';
+      done.textContent='Concept demo. Nothing was sent.';
+      reply.appendChild(done);
+    });
+  }
+
+  function start(){
+    if(!ic.hidden) return;
+    form.hidden=true; ic.hidden=false;
+    card.classList.add('is-chat');
+    if(kicker) kicker.textContent='Chatting with '+first();
+    if(lead) lead.textContent='Four quick questions, same as the form.';
+    thread.innerHTML=''; reply.innerHTML=''; step=0; answers={};
+    agentSay(STEPS[0].ask(),renderReply);
+  }
+  function stop(){
+    ic.hidden=true; form.hidden=false;
+    card.classList.remove('is-chat');
+    if(kicker) kicker.textContent='Message your partnerships manager';
+    if(lead) lead.textContent='Usually replies within one business day. Four fields. No pitch deck.';
+  }
+  if(back) back.addEventListener('click',stop);
+
+  // On this page, "Chat with <agent>" transforms the card instead of opening the floating panel
+  document.querySelectorAll('label[for="chat-toggle"]').forEach(function(l){
+    l.addEventListener('click',function(e){
+      e.preventDefault();
+      var t=document.getElementById('chat-toggle');
+      if(t) t.checked=false;
+      start();
+      card.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+  });
+})();
+</script>
 </body>
 </html>
