@@ -73,29 +73,14 @@
             </div>
           </div>
 
-          <ul class="proof-list">
-            <li>
-              <span class="proof-title">Direct to <span data-agent="first">Maya</span></span>
-              <span class="proof-body">Your note is assigned to your partnerships manager.</span>
-            </li>
-            <li>
-              <span class="proof-title">Scoped next step</span>
-              <span class="proof-body">Products, revenue share, and where the offer can appear in your product.</span>
-            </li>
-            <li>
-              <span class="proof-title">Fast reply</span>
-              <span class="proof-body">Most teams hear back within one business day with a scoped next step.</span>
-            </li>
-          </ul>
         </div>
 
         <div class="contact-card" id="contact-card">
           <div class="contact-card-agent">
             <span class="agent-av sm" data-agent="initial" aria-hidden="true">M</span>
             <div>
-              <p class="contact-card-kicker">Message your partnerships manager</p>
-              <h2 data-agent="name">Maya Chen</h2>
-              <p class="form-lead">Usually replies within one business day. Four fields. No pitch deck.</p>
+              <p class="contact-card-kicker" id="cc-kicker">Send <span data-agent="first">Maya</span> the details</p>
+              <p class="form-lead" id="cc-lead">Four fields. No pitch deck. Or <button type="button" class="linkish" id="switch-to-chat">answer them in chat</button> instead.</p>
             </div>
           </div>
 
@@ -225,6 +210,8 @@
     </div>
     <div class="foot-legal">
       <p>Kanmon is a licensed lender. California DFPI Finance Lenders Law License #60DBO-144925.</p>
+    
+      <p style="opacity:.75">Independent concept redesign by Anthony Carter. Not affiliated with or endorsed by Kanmon. The official site is <a href="https://kanmon.com" rel="noopener">kanmon.com</a>.</p>
     </div>
   </div>
 </footer>
@@ -338,12 +325,8 @@
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
     setTimeout(function(){ var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon'; txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+current; if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(teaser); },1100);
   }
-  var t=setTimeout(tease,2500);
-  function onScrollTease(){
-    var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
-    if(d>0.35){ tease(); removeEventListener('scroll',onScrollTease); }
-  }
-  addEventListener('scroll',onScrollTease,{passive:true});
+  var t=null; // contact page: the card is the conversation, so no floating teaser
+
   document.getElementById('chat-teaser-x').addEventListener('click',function(e){ e.stopPropagation(); hideTeaser(); });
   function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; syncLaunch(); startIdle(); }
   function closePanel(){ toggle.checked=false; syncLaunch(); if(launch.classList.contains('bar')){ startIdle(); } else { clearTimeout(idleTimer); } }
@@ -500,8 +483,8 @@
   var thread=document.getElementById('ic-thread');
   var reply=document.getElementById('ic-reply');
   var back=document.getElementById('ic-back');
-  var kicker=card?card.querySelector('.contact-card-kicker'):null;
-  var lead=card?card.querySelector('.form-lead'):null;
+  var kicker=document.getElementById('cc-kicker');
+  var lead=document.getElementById('cc-lead');
   if(!card||!form||!ic) return;
 
   function first(){ return (window.KanmonAgent&&KanmonAgent.first)||'Maya'; }
@@ -616,10 +599,16 @@
   function stop(){
     ic.hidden=true; form.hidden=false;
     card.classList.remove('is-chat');
-    if(kicker) kicker.textContent='Message your partnerships manager';
-    if(lead) lead.textContent='Usually replies within one business day. Four fields. No pitch deck.';
+    if(kicker) kicker.innerHTML='Send '+esc(first())+' the details';
+    if(lead) lead.innerHTML='Four fields. No pitch deck. Or <button type="button" class="linkish" id="switch-to-chat">answer them in chat</button> instead.';
+    wireSwitch();
   }
   if(back) back.addEventListener('click',stop);
+  function wireSwitch(){
+    var s=document.getElementById('switch-to-chat');
+    if(s) s.addEventListener('click',function(){ start(); });
+  }
+  wireSwitch();
 
   // On this page, "Chat with <agent>" transforms the card instead of opening the floating panel
   document.querySelectorAll('label[for="chat-toggle"]').forEach(function(l){
