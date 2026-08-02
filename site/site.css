@@ -617,3 +617,11 @@ a.card:hover .card-ico{stroke:var(--kanmon-deep)}
 .panel.you .li-ico{stroke:var(--partner)}
 .panel.kan .li-ico{stroke:var(--kanmon)}
 @media (max-width:520px){.card-ico{width:26px;height:26px;margin-bottom:.55rem}}
+
+/* orange earns its meaning: reserve it for Kanmon moments and actions.
+   Card titles read as text; the arrow and hover carry the affordance. */
+a.card{color:var(--ink)}
+a.card h3{color:var(--ink)}
+a.card:hover h3{color:var(--kanmon-deep)}
+.card-ico{stroke:#b9b2a4}
+a.card:hover .card-ico{stroke:var(--kanmon)}
