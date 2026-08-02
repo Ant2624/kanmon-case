@@ -677,3 +677,5 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 
 .ihint{display:block;font-size:.72rem;color:var(--kanmon-deep);margin:.5rem 0 0;font-weight:600}
 .ihint.gone{display:none}
+
+.chat-teaser .assigning{color:var(--muted);font-style:italic}

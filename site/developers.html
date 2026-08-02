@@ -182,7 +182,7 @@ KanmonConnect.start({ connectToken })
   </div>
   <div class="chat-body">
     <div class="chat-msg"><span class="k-av" data-agent="initial">M</span>
-      <div class="bubble">Hi there. Exploring embedded lending for your platform? Happy to point you to the right place.</div>
+      <div class="bubble">You have been assigned a partnerships manager. I am <strong data-agent="first">Maya</strong>, and I am yours while you look around. Tick anything you want me to look into and I will start on it.</div>
     </div>
     <p class="chat-time"><span data-agent="first">Maya</span> &middot; just now</p>
     <div class="chat-chips">
@@ -306,7 +306,15 @@ KanmonConnect.start({ connectToken })
     shown=true;
     teaser.hidden=false;
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
-    setTimeout(function(){ var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon'; txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+current; if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(teaser); },1100);
+    txt.innerHTML='<span class="assigning">Assigning you a partnerships manager\u2026</span>';
+    setTimeout(function(){
+      var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon';
+      var first=(window.KanmonAgent&&KanmonAgent.first)||'Maya';
+      var role=(window.KanmonAgent&&KanmonAgent.role)||'Partnerships';
+      txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+
+        first+' here, '+role.toLowerCase()+'. I am yours while you look around, so ask me anything.';
+      if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(teaser);
+    },1500);
   }
   var restored=restoreChat();
   var t=restored?null:setTimeout(tease,2500);

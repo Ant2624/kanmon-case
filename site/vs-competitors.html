@@ -194,7 +194,7 @@
   </div>
   <div class="chat-body">
     <div class="chat-msg"><span class="k-av" data-agent="initial">M</span>
-      <div class="bubble">Comparing options? Start with lender of record, in-product UX, and product fit.</div>
+      <div class="bubble">I am <strong data-agent="first">Maya</strong>, your partnerships manager. Comparing options? Start with lender of record, in-product UX, and product fit.</div>
     </div>
     <p class="chat-time"><span data-agent="first">Maya</span> &middot; just now</p>
     <div class="chat-chips">
@@ -318,7 +318,15 @@
     shown=true;
     teaser.hidden=false;
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
-    setTimeout(function(){ var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon'; txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+current; if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(teaser); },1100);
+    txt.innerHTML='<span class="assigning">Assigning you a partnerships manager\u2026</span>';
+    setTimeout(function(){
+      var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon';
+      var first=(window.KanmonAgent&&KanmonAgent.first)||'Maya';
+      var role=(window.KanmonAgent&&KanmonAgent.role)||'Partnerships';
+      txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+
+        first+' here, '+role.toLowerCase()+'. I am yours while you look around, so ask me anything.';
+      if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(teaser);
+    },1500);
   }
   var restored=restoreChat();
   var t=restored?null:setTimeout(tease,2500);
