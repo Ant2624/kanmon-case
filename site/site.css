@@ -605,3 +605,15 @@ html.chat-open body{position:fixed;left:0;right:0;width:100%}
 .ic-done{margin:.2rem 0 0;font-size:.74rem;color:var(--muted)}
 .ic-switch{margin:.1rem 0 0}
 .linkish{border:0;background:none;font:inherit;font-size:.78rem;color:var(--kanmon-deep);font-weight:600;cursor:pointer;text-decoration:underline;padding:0}
+
+/* line icons: geometric, squared, same weight as the type */
+.card-ico{width:30px;height:30px;display:block;margin-bottom:.7rem;
+  fill:none;stroke:var(--kanmon);stroke-width:1.7;stroke-linecap:square;stroke-linejoin:miter}
+a.card:hover .card-ico{stroke:var(--kanmon-deep)}
+.ico-list{list-style:none;padding:0;margin:0}
+.ico-list li{display:flex;align-items:flex-start;gap:.6rem;padding:.3rem 0}
+.li-ico{width:18px;height:18px;flex-shrink:0;margin-top:.15rem;
+  fill:none;stroke-width:1.7;stroke-linecap:square;stroke-linejoin:miter}
+.panel.you .li-ico{stroke:var(--partner)}
+.panel.kan .li-ico{stroke:var(--kanmon)}
+@media (max-width:520px){.card-ico{width:26px;height:26px;margin-bottom:.55rem}}
