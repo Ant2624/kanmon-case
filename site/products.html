@@ -359,9 +359,9 @@
     </div>
     <p class="chat-time"><span data-agent="first">Maya</span> &middot; just now</p>
     <div class="chat-chips">
-      <a href="products.html">Which products fit my customers?</a>
-      <a href="index.html#faq">How does the lending side work?</a>
-      <a href="contact.html">Talk to the team</a>
+      <a href="products.html" data-chip-follow="Here are the four live products, each matched to a cash gap. Tell me how your customers get paid and I can point you at the right one.">Which products fit my customers?</a>
+      <a href="index.html#faq" data-chip-follow="These are the questions partners ask most. If yours is not here, just say so.">How does the lending side work?</a>
+      <a href="contact.html" data-chip-follow="This goes straight to me. Four fields, or answer them in chat if you prefer.">Talk to the team</a>
     </div>
   </div>
   <div class="chat-input"><span>Write a reply&hellip;</span>
@@ -526,6 +526,43 @@
     idleTimer=setTimeout(showIdle,13000);
   }
   function startIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(showIdle,12000); }
+
+
+  /* chips: ask, travel to the page, and pick the conversation back up there */
+  var PENDING='kanmon-chat-follow';
+  document.querySelectorAll('.chat-chips a[data-chip-follow]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      hasHistory=true;
+      idleCount=0; if(statusEl){ statusEl.remove(); statusEl=null; }
+      var chips=body.querySelector('.chat-chips'); if(chips) chips.style.display='none';
+      var tm=body.querySelector('.chat-time'); if(tm) tm.style.display='none';
+      var u=document.createElement('div');
+      u.className='chat-msg user';
+      u.innerHTML='<div class="bubble">'+esc(a.textContent.trim())+'</div>';
+      body.appendChild(u);
+      toggle.checked=true;
+      saveChat();
+      try{ sessionStorage.setItem(PENDING, a.getAttribute('data-chip-follow')); }catch(err){}
+      location.href=a.getAttribute('href');
+    });
+  });
+  (function(){
+    var msg=null;
+    try{ msg=sessionStorage.getItem(PENDING); if(msg) sessionStorage.removeItem(PENDING); }catch(err){}
+    if(!msg) return;
+    toggle.checked=true; hasHistory=true; syncLaunch();
+    var typing=document.createElement('div');
+    typing.className='chat-msg';
+    typing.innerHTML='<span class="k-av">'+((window.KanmonAgent&&KanmonAgent.initial)||'M')+'</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+    body.appendChild(typing);
+    body.scrollTop=body.scrollHeight;
+    setTimeout(function(){
+      typing.querySelector('.bubble').textContent=msg;
+      body.scrollTop=body.scrollHeight;
+      syncLaunch(); startIdle(); saveChat();
+    },1400);
+  })();
 
   /* embedded kickoffs: question sent, Maya responds */
   function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
