@@ -55,8 +55,8 @@
       <div class="contact-layout">
         <div class="contact-aside">
           <p class="eyebrow">Partnerships</p>
-          <h1>Reach your partnerships manager.</h1>
-          <p class="lead">A real person on the partnerships team, not a shared inbox. For this session, that is <strong data-agent="name">Maya Chen</strong>.</p>
+          <h1>Get a program fit review with your partnerships manager.</h1>
+          <p class="lead">Tell us your platform type and cash-gap moment. <strong data-agent="name">Maya Chen</strong> scopes product fit, economics, and launch path. This demo stays on this site.</p>
 
           <div class="agent-live-card" id="agent-live-card">
             <div class="agent-live-row">
@@ -477,12 +477,14 @@
         }));
       }catch(err){}
       card.classList.add('is-success');
+      if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(card);
       if(success){ success.focus(); }
       history.replaceState(null,'','contact.html#sent');
     },650);
   });
   if(location.hash==='#sent' && sessionStorage.getItem('kanmon_concept_lead')){
     card.classList.add('is-success');
+    if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(card);
   }
 })();
 </script>
