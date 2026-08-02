@@ -158,7 +158,7 @@
   <div class="chat-head">
     <button type="button" class="chat-close" id="chat-close" aria-label="Close chat">&times;</button>
     <div class="brand-row"><span class="k-av" data-agent="initial">M</span><div><b data-agent="first">Maya</b>
-    <span class="role" data-agent="role">Partnerships at Kanmon</span>
+    <span class="role" data-agent="role">Your partnerships manager</span>
     <span class="presence"><span class="dot-on"></span><span data-agent="presence">Usually replies in a few minutes</span></span></div></div>
   </div>
   <div class="chat-body">
@@ -181,7 +181,7 @@
   <div class="txt" id="chat-teaser-txt"><span class="who" data-agent="who">Maya &middot; Kanmon</span><span class="typing"><i></i><i></i><i></i></span></div>
   <button class="x" id="chat-teaser-x" aria-label="Dismiss">&times;</button>
 </div>
-<script src="agent.js"></script>
+<script src="agent.js?v=sync2"></script>
 <script>
 (function(){
   var toggle=document.getElementById('chat-toggle');
@@ -256,7 +256,7 @@
     shown=true;
     teaser.hidden=false;
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
-    setTimeout(function(){ var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon'; txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+current; },1100);
+    setTimeout(function(){ var who=(window.KanmonAgent&&KanmonAgent.who)||'Maya \u00b7 Kanmon'; txt.innerHTML='<span class="who" data-agent="who">'+who+'</span>'+current; if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(teaser); },1100);
   }
   var t=setTimeout(tease,2500);
   function onScrollTease(){
@@ -327,6 +327,7 @@
         body.scrollTop=body.scrollHeight;
         syncLaunch();
         startIdle();
+        if(window.KanmonAgent&&KanmonAgent.apply) KanmonAgent.apply(panel);
       },1900);
     });
   });

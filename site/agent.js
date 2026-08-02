@@ -1,4 +1,6 @@
-/* Shared partnerships agent. One real person per browser session; a new session can surface someone else. */
+/* Shared partnerships agent.
+   One person for the browser (localStorage), synced across every page surface:
+   chat header, teaser, kickoffs, contact card, and form copy. */
 (function () {
   var ROSTER = [
     {
@@ -50,24 +52,38 @@
 
   var KEY = 'kanmon_concept_agent';
   var FORCE = /[?&]agent=([a-z]+)/i.exec(location.search);
-  var agent = null;
 
   function byId(id) {
+    if (!id) return null;
     for (var i = 0; i < ROSTER.length; i++) if (ROSTER[i].id === id) return ROSTER[i];
     return null;
   }
 
+  function readStored() {
+    try {
+      return byId(localStorage.getItem(KEY)) || byId(sessionStorage.getItem(KEY));
+    } catch (e) {
+      try { return byId(sessionStorage.getItem(KEY)); } catch (e2) { return null; }
+    }
+  }
+
+  function writeStored(id) {
+    try { localStorage.setItem(KEY, id); } catch (e) {}
+    try { sessionStorage.setItem(KEY, id); } catch (e) {}
+  }
+
+  var agent = null;
   if (FORCE) {
     agent = byId(FORCE[1].toLowerCase()) || ROSTER[Math.floor(Math.random() * ROSTER.length)];
-    try { sessionStorage.setItem(KEY, agent.id); } catch (e) {}
+    writeStored(agent.id);
   } else {
-    try {
-      var saved = sessionStorage.getItem(KEY);
-      agent = byId(saved);
-    } catch (e) {}
+    agent = readStored();
     if (!agent) {
       agent = ROSTER[Math.floor(Math.random() * ROSTER.length)];
-      try { sessionStorage.setItem(KEY, agent.id); } catch (e) {}
+      writeStored(agent.id);
+    } else {
+      // keep session mirror in sync with local
+      writeStored(agent.id);
     }
   }
 
@@ -83,56 +99,111 @@
     ];
   }
 
-  window.KanmonAgent = {
-    roster: ROSTER,
-    current: agent,
-    id: agent.id,
-    first: agent.first,
-    name: agent.name,
-    initial: agent.initial,
-    role: agent.role,
-    presence: agent.presence,
-    blurb: agent.blurb,
-    idle: idleLines(agent.first),
-    finalIdle: '\ud83d\udc40 Still here whenever you are.',
-    who: agent.first + ' \u00b7 Kanmon',
-    typing: agent.first + ' is typing\u2026',
-    askCue: 'Ask ' + agent.first,
-    messageCue: 'Message ' + agent.first,
-    reachCue: 'Reach ' + agent.first,
-    refresh: function () {
-      try { sessionStorage.removeItem(KEY); } catch (e) {}
+  function buildApi(person) {
+    return {
+      roster: ROSTER,
+      current: person,
+      id: person.id,
+      first: person.first,
+      name: person.name,
+      initial: person.initial,
+      role: person.role,
+      presence: person.presence,
+      blurb: person.blurb,
+      idle: idleLines(person.first),
+      finalIdle: '\ud83d\udc40 Still here whenever you are.',
+      who: person.first + ' \u00b7 Kanmon',
+      typing: person.first + ' is typing\u2026',
+      askCue: 'Ask ' + person.first,
+      messageCue: 'Message ' + person.first,
+      reachCue: 'Reach ' + person.first,
+      chatWithCue: 'Chat with ' + person.first,
+      keepChatCue: 'Keep chatting with ' + person.first
+    };
+  }
+
+  function publish(person) {
+    var api = buildApi(person);
+    api.apply = fill;
+    api.refresh = function () {
       var next = ROSTER[Math.floor(Math.random() * ROSTER.length)];
       if (ROSTER.length > 1) {
-        while (next.id === agent.id) next = ROSTER[Math.floor(Math.random() * ROSTER.length)];
+        while (next.id === person.id) next = ROSTER[Math.floor(Math.random() * ROSTER.length)];
       }
-      try { sessionStorage.setItem(KEY, next.id); } catch (e) {}
+      writeStored(next.id);
       location.reload();
-    }
-  };
+    };
+    window.KanmonAgent = api;
+    agent = person;
+    return api;
+  }
 
   function fill(root) {
-    var scope = root || document;
-    scope.querySelectorAll('[data-agent]').forEach(function (el) {
+    var scope = root && root.querySelectorAll ? root : document;
+    var nodes = Array.prototype.slice.call(scope.querySelectorAll('[data-agent]'));
+    // Deepest nodes first so parent textContent never wipes child bindings.
+    nodes.sort(function (a, b) {
+      var da = 0, db = 0, n = a;
+      while (n.parentElement) { da++; n = n.parentElement; }
+      n = b;
+      while (n.parentElement) { db++; n = n.parentElement; }
+      return db - da;
+    });
+    nodes.forEach(function (el) {
       var key = el.getAttribute('data-agent');
       var val = window.KanmonAgent[key];
       if (val == null) return;
-      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = val;
-      else el.textContent = val;
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.value = val;
+        return;
+      }
+      // Only replace direct text when the node is a leaf for agent text,
+      // or when it has no nested [data-agent] descendants.
+      if (el.querySelector('[data-agent]')) return;
+      if (el.textContent !== String(val)) el.textContent = val;
     });
     scope.querySelectorAll('.ask-cue').forEach(function (el) {
-      el.textContent = window.KanmonAgent.askCue;
-    });
-    scope.querySelectorAll('.k-av[data-agent="initial"], .mini-av[data-agent="initial"]').forEach(function (el) {
-      el.textContent = window.KanmonAgent.initial;
+      if (el.textContent !== window.KanmonAgent.askCue) el.textContent = window.KanmonAgent.askCue;
     });
   }
 
-  window.KanmonAgent.apply = fill;
+  publish(agent);
+
+  function boot() {
+    fill(document);
+    // Re-apply when chat/teaser injects new nodes with data-agent hooks.
+    if (window.MutationObserver && !window.__kanmonAgentObs) {
+      window.__kanmonAgentObs = new MutationObserver(function (mutations) {
+        for (var i = 0; i < mutations.length; i++) {
+          var m = mutations[i];
+          if (!m.addedNodes || !m.addedNodes.length) continue;
+          for (var j = 0; j < m.addedNodes.length; j++) {
+            var node = m.addedNodes[j];
+            if (node.nodeType !== 1) continue;
+            if (node.matches && (node.matches('[data-agent]') || node.matches('.ask-cue') || node.querySelector('[data-agent], .ask-cue'))) {
+              fill(node.parentNode || document);
+              return;
+            }
+          }
+        }
+      });
+      window.__kanmonAgentObs.observe(document.documentElement, { childList: true, subtree: true });
+    }
+  }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { fill(); });
+    document.addEventListener('DOMContentLoaded', boot);
   } else {
-    fill();
+    boot();
   }
+
+  // Cross-tab sync: if another tab switches agent, reload this one onto the same person.
+  window.addEventListener('storage', function (e) {
+    if (e.key !== KEY || !e.newValue) return;
+    var next = byId(e.newValue);
+    if (!next || next.id === agent.id) return;
+    publish(next);
+    try { sessionStorage.setItem(KEY, next.id); } catch (err) {}
+    fill(document);
+  });
 })();
