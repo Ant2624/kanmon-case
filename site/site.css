@@ -1,9 +1,8 @@
-/* Kanmon concept redesign, shared styles.
-   Visual language mirrored from kanmon.com (July 2026): cream #F4F0E6 panels with
-   diagonal cuts, Roboto with heavy left-aligned headings, flat rectangular orange
-   CTAs, accent blocks in maroon #63312B, sage #E6EAD3, olive #273400.
-   Product mocks stand in where the live site uses stock photography.
-   Mock rule: anything orange is the Kanmon part; the darker sidebar is the platform's surface. */
+/* Kanmon partner site, shared styles.
+   Visual language: cream #F4F0E6 panels with diagonal cuts, Roboto with heavy
+   left-aligned headings, flat rectangular orange CTAs, accent blocks in maroon
+   #63312B, sage #E6EAD3, olive #273400.
+   Product UI mocks: orange is the Kanmon layer; darker sidebar is the platform surface. */
 
 
 :root{
@@ -24,12 +23,7 @@ body{margin:0;font-family:var(--sans);color:var(--ink);background:#fff;line-heig
 img{max-width:100%}
 a{color:var(--kanmon-deep)}
 
-/* ---------- concept banner ---------- */
-.concept-banner{position:sticky;top:0;z-index:50;background:#111;color:#fff;
-  font-size:.8rem;padding:.5rem 1rem;text-align:center}
-.concept-banner a{color:#ffb27a;font-weight:700}
-
-/* ---------- header (white, like the live site) ---------- */
+/* ---------- header ---------- */
 .site-header{background:#fff;border-bottom:1px solid var(--line)}
 .site-header .wrap{display:flex;align-items:center;gap:1.2rem;padding-top:.85rem;padding-bottom:.85rem;flex-wrap:wrap}
 .site-logo img{height:28px;width:auto;display:block}
@@ -368,7 +362,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
   .site-nav{margin-left:0}
 }
 
-/* ---------- chat widget (concept, CSS-only) ---------- */
+/* ---------- chat widget ---------- */
 #chat-toggle{position:absolute;left:-9999px}
 .chat-launch{position:fixed;right:20px;bottom:20px;z-index:60;width:54px;height:54px;border-radius:50%;
   background:var(--kanmon);display:flex;align-items:center;justify-content:center;cursor:pointer;
