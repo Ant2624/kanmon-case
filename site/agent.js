@@ -19,7 +19,7 @@
       initial: 'J',
       role: 'Your partnerships manager',
       presence: 'Usually replies in a few minutes',
-      blurb: 'I am your partnerships manager for this conversation. I work with product and BD leads on partner launches.'
+      blurb: 'I am your partnerships manager for this conversation. I work with product and BD leads on program launches.'
     },
     {
       id: 'priya',
