@@ -488,10 +488,11 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
   .chat-launch.bar{left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));
     max-width:none;width:auto}
   .chat-teaser{
-    left:max(12px,env(safe-area-inset-left,0px));
+    left:auto;
     right:max(12px,env(safe-area-inset-right,0px));
     bottom:calc(72px + env(safe-area-inset-bottom,0px));
-    max-width:none;width:auto}
+    max-width:min(280px,calc(100vw - 72px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));
+    width:auto}
   .chat-chips{margin-left:0}
 }
 
