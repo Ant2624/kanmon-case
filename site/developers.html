@@ -312,6 +312,7 @@ KanmonConnect.start({ connectToken })
   function hideTeaser(){ teaser.classList.remove('show'); setTimeout(function(){teaser.hidden=true;},250); }
   function tease(){
     if(shown||toggle.checked||hasHistory) return;
+    try{ if(sessionStorage.getItem('kanmon-teased')) return; sessionStorage.setItem('kanmon-teased','1'); }catch(e){}
     shown=true;
     teaser.hidden=false;
     requestAnimationFrame(function(){ teaser.classList.add('show'); });
@@ -334,7 +335,35 @@ KanmonConnect.start({ connectToken })
   }
   if(!restored) addEventListener('scroll',onScrollTease,{passive:true});
   document.getElementById('chat-teaser-x').addEventListener('click',function(e){ e.stopPropagation(); hideTeaser(); });
-  function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; syncLaunch(); startIdle(); saveChat(); }
+
+  /* the on-screen keyboard moves the page; that must not close the panel */
+  var typingNow=false, openedAt=0;
+  (function(){
+    var input=document.getElementById('chat-reply');
+    if(input){
+      input.addEventListener('focus',function(){
+        typingNow=true; anchorY=window.scrollY;
+        setTimeout(function(){ body.scrollTop=body.scrollHeight; },250);
+      });
+      input.addEventListener('blur',function(){
+        typingNow=false;
+        setTimeout(function(){ anchorY=window.scrollY; },120);
+      });
+    }
+    if(window.visualViewport){
+      var vv=window.visualViewport;
+      var applyKb=function(){
+        var kb=Math.max(0, (window.innerHeight||0) - vv.height - vv.offsetTop);
+        document.documentElement.style.setProperty('--kb', (kb>80?kb:0)+'px');
+        if(toggle.checked){ anchorY=window.scrollY; }
+        if(toggle.checked && kb>80){ body.scrollTop=body.scrollHeight; }
+      };
+      vv.addEventListener('resize',applyKb);
+      vv.addEventListener('scroll',function(){ if(toggle.checked) anchorY=window.scrollY; });
+    }
+  })();
+
+  function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; openedAt=Date.now(); syncLaunch(); startIdle(); saveChat(); }
   function closePanel(){ toggle.checked=false; syncLaunch(); saveChat(); if(launch.classList.contains('bar')){ startIdle(); } else { clearTimeout(idleTimer); } }
   txt.addEventListener('click',openPanel);
   toggle.addEventListener('change',function(){ if(toggle.checked){ openPanel(); } else { closePanel(); } });
@@ -476,7 +505,7 @@ KanmonConnect.start({ connectToken })
       writeList(list);
       b.setAttribute('aria-pressed', String(!on));
       b.querySelector('.ilabel').textContent = !on ? 'On your list' : 'Add to my list';
-      if(!toggle.checked && !on){ toggle.checked=true; anchorY=window.scrollY; }
+      if(!toggle.checked && !on){ toggle.checked=true; anchorY=window.scrollY; openedAt=Date.now(); }
       var h=document.getElementById('ihint'); if(h) h.classList.add('gone');
       noteInterest(label, !on);
       if(!on) startIdle();
@@ -580,6 +609,9 @@ KanmonConnect.start({ connectToken })
   /* mobile: scrolling away with the panel open closes it to the snippet bar */
   addEventListener('scroll',function(){
     if(!matchMedia('(max-width:760px)').matches) return;
+    var ae=document.activeElement;
+    if(typingNow || (ae && ae.closest && ae.closest('.chat-panel'))) { anchorY=window.scrollY; return; }
+    if(Date.now()-openedAt<1200) { anchorY=window.scrollY; return; }
     if(toggle.checked && Math.abs(window.scrollY-anchorY)>80) closePanel();
   },{passive:true});
 })();

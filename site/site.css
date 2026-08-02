@@ -496,13 +496,13 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
   .chat-panel{
     left:max(12px,env(safe-area-inset-left,0px));
     right:max(12px,env(safe-area-inset-right,0px));
-    bottom:max(12px,env(safe-area-inset-bottom,0px));
+    bottom:calc(var(--kb,0px) + max(12px,env(safe-area-inset-bottom,0px)));
     width:auto;max-width:none;
-    max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
-    border-radius:14px}
+    max-height:calc(100dvh - var(--kb,0px) - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+    border-radius:14px;transition:bottom .18s ease,max-height .18s ease}
   .chat-launch{
     right:max(12px,env(safe-area-inset-right,0px));
-    bottom:max(12px,env(safe-area-inset-bottom,0px))}
+    bottom:calc(var(--kb,0px) + max(12px,env(safe-area-inset-bottom,0px)))}
   .chat-launch.bar{left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));
     max-width:none;width:auto}
   .chat-teaser{
