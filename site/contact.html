@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Talk to Kanmon about an embedded lending program for your platform. What to expect before you reach out.">
-<title>Contact Kanmon · Talk about an embedded lending program (concept)</title>
+<meta name="description" content="Request a partner program walkthrough. Tell us how your customers get paid and we will scope the fit.">
+<title>Contact · Request a Kanmon partner walkthrough (concept)</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,13 +16,13 @@
 <link rel="canonical" href="https://ant2624.github.io/kanmon-case/site/contact.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Kanmon concept redesign">
-<meta property="og:title" content="Contact Kanmon · Talk about an embedded lending program (concept)">
-<meta property="og:description" content="Talk to Kanmon about an embedded lending program for your platform. What to expect before you reach out.">
+<meta property="og:title" content="Contact · Request a Kanmon partner walkthrough (concept)">
+<meta property="og:description" content="Request a partner program walkthrough. Tell us how your customers get paid and we will scope the fit.">
 <meta property="og:url" content="https://ant2624.github.io/kanmon-case/site/contact.html">
 <meta property="og:image" content="https://ant2624.github.io/kanmon-case/assets/kanmon-logo.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Contact Kanmon · Talk about an embedded lending program (concept)">
-<meta name="twitter:description" content="Talk to Kanmon about an embedded lending program for your platform. What to expect before you reach out.">
+<meta name="twitter:title" content="Contact · Request a Kanmon partner walkthrough (concept)">
+<meta name="twitter:description" content="Request a partner program walkthrough. Tell us how your customers get paid and we will scope the fit.">
 <meta name="twitter:image" content="https://ant2624.github.io/kanmon-case/assets/kanmon-logo.png">
 <!-- /seo-scaffold -->
 <link rel="stylesheet" href="site.css">
@@ -51,51 +51,120 @@
 <main>
 
   <section class="section alt">
-    <div class="wrap hero-center">
-      <p class="eyebrow">Contact</p>
-      <h1>Talk to Kanmon.</h1>
-      <p class="lead">Bring how your customers get paid. Leave with what a program on your platform would look like.</p>
-    </div>
-  </section>
-
-  <section class="section">
     <div class="wrap">
-      <div class="grid2">
-        <div>
-          <h2>What to expect.</h2>
-          <div class="steps-cards" style="margin-top:1rem;grid-template-columns:1fr">
-            <div class="step-card"><h3>A short conversation</h3><p>Your platform, your customers, and the cash gaps they hit. No deck needed.</p></div>
-            <div class="step-card"><h3>A scoped program</h3><p>Which products fit, how the offer appears in your product, and what you earn.</p></div>
-            <div class="step-card"><h3>A fast launch</h3><p>Implement in about one week. Most programs are live within a month.</p></div>
-          </div>
+      <div class="contact-layout">
+        <div class="contact-aside">
+          <p class="eyebrow">Contact</p>
+          <h1>Get a partner program scoped for your platform.</h1>
+          <p class="lead">Tell us how your customers get paid. We will map products, economics, and a launch path. Most teams hear back within one business day.</p>
+          <ul class="proof-list">
+            <li><b>Implement in about one week</b><span>Most programs are live within a month after scoping.</span></li>
+            <li><b>You keep the brand</b><span>Kanmon is the licensed lender of record. No balance-sheet risk for your platform.</span></li>
+            <li><b>Built for procurement</b><span>SOC 2 Type I, KYC/KYB/AML, soft credit pull only.</span></li>
+            <li><b>Live with partners today</b><span>Cleo, Cin7, Avionté, PingPong, Nuvei.</span></li>
+          </ul>
+          <p style="margin-top:1rem"><a class="link-arrow" href="case-studies.html">See live programs <svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          &nbsp;·&nbsp; <a class="link-arrow" href="platforms.html">Partner economics <svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
         </div>
-        <div>
-          <h2>Two ways to start.</h2>
-          <div class="card" style="margin-top:1rem;border-top:4px solid var(--kanmon)">
-            <h3>Reach the real team</h3>
-            <p style="margin-bottom:.8rem">The button below goes to the actual Kanmon contact page, where the real conversations happen.</p>
-            <a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a>
+
+        <div class="contact-card" id="contact-card">
+          <h2>Request a walkthrough</h2>
+          <p class="form-lead">Four fields. No pitch deck required. We reply with a scoped next step.</p>
+          <form class="contact-form" id="contact-form" novalidate>
+            <div class="field two">
+              <div class="field" data-field="name">
+                <label for="c-name">Full name</label>
+                <input id="c-name" name="name" type="text" autocomplete="name" required placeholder="Alex Rivera">
+                <p class="err">Enter your name.</p>
+              </div>
+              <div class="field" data-field="email">
+                <label for="c-email">Work email</label>
+                <input id="c-email" name="email" type="email" autocomplete="email" required placeholder="alex@yourplatform.com">
+                <p class="err">Use a work email.</p>
+              </div>
+            </div>
+            <div class="field" data-field="company">
+              <label for="c-company">Platform / company</label>
+              <input id="c-company" name="company" type="text" autocomplete="organization" required placeholder="PartnerOS">
+              <p class="err">Add your platform or company name.</p>
+            </div>
+            <div class="field two">
+              <div class="field" data-field="role">
+                <label for="c-role">Your role <span class="opt">(optional)</span></label>
+                <select id="c-role" name="role">
+                  <option value="">Select one</option>
+                  <option>Product</option>
+                  <option>Partnerships / BD</option>
+                  <option>Engineering</option>
+                  <option>Executive</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field" data-field="type">
+                <label for="c-type">Partner type</label>
+                <select id="c-type" name="type" required>
+                  <option value="">How do customers use you?</option>
+                  <option value="invoicing-edi">Invoicing / EDI / supply-chain AR</option>
+                  <option value="inventory-erp">Inventory / ERP / commerce</option>
+                  <option value="staffing">Staffing / workforce</option>
+                  <option value="payments">Payments / merchant</option>
+                  <option value="other">Other platform type</option>
+                </select>
+                <p class="err">Pick the closest partner type.</p>
+              </div>
+            </div>
+            <div class="field" data-field="note">
+              <label for="c-note">Cash-gap moment <span class="opt">(optional)</span></label>
+              <textarea id="c-note" name="note" maxlength="500" placeholder="e.g. Customers invoice on net-60 and need payroll cash in under a week."></textarea>
+              <p class="hint">One sentence helps us prep. Skip if you prefer to talk live.</p>
+            </div>
+            <div class="hp-field" aria-hidden="true">
+              <label for="c-company-url">Company website</label>
+              <input id="c-company-url" name="company_url" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <button class="btn-cta" type="submit" id="contact-submit">Request walkthrough</button>
+            <ul class="form-micro">
+              <li>Reply in 1 business day</li>
+              <li>No spam</li>
+              <li>Soft pull only for end customers</li>
+            </ul>
+          </form>
+          <div class="contact-success" id="contact-success" tabindex="-1">
+            <div class="check" aria-hidden="true">✓</div>
+            <h3>Request received.</h3>
+            <p>Thanks. In a live program this routes to partnerships. On this concept site, nothing was sent. Your next step is still the same: bring how your customers get paid, and we map the program.</p>
+            <p style="margin-top:1rem"><a class="btn-cta" href="case-studies.html">See live programs</a></p>
+            <p style="margin-top:.9rem"><button type="button" class="chat-kickoff" data-ask="What should I prepare for the walkthrough?" data-answer="Bring how your customers get paid, roughly how many would hit a cash gap in a month, and where an offer could appear in your product. That is enough to scope products and economics."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>What should I prepare for the walkthrough?<span class="ask-cue">Ask Maya</span></button></p>
           </div>
-          <div class="card" style="margin-top:.8rem">
-            <h3>Or ask Maya first</h3>
-            <p style="margin-bottom:.8rem">Questions before a call? The chat in the corner routes to the right answers.</p>
-            <label class="btn-cta" for="chat-toggle" style="cursor:pointer;background:#fff;color:var(--kanmon-deep) !important;border:1.5px solid var(--kanmon)">Open the chat</label>
-          </div>
-          <p class="sub" style="margin-top:.8rem;font-size:.8rem">This concept page collects nothing. No forms, no tracking.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="cta-section" id="contact">
+  <section class="section">
     <div class="wrap">
-      <h2>Put capital in the moment your customers need it.</h2>
-      <p>The team scopes every program with you, from first call to launch.</p>
-      <p style="margin-top:1.1rem"><a class="btn-cta" href="https://kanmon.com/contact-us" rel="noopener">Talk to Kanmon</a> <a class="btn-ghost" href="case-studies.html">See live programs</a></p>
+      <h2>What happens after you submit.</h2>
+      <div class="steps-cards" style="margin-top:1rem">
+        <div class="step-card"><h3>We confirm fit</h3><p>Partner type, cash-gap moment, and whether invoice, AP, term, or LOC maps cleanly.</p></div>
+        <div class="step-card"><h3>We scope economics</h3><p>Revenue share shape, launch surface in your product, and what Kanmon owns vs you.</p></div>
+        <div class="step-card"><h3>You get a path</h3><p>A concrete next conversation, not a generic deck. Implement in about one week when you are ready.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="contact">
+    <div class="wrap">
+      <div class="trust-strip">
+        <div class="t"><b>Licensed lender</b><span>CA DFPI #60DBO-144925. Kanmon carries credit risk.</span></div>
+        <div class="t"><b>SOC 2 Type I</b><span>Audited security controls on the lending stack.</span></div>
+        <div class="t"><b>No balance-sheet risk</b><span>Your platform never becomes the lender.</span></div>
+        <div class="t"><b>Prefer chat?</b><span><label for="chat-toggle" class="link-arrow" style="cursor:pointer">Ask Maya first <svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></label></span></div>
+      </div>
     </div>
   </section>
 
 </main>
+
 
 <footer class="site-footer">
   <div class="wrap">
@@ -157,7 +226,7 @@
     <div class="chat-chips">
       <a href="products.html">Which products fit my customers?</a>
       <a href="index.html#faq">How does the lending side work?</a>
-      <a href="https://kanmon.com/contact-us" rel="noopener">Talk to the team</a>
+      <a href="#contact-card">Request a walkthrough</a>
     </div>
   </div>
   <div class="chat-input"><span>Write a reply&hellip;</span>
@@ -343,5 +412,64 @@
   }
 })();
 </script>
+
+<script>
+(function(){
+  var form=document.getElementById('contact-form');
+  var card=document.getElementById('contact-card');
+  var success=document.getElementById('contact-success');
+  var btn=document.getElementById('contact-submit');
+  if(!form||!card) return;
+  function showError(name, on){
+    var el=form.querySelector('[data-field="'+name+'"]');
+    if(!el) return;
+    el.classList.toggle('has-error', !!on);
+    var input=el.querySelector('input,select,textarea');
+    if(input) input.classList.toggle('invalid', !!on);
+  }
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  form.querySelectorAll('input,select,textarea').forEach(function(el){
+    el.addEventListener('input', function(){
+      var field=el.closest('[data-field]');
+      if(field) showError(field.getAttribute('data-field'), false);
+    });
+  });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name=form.name.value.trim();
+    var email=form.email.value.trim();
+    var company=form.company.value.trim();
+    var type=form.type.value;
+    var hp=form.company_url.value;
+    var ok=true;
+    showError('name', !name); if(!name) ok=false;
+    showError('email', !validEmail(email)); if(!validEmail(email)) ok=false;
+    showError('company', !company); if(!company) ok=false;
+    showError('type', !type); if(!type) ok=false;
+    if(!ok){
+      var first=form.querySelector('.has-error input, .has-error select');
+      if(first) first.focus();
+      return;
+    }
+    if(hp){ /* honeypot: pretend success without storing */ }
+    btn.disabled=true; btn.textContent='Sending\u2026';
+    setTimeout(function(){
+      try{
+        sessionStorage.setItem('kanmon_concept_lead', JSON.stringify({
+          name:name, email:email, company:company, role:form.role.value, type:type,
+          note:form.note.value.trim(), at:new Date().toISOString()
+        }));
+      }catch(err){}
+      card.classList.add('is-success');
+      if(success){ success.focus(); }
+      history.replaceState(null,'','contact.html#sent');
+    },650);
+  });
+  if(location.hash==='#sent' && sessionStorage.getItem('kanmon_concept_lead')){
+    card.classList.add('is-success');
+  }
+})();
+</script>
+
 </body>
 </html>
