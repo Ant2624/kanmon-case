@@ -720,3 +720,14 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 .cw[aria-pressed="true"]{background:var(--kanmon);border-color:var(--kanmon);color:#fff}
 .connect-ways h4{margin-bottom:.5rem}
 @media (max-width:420px){.cw{flex:1 1 100%;}}
+
+/* chat action bar */
+.chat-actions{border-top:1px solid var(--line);background:#fbfaf7;padding:.6rem .7rem .55rem}
+.ca-label{display:block;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--kanmon-deep);margin-bottom:.45rem}
+.ca-row{display:flex;gap:.45rem}
+.ca{flex:1 1 0;min-width:0;font:inherit;font-size:.72rem;font-weight:700;letter-spacing:.03em;
+  border:1.5px solid var(--kanmon);background:#fff;color:var(--kanmon-deep);border-radius:0;
+  padding:.55rem .4rem;min-height:40px;cursor:pointer;white-space:nowrap;
+  transition:background .15s ease,color .15s ease}
+.ca:hover{background:var(--kanmon);color:#fff}

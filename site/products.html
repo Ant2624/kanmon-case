@@ -371,6 +371,13 @@
       <a href="contact.html" data-chip-follow="This goes straight to me. Four fields, or answer them in chat if you prefer.">Talk to the team</a>
     </div>
   </div>
+  <div class="chat-actions" id="chat-actions" hidden>
+    <span class="ca-label" id="ca-label">Ready when you are</span>
+    <div class="ca-row">
+      <button type="button" class="ca" data-way="call">Book a call</button>
+      <button type="button" class="ca" data-way="email">Email me details</button>
+    </div>
+  </div>
   <form class="chat-input" id="chat-reply-form" autocomplete="off">
     <input type="text" id="chat-reply" placeholder="Write a reply&hellip;" aria-label="Write a reply">
     <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg></button>
@@ -461,6 +468,7 @@
       syncLaunch();
       body.scrollTop=body.scrollHeight;
       if(s.open) startIdle();
+      refreshActions();
       return true;
     }catch(e){ return false; }
   }
@@ -498,6 +506,7 @@
     },1500);
   }
   var restored=restoreChat();
+  refreshActions();
   var t=restored?null:setTimeout(tease,2500);
   function onScrollTease(){
     var d=(window.scrollY+innerHeight)/document.documentElement.scrollHeight;
@@ -586,13 +595,13 @@
       var emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       var phoneRe=/^[\d\s()+.-]{7,}$/;
       if(expecting==='company'||(!p.company&&!emailRe.test(v)&&!phoneRe.test(v)&&expecting===null&&v.length<40)){
-        p.company=v; writeProf(p); expecting=null;
+        p.company=v; writeProf(p); expecting=null; refreshActions();
         agentSay('Thanks. I have you down as '+v+'. What is the best email for you?', function(){ expecting='email'; });
         return;
       }
       if(expecting==='email'||emailRe.test(v)){
         if(emailRe.test(v)){
-          p.email=v; writeProf(p); expecting=null;
+          p.email=v; writeProf(p); expecting=null; refreshActions();
           agentSay('Got it. I will put together what a program on '+(p.company||'your platform')+' would look like and send it over. Anything else you want me to look at?');
         } else {
           agentSay('That does not look like an email. Mind trying again?');
@@ -631,7 +640,7 @@
       },1200);
     }
     body.scrollTop=body.scrollHeight;
-    syncLaunch(); saveChat();
+    syncLaunch(); saveChat(); refreshActions();
   }
   (function ihintInit(){
     var h=document.getElementById('ihint');
@@ -653,6 +662,32 @@
       if(!on) startIdle();
     });
   });
+
+  /* once they are engaged, give them somewhere to go */
+  function refreshActions(){
+    var actionsEl=document.getElementById('chat-actions');
+    var caLabel=document.getElementById('ca-label');
+    if(!actionsEl||!caLabel) return;
+    var list=readList(), p=readProf();
+    if(!list.length){ actionsEl.hidden=true; return; }
+    actionsEl.hidden=false;
+    var who=(window.KanmonAgent&&KanmonAgent.first)||'your partnerships manager';
+    caLabel.textContent = p.company
+      ? who+' is looking at '+list.length+(list.length>1?' items':' item')+' for '+p.company
+      : who+' is looking at '+list.length+(list.length>1?' items':' item')+' for you';
+  }
+  (function(){
+    var actionsEl=document.getElementById('chat-actions');
+    if(!actionsEl) return;
+    actionsEl.querySelectorAll('.ca').forEach(function(b){
+      b.addEventListener('click',function(){
+        try{ sessionStorage.setItem('kanmon-way', b.getAttribute('data-way')); }catch(e){}
+        saveChat();
+        location.href='contact.html';
+      });
+    });
+  })();
+
 
 
 
