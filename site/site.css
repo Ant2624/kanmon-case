@@ -679,3 +679,15 @@ a.card:hover .card-ico{stroke:var(--kanmon)}
 .ihint.gone{display:none}
 
 .chat-teaser .assigning{color:var(--muted);font-style:italic}
+
+.chat-input input{flex:1;font:inherit;font-size:.86rem;border:1px solid var(--line);border-radius:99px;
+  padding:.55rem .8rem;min-height:40px;background:#fbfaf7;color:var(--ink)}
+.chat-input input:focus{outline:2px solid var(--kanmon);outline-offset:1px;background:#fff}
+.chat-input button{border:0;background:var(--kanmon);width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.chat-input button svg{width:16px;height:16px;fill:#fff}
+.chat-input button:hover{background:var(--kanmon-deep)}
+.interest{min-height:44px}
+@media (max-width:520px){.interest{width:100%;justify-content:flex-start}}
+
+.contact-form .prefilled{background:var(--kanmon-soft);border-color:#f0c9a8}

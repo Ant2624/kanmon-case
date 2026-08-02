@@ -190,9 +190,10 @@
       <a href="contact.html" data-chip-follow="This goes straight to me. Four fields, or answer them in chat if you prefer.">Talk to the team</a>
     </div>
   </div>
-  <div class="chat-input"><span>Write a reply&hellip;</span>
-    <svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg>
-  </div>
+  <form class="chat-input" id="chat-reply-form" autocomplete="off">
+    <input type="text" id="chat-reply" placeholder="Write a reply&hellip;" aria-label="Write a reply">
+    <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7z"/></svg></button>
+  </form>
 </div>
 <div class="chat-teaser" id="chat-teaser" hidden>
   <span class="k-av" data-agent="initial">M</span>
@@ -357,9 +358,71 @@
       setTimeout(function(){ snip.textContent=msg; snip.style.opacity='1'; },250);
     }
     idleCount++;
-    idleTimer=setTimeout(showIdle,13000);
+    idleTimer=setTimeout(showIdle,20000);
   }
-  function startIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(showIdle,12000); }
+  function startIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(showIdle,32000); }
+
+  /* what they tell the rep, carried everywhere */
+  var PROF='kanmon-profile-v1';
+  function readProf(){ try{ return JSON.parse(sessionStorage.getItem(PROF))||{} }catch(e){ return {} } }
+  function writeProf(p){ try{ sessionStorage.setItem(PROF, JSON.stringify(p)); }catch(e){} }
+  var expecting=null;
+  function ask(field, line){
+    expecting=field;
+    agentSay(line);
+  }
+  function agentSay(text, after){
+    var typing=document.createElement('div');
+    typing.className='chat-msg';
+    typing.innerHTML='<span class="k-av">'+((window.KanmonAgent&&KanmonAgent.initial)||'M')+'</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+    body.appendChild(typing); body.scrollTop=body.scrollHeight;
+    setTimeout(function(){
+      typing.querySelector('.bubble').textContent=text;
+      body.scrollTop=body.scrollHeight; syncLaunch(); saveChat(); startIdle();
+      if(after) after();
+    },1200);
+  }
+  function sayUser(text){
+    hasHistory=true;
+    idleCount=0; if(statusEl){ statusEl.remove(); statusEl=null; }
+    var chips=body.querySelector('.chat-chips'); if(chips) chips.style.display='none';
+    var tm=body.querySelector('.chat-time'); if(tm) tm.style.display='none';
+    var u=document.createElement('div');
+    u.className='chat-msg user';
+    u.innerHTML='<div class="bubble">'+esc(text)+'</div>';
+    body.appendChild(u); body.scrollTop=body.scrollHeight; saveChat();
+  }
+  var replyForm=document.getElementById('chat-reply-form');
+  var replyInput=document.getElementById('chat-reply');
+  if(replyForm&&replyInput){
+    replyForm.addEventListener('submit',function(e){
+      e.preventDefault();
+      var v=replyInput.value.trim();
+      if(!v) return;
+      replyInput.value='';
+      sayUser(v);
+      var p=readProf();
+      var emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      var phoneRe=/^[\d\s()+.-]{7,}$/;
+      if(expecting==='company'||(!p.company&&!emailRe.test(v)&&!phoneRe.test(v)&&expecting===null&&v.length<40)){
+        p.company=v; writeProf(p); expecting=null;
+        agentSay('Thanks. I have you down as '+v+'. What is the best email for you?', function(){ expecting='email'; });
+        return;
+      }
+      if(expecting==='email'||emailRe.test(v)){
+        if(emailRe.test(v)){
+          p.email=v; writeProf(p); expecting=null;
+          agentSay('Got it. I will put together what a program on '+(p.company||'your platform')+' would look like and send it over. Anything else you want me to look at?');
+        } else {
+          agentSay('That does not look like an email. Mind trying again?');
+        }
+        return;
+      }
+      if(phoneRe.test(v)&&!p.phone){ p.phone=v; writeProf(p); agentSay('Noted, I will use that if a call is easier.'); return; }
+      agentSay('Got it, noted. Anything else you want me to look into?');
+    });
+  }
+
 
   /* interest list: what they flag while browsing, carried to the rep */
   var ILIST='kanmon-interest-v1';
@@ -382,7 +445,7 @@
       typing.innerHTML='<span class="k-av">'+((window.KanmonAgent&&KanmonAgent.initial)||'M')+'</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
       body.appendChild(typing);
       setTimeout(function(){
-        typing.querySelector('.bubble').textContent='Got it, I will start looking at that. Keep browsing and add anything else. What is your platform called?';
+        typing.querySelector('.bubble').textContent='Got it, I will start looking at that. What is your platform called?'; expecting='company';
         body.scrollTop=body.scrollHeight; syncLaunch(); saveChat();
       },1200);
     }
