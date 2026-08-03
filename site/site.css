@@ -871,3 +871,15 @@ figure.tappable:hover .mock-hint,figure.tappable:focus-within .mock-hint{opacity
   .cta-section .cta-actions{margin-top:1.5rem}
   .faq{margin-top:1.4rem}
 }
+
+/* partner strip: aligned columns on small screens, no orphaned separator */
+@media (max-width:860px){
+  .logo-bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem 1rem}
+  .logo-bar .lbl{grid-column:1/-1}
+  .lbl-sep{display:none}
+  .logo-bar .lbl .link-arrow{display:block;margin-top:.3rem}
+  .logo-bar a{margin-right:0;font-size:.88rem}
+}
+@media (max-width:360px){
+  .logo-bar{grid-template-columns:1fr}
+}
