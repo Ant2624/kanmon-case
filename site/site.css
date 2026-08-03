@@ -812,3 +812,62 @@ figure.tappable:hover .mock-hint,figure.tappable:focus-within .mock-hint{opacity
 .case-h2{display:flex;align-items:center;gap:.65rem}
 .case-mark{width:30px;height:30px;border-radius:6px;object-fit:contain;flex-shrink:0}
 @media (max-width:520px){.case-mark{width:26px;height:26px}}
+
+/* ============ rhythm pass: scan, continue, hand off ============ */
+
+/* --- mobile: scanning and the path to submission --- */
+@media (max-width:860px){
+  /* consistent read rhythm: heading, one beat, body, air before the next idea */
+  .band .wrap>h2{margin-bottom:.55rem}
+  .band .wrap>.sub{margin-bottom:1.35rem}
+  .problem-solution{margin-top:1.6rem;gap:1rem}
+  .logo-bar{margin-top:1.4rem}
+  .logo-bar .lbl{display:block;margin-bottom:.8rem}
+  .logo-bar a{padding:.5rem 0;margin-right:1.1rem}
+  /* every continue point is easy to hit and clearly separated */
+  .section .chat-kickoff,.band .chat-kickoff{margin-top:1.2rem}
+  p .link-arrow{display:inline-block;padding:.4rem 0}
+  .faq-ask{gap:.9rem}
+  .cta-section h2{margin-bottom:.5rem}
+  .cta-section .cta-actions{margin-top:1.3rem}
+  /* handoff: the form reads as a short conversation, not a wall */
+  .contact-card{padding:1.2rem 1rem 1.35rem}
+  .contact-form .field-row{gap:.9rem}
+  .contact-form .field{margin-bottom:.95rem}
+  .contact-form label{font-size:.74rem;margin-bottom:.3rem}
+  .contact-form input,.contact-form select,.contact-form textarea{min-height:48px;font-size:16px}
+  .contact-form textarea{min-height:96px}
+  .contact-form .btn-cta{width:100%;min-height:52px;margin-top:.4rem}
+  .connect-ways{margin-top:1.3rem;padding-top:1rem}
+  .connect-ways .cw{min-height:46px;flex:1 1 45%}
+  .ilist{padding:.85rem .8rem;margin-top:1rem}
+  .ilist li{padding:.4rem 0}
+  /* chat: comfortable thread and a clean escalation bar */
+  .chat-body{padding:.95rem .85rem}
+  .chat-msg{margin-bottom:.85rem}
+  .chat-msg .bubble{max-width:86%}
+  .chat-actions{padding:.7rem .75rem .65rem}
+  .chat-actions .ca{min-height:46px}
+  .chat-input{padding:.7rem .8rem}
+  .chat-input input{min-height:44px}
+}
+
+/* --- desktop: the same rhythm discipline at scale --- */
+@media (min-width:861px){
+  .section>.wrap>h2,.band .wrap>h2{margin-bottom:.6rem}
+  .section>.wrap>.sub,.band .wrap>.sub{margin-bottom:1.6rem}
+  .grid2{gap:2rem}
+  .cards{gap:1.3rem;margin-top:1.6rem}
+  .facts{margin-top:1.5rem}
+  .split{margin-top:1.7rem;gap:1.2rem}
+  .problem-solution{margin-top:1.7rem;gap:1.2rem}
+  .logo-bar{margin-top:1.6rem}
+  .logo-bar .lbl{display:block;margin-bottom:.85rem}
+  .logo-bar a{margin-right:1.6rem}
+  .section .chat-kickoff,.band .chat-kickoff{margin-top:1.25rem}
+  .hero-actions{margin-top:1.6rem}
+  .hero-proof{margin-top:1.7rem}
+  .cta-section h2{margin-bottom:.55rem}
+  .cta-section .cta-actions{margin-top:1.5rem}
+  .faq{margin-top:1.4rem}
+}
