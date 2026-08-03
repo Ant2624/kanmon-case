@@ -789,3 +789,16 @@ figure.tappable:hover .mock-hint,figure.tappable:focus-within .mock-hint{opacity
   figure.tappable:hover .window{transform:none}
   figure.tappable.in-view .window{box-shadow:0 2px 6px rgba(17,17,17,.09),0 20px 44px rgba(17,17,17,.17)}
 }
+
+/* mobile rhythm: let distinct blocks separate instead of running together */
+@media (max-width:860px){
+  .section .split{margin-top:2.2rem}
+  .facts+.split,.facts+.cards{margin-top:2rem}
+  .section>.wrap>h2{margin-bottom:.55rem}
+  .section>.wrap>.sub{margin-bottom:1.4rem}
+  .panel+.panel{margin-top:1rem}
+  .story-col+.story-col{margin-top:2.6rem}
+  .story-col h3{margin-bottom:.9rem}
+  .story-state+.story-state{margin-top:1.1rem}
+  .facts.facts-compact{gap:.8rem}
+}
