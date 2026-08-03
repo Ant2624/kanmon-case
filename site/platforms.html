@@ -119,7 +119,7 @@
           <p class="sub"><strong>Typical path:</strong> scope with the team, integrate the web SDK and connect token, place the offer in product, then launch under your brand. Many programs target about one week of implementation and go live within a month once scoping is done. Exact timing depends on your data, UX, and compliance review.</p>
           <p style="margin-top:.7rem"><button type="button" class="chat-kickoff" data-ask="What does the first week look like?" data-answer="Scoping with the team, installing the web SDK, one backend call for the connect token, and placing the offer in your product. Marketing and launch follow."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>What does the first week look like?<span class="ask-cue" data-agent="askCue">Ask Maya</span></button></p>
         </div>
-        <figure>
+        <figure class="tappable" tabindex="0" role="button" data-mockask="What do we have to build to get this?" data-mockans="Your side is the placement. Kanmon supplies the offer component, the identity and compliance checks, the capital and the servicing. Most partners implement in about a week.">
           <div class="window">
             <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">capital.yourplatform.com</div></div>
             <div class="app">
@@ -139,7 +139,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          <span class="mock-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.46 5.22 3.73 6.83-.15 1.25-.62 2.4-1.4 3.37-.18.22 0 .55.28.5 1.86-.3 3.4-1.03 4.55-1.85.9.23 1.86.35 2.84.35 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>Ask about this screen</span></div>
           <figcaption><span class="law">Orange marks the Kanmon layer; everything else is your product.</span></figcaption>
         </figure>
       </div>
@@ -581,6 +581,51 @@
 
 
 
+
+
+
+  /* on touch there is no hover, so reveal the tap cue as a mock scrolls into view */
+  (function(){
+    var figs=[].slice.call(document.querySelectorAll('figure.tappable'));
+    if(!figs.length||!('IntersectionObserver' in window)) return;
+    var touchish=window.matchMedia('(hover:none),(max-width:860px)');
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!touchish.matches){ en.target.classList.remove('in-view'); return; }
+        en.target.classList.toggle('in-view', en.isIntersecting && en.intersectionRatio>=0.45);
+      });
+    },{threshold:[0,0.45,0.9],rootMargin:'-10% 0px -10% 0px'});
+    figs.forEach(function(f){ io.observe(f); });
+  })();
+
+  /* people try to tap the mocks, so make that land somewhere useful */
+  document.querySelectorAll('figure.tappable[data-mockask]').forEach(function(fig){
+    function askAboutMock(){
+      openPanel();
+      hasHistory=true;
+      idleCount=0; if(statusEl){ statusEl.remove(); statusEl=null; }
+      var chips=body.querySelector('.chat-chips'); if(chips) chips.style.display='none';
+      var tm=body.querySelector('.chat-time'); if(tm) tm.style.display='none';
+      var u=document.createElement('div');
+      u.className='chat-msg user';
+      u.innerHTML='<div class="bubble">'+esc(fig.getAttribute('data-mockask'))+'</div>';
+      body.appendChild(u);
+      var typing=document.createElement('div');
+      typing.className='chat-msg';
+      typing.innerHTML='<span class="k-av">'+((window.KanmonAgent&&KanmonAgent.initial)||'M')+'</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+      body.appendChild(typing);
+      body.scrollTop=body.scrollHeight;
+      setTimeout(function(){
+        typing.querySelector('.bubble').textContent=fig.getAttribute('data-mockans');
+        body.scrollTop=body.scrollHeight;
+        syncLaunch(); startIdle(); saveChat(); refreshActions();
+      },1500);
+    }
+    fig.addEventListener('click',askAboutMock);
+    fig.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); askAboutMock(); }
+    });
+  });
 
   /* chips: ask, travel to the page, and pick the conversation back up there */
   var PENDING='kanmon-chat-follow';
