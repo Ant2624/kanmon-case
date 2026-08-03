@@ -807,3 +807,8 @@ figure.tappable:hover .mock-hint,figure.tappable:focus-within .mock-hint{opacity
   .story-state+.story-state{margin-top:1.1rem}
   .facts.facts-compact{gap:.8rem}
 }
+
+/* case-study headings carry the partner mark */
+.case-h2{display:flex;align-items:center;gap:.65rem}
+.case-mark{width:30px;height:30px;border-radius:6px;object-fit:contain;flex-shrink:0}
+@media (max-width:520px){.case-mark{width:26px;height:26px}}
