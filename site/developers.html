@@ -303,6 +303,7 @@ KanmonConnect.start({ connectToken })
   function syncLaunch(){
     if(!toggle.checked && hasHistory){
       launch.classList.add('bar');
+      launch.classList.add('unread');
       snip.textContent=lastText();
     } else {
       launch.classList.remove('bar');
@@ -363,7 +364,7 @@ KanmonConnect.start({ connectToken })
     }
   })();
 
-  function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; openedAt=Date.now(); syncLaunch(); startIdle(); saveChat(); }
+  function openPanel(){ hideTeaser(); clearTimeout(t); launch.classList.remove('unread'); toggle.checked=true; anchorY=window.scrollY; openedAt=Date.now(); syncLaunch(); startIdle(); saveChat(); }
   function closePanel(){ toggle.checked=false; syncLaunch(); saveChat(); if(launch.classList.contains('bar')){ startIdle(); } else { clearTimeout(idleTimer); } }
   txt.addEventListener('click',openPanel);
   toggle.addEventListener('change',function(){ if(toggle.checked){ openPanel(); } else { closePanel(); } });

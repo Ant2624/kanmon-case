@@ -441,7 +441,7 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
 
 /* ---------- chat widget ---------- */
 /* #chat-toggle visually hidden with nav-check (header). Fixed origin avoids scroll jump. */
-.chat-launch{position:fixed;z-index:60;width:54px;height:54px;border-radius:50%;
+.chat-launch{position:fixed;overflow:visible;z-index:60;width:54px;height:54px;border-radius:50%;
   right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));
   background:var(--kanmon);display:flex;align-items:center;justify-content:center;cursor:pointer;
   box-shadow:0 6px 20px rgba(17,17,17,.28);transition:transform .15s ease,box-shadow .15s ease}
@@ -507,8 +507,14 @@ figure:hover .window{transform:translateY(-4px);box-shadow:0 4px 10px rgba(17,17
   .chat-launch{
     right:max(12px,env(safe-area-inset-right,0px));
     bottom:calc(var(--kb,0px) + max(12px,env(safe-area-inset-bottom,0px)))}
-  .chat-launch.bar{left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));
-    max-width:none;width:auto}
+  /* phones have little width, so the resting state is an orb with a status dot */
+  .chat-launch.bar{left:auto;right:max(12px,env(safe-area-inset-right,0px));
+    width:54px;height:54px;max-width:none;padding:0;border-radius:50%;justify-content:center;
+    background:#fff;border:1px solid var(--line);box-shadow:0 6px 20px rgba(17,17,17,.22)}
+  .chat-launch.bar .mini-snip,.chat-launch.bar .mini-open,.chat-launch.bar .mini-cycle{display:none}
+  .chat-launch.bar .mini-av{display:flex;width:34px;height:34px;font-size:.86rem}
+  .chat-launch.bar.unread:after{content:"";position:absolute;top:4px;right:4px;width:13px;height:13px;
+    border-radius:50%;background:#e05a2b;border:2.5px solid #fff}
   .chat-teaser{
     left:auto;
     right:max(12px,env(safe-area-inset-right,0px));
@@ -756,19 +762,19 @@ figure.tappable{cursor:pointer}
 figure.tappable .window{position:relative}
 figure.tappable .window{transition:transform .18s ease,box-shadow .18s ease}
 figure.tappable:hover .window,figure.tappable:focus-within .window{transform:translateY(-3px)}
-.mock-hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%) translateY(6px);
+.mock-hint{position:absolute;right:10px;top:46px;left:auto;bottom:auto;transform:translateY(-4px);
   display:inline-flex;align-items:center;gap:.4rem;white-space:nowrap;
   background:#111;color:#fff;font-size:.72rem;font-weight:600;padding:.42rem .8rem;border-radius:99px;
   opacity:0;transition:opacity .18s ease,transform .18s ease;pointer-events:none;z-index:3;
   box-shadow:0 6px 18px rgba(17,17,17,.3)}
 .mock-hint svg{width:13px;height:13px;fill:#fff}
-figure.tappable:hover .mock-hint,figure.tappable:focus-within .mock-hint{opacity:1;transform:translateX(-50%) translateY(0)}
+figure.tappable:hover .mock-hint,figure.tappable:focus-within .mock-hint{opacity:1;transform:translateY(0)}
 /* touch has no hover, so the cue stays visible; width covers emulators that
    report hover capability while being used as phones */
 /* touch has no hover, so the cue appears as the mock scrolls into view */
 @media (hover:none),(max-width:860px){
-  .mock-hint{background:rgba(17,17,17,.86);font-size:.68rem;bottom:12px}
-  figure.tappable.in-view .mock-hint{opacity:1;transform:translateX(-50%) translateY(0)}
+  .mock-hint{background:rgba(17,17,17,.86);font-size:.66rem;right:8px;top:42px;padding:.36rem .66rem}
+  figure.tappable.in-view .mock-hint{opacity:1;transform:translateY(0)}
   figure.tappable:hover .window{transform:none}
   figure.tappable.in-view .window{box-shadow:0 2px 6px rgba(17,17,17,.09),0 20px 44px rgba(17,17,17,.17)}
 }

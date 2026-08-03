@@ -483,6 +483,7 @@
   function syncLaunch(){
     if(!toggle.checked && hasHistory){
       launch.classList.add('bar');
+      launch.classList.add('unread');
       snip.textContent=lastText();
     } else {
       launch.classList.remove('bar');
@@ -543,7 +544,7 @@
     }
   })();
 
-  function openPanel(){ hideTeaser(); clearTimeout(t); toggle.checked=true; anchorY=window.scrollY; openedAt=Date.now(); syncLaunch(); startIdle(); saveChat(); }
+  function openPanel(){ hideTeaser(); clearTimeout(t); launch.classList.remove('unread'); toggle.checked=true; anchorY=window.scrollY; openedAt=Date.now(); syncLaunch(); startIdle(); saveChat(); }
   function closePanel(){ toggle.checked=false; syncLaunch(); saveChat(); if(launch.classList.contains('bar')){ startIdle(); } else { clearTimeout(idleTimer); } }
   txt.addEventListener('click',openPanel);
   toggle.addEventListener('change',function(){ if(toggle.checked){ openPanel(); } else { closePanel(); } });
@@ -730,7 +731,12 @@
     var io=new IntersectionObserver(function(entries){
       entries.forEach(function(en){
         if(!touchish.matches){ en.target.classList.remove('in-view'); return; }
-        en.target.classList.toggle('in-view', en.isIntersecting && en.intersectionRatio>=0.45);
+        var el=en.target;
+        if(!(en.isIntersecting && en.intersectionRatio>=0.45)) return;
+        if(el.dataset.cued) return;          // announce once per visit, then stay out of the way
+        el.dataset.cued='1';
+        el.classList.add('in-view');
+        setTimeout(function(){ el.classList.remove('in-view'); }, 2600);
       });
     },{threshold:[0,0.45,0.9],rootMargin:'-10% 0px -10% 0px'});
     figs.forEach(function(f){ io.observe(f); });
